@@ -1,111 +1,170 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, { useEffect } from 'react';
+import { Platform, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import { Provider } from 'react-redux';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+import { store, persistor } from './src/store/store';
+
+
+import LoginScreen from './screens/LoginScreen';
+import SelectBase from './pages/SelectBase';
+import EditBase from './pages/EditBase';
+
+import ScanScreen from './pages/ScanScreen';
+
+import { Language, changeLanguage } from './translations/I18n';
+import { FontSize } from './components/FontSizeHelper';
+import Colors from './src/Colors';
+import { useSelector } from 'react-redux';
+const App = () => {
+
+  useEffect(() => {
+    changeLanguage('th');
+    //backsakura 
+  }, []);
+  useEffect(() => {
+
+
+  }, []);
+
+  const MainStack = createStackNavigator();
+
+  const LoginStack = createStackNavigator();
+
+
+  const LoginStackScreen = () => {
+    return (
+      <LoginStack.Navigator>
+
+        <LoginStack.Screen
+          options={{ headerShown: false }}
+          name="Login"
+          component={LoginScreen}
+        />
+
+        <LoginStack.Screen
+          options={{ headerShown: false }}
+          name="SelectScreen"
+          component={SelectBase}
+        />
+        <LoginStack.Screen
+          options={{ title: Language.t('selectBase.scanQR'), headerShown: false }}
+          name="ScanScreen"
+          component={ScanScreen}
+        />
+        <LoginStack.Screen
+          options={{ headerShown: false }}
+          name="EditBase"
+          component={EditBase}
+        />
+      </LoginStack.Navigator>
+    );
+  }
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+
+    <Provider store={store} >
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <SafeAreaView style={styles.container1}>
+            <MainStack.Navigator>
+
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="LoginStackScreen"
+                component={LoginStackScreen}
+              />
+
+            </MainStack.Navigator>
+          </SafeAreaView>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
+
   );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
+}
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container1: {
+    backgroundColor: 'black',
+    flex: 1,
+
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  body: {
+    margin: 10
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  body1e: {
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: 'flex-end'
   },
-  highlight: {
-    fontWeight: '700',
+  body1: {
+    marginTop: 20,
+    flexDirection: "row",
+  },
+  tabbar: {
+    height: 70,
+    padding: 12,
+    paddingLeft: 20,
+    alignItems: 'center',
+    backgroundColor: '#E6EBFF',
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.7,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  dorpdown: {
+    justifyContent: 'center',
+    fontSize: FontSize.medium,
+  },
+  dorpdownTop: {
+    justifyContent: 'flex-end',
+    fontSize: FontSize.medium,
+  },
+  textTitle: {
+    fontSize: FontSize.medium,
+    fontWeight: 'bold',
+    color: '#ffff',
+  },
+  imageIcon: {
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  button: {
+    marginTop: 10,
+    marginBottom: 25,
+    padding: 5,
+    alignItems: 'center',
+    backgroundColor: Colors.buttonColorPrimary,
+    borderRadius: 10,
+  },
+  textButton: {
+    fontSize: FontSize.large,
+    color: Colors.fontColor2,
+  },
+  buttonContainer: {
+    marginTop: 10,
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    marginLeft: 10,
+    marginBottom: 20,
+  },
+  checkbox: {
+    alignSelf: "center",
+    borderBottomColor: '#ffff',
+    color: '#ffff',
+  },
+  label: {
+    margin: 8,
+    color: '#ffff',
   },
 });
 
