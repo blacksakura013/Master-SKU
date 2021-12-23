@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, Image, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PersistGate } from 'redux-persist/es/integration/react';
@@ -7,11 +7,14 @@ import { Provider } from 'react-redux';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { store, persistor } from './src/store/store';
 
 
 import LoginScreen from './screens/LoginScreen';
+import SKUScreen from './screens/SKUScreen';
+import Scanbarcode from './screens/Scanbarcode';
 import SelectBase from './pages/SelectBase';
 import EditBase from './pages/EditBase';
 
@@ -36,8 +39,11 @@ const App = () => {
 
   const LoginStack = createStackNavigator();
 
+  const BottomTabs = createBottomTabNavigator();
 
+ 
   const LoginStackScreen = () => {
+
     return (
       <LoginStack.Navigator>
 
@@ -79,7 +85,19 @@ const App = () => {
                 name="LoginStackScreen"
                 component={LoginStackScreen}
               />
+             
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="SKUScreen"
+                component={SKUScreen}
+              />
 
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="Scanbarcode"
+                component={Scanbarcode}
+              />
+              
             </MainStack.Navigator>
           </SafeAreaView>
         </NavigationContainer>

@@ -123,13 +123,13 @@ const LoginScreen = () => {
       var a = Math.floor(100000 + Math.random() * 900000);
       console.log(DeviceInfo.getDeviceName())
       console.log('\nmachine > > ' + mac + ':' + a)
-      if (mac.length > 0) dispatch(registerActions.machine(mac + ':' + a));
+      if (mac.length > 0) dispatch(registerActions.machine(mac));
       else NetworkInfo.getBSSID().then(macwifi => {
         console.log('\nmachine(wifi) > > ' + macwifi)
-        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi + ':' + a));
-        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a));
-      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
-    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
+        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi));
+        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e'));
+      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
+    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
   }
 
   useEffect(() => {
@@ -222,7 +222,7 @@ const LoginScreen = () => {
           dispatch(loginActions.userlogin(isSelected))
 
           navigation.dispatch(
-            navigation.replace('MainMenu')
+            navigation.replace('SKUScreen')
           )
         } else {
           console.log('Function Parameter Required');
@@ -272,7 +272,7 @@ const LoginScreen = () => {
             <Image
               style={topImage}
               resizeMode={'contain'}
-              source={require('../images/pic_logo_app_t__.png')}
+              source={require('../images/barcode.png')}
             />
           </TouchableNativeFeedback>
 
@@ -407,7 +407,7 @@ const LoginScreen = () => {
                   alignSelf: 'center',
                   fontSize: FontSize.medium,
                   fontWeight: 'bold',
-                }}>{'17/12'}</Text>
+                }}>{'23/12'}</Text>
               </View>
 
             </View>
