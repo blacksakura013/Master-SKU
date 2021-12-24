@@ -37,7 +37,7 @@ import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 
 const SelectBase = ({ route }) => {
-  const serviceID = "{167f0c96-86fd-488f-94d1-cc3169d60b1a}"
+ 
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {

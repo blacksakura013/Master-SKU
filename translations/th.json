@@ -68,6 +68,7 @@
     "changeLanguage": "เปลี่ยนภาษา",
     "language": "ภาษาไทย",
     "logout": "ออกจากระบบ",
+    "alertsaveMessage": "คุณต้องการบันทึกหรือไม่?",
     "alertLogoutMessage": "คุณต้องการออกจากระบบหรือไม่?",
     "cancel": "ยกเลิก"
   },

@@ -2,8 +2,10 @@ import {
   ACTION_LOGIN,
   ACTION_USERLOGIN,
   ACTION_SET_GUID,
+  ACTION_SET_GUID_ENDPOINTMOTHER,
   ACTION_SET_JSONRESULT,
   ACTION_SET_SERVICEID,
+  ACTION_SET_ENDPOINTMOTHER,
   ACTION_SET_USERNAMESER,
   ACTION_SET_PASSWORDSER,
   ACTION_SET_USERNAMEED,
@@ -30,12 +32,20 @@ export const guid = (payload) => ({
   type: ACTION_SET_GUID,
   payload,
 });
+export const guidEndPoint  = (payload) => ({
+  type: ACTION_SET_GUID_ENDPOINTMOTHER,
+  payload,
+});
 export const jsonResult = (payload) => ({
   type: ACTION_SET_JSONRESULT,
   payload,
 });
 export const serviceID = (payload) => ({
   type: ACTION_SET_SERVICEID,
+  payload,
+});
+export const endpointMother = (payload) => ({
+  type: ACTION_SET_ENDPOINTMOTHER,
   payload,
 });
 export const userNameSer = (payload) => ({

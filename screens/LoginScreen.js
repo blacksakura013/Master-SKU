@@ -87,14 +87,11 @@ const LoginScreen = () => {
 
   useEffect(() => {
     getMac()
+
+
   }, []);
   useEffect(() => {
-
-
-
     console.log('>> machineNum :', registerReducer.machineNum + '\n\n\n\n')
-
-
   }, [registerReducer.machineNum]);
 
   const closeLoading = () => {
@@ -138,6 +135,7 @@ const LoginScreen = () => {
 
   const tslogin = async () => {
     await setLoading(true)
+    await regisMacAddED()
     await regisMacAdd()
     await setLoading(false)
   }
@@ -248,6 +246,106 @@ const LoginScreen = () => {
         }
       });
     setLoading(false)
+  };
+  const regisMacAddED = async () => {
+    await fetch(loginReducer.endpointMother + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'Register',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE":"' +
+          registerReducer.machineNum +
+          '","BPAPUS-CNTRY-CODE": "66","BPAPUS-MOBILE": "0828845662"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then(async (json) => {
+        if (json.ResponseCode == 200 && json.ReasonString == 'Completed') {
+          await _fetchGuidLogED();
+        } else {
+          console.log('Function Parameter Required');
+          let temp_error = 'error_ser.' + json.ResponseCode;
+          console.log('>> ', temp_error)
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        }
+      })
+      .catch((error) => {
+        console.log('ERROR at regisMacAdd ' + error);
+        console.log('http', loginReducer.endpointMother);
+        if (loginReducer.endpointMother == '') {
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        } else {
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t('alert.internetError'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        }
+
+      });
+  };
+
+  const _fetchGuidLogED = async () => {
+    console.log('FETCH GUID LOGIN');
+    await fetch(loginReducer.endpointMother + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'Login',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE": "' +
+          registerReducer.machineNum +
+          '","BPAPUS-USERID": "' +
+          username +
+          '","BPAPUS-PASSWORD": "' +
+          password +
+          '"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        if (json && json.ResponseCode == '635') {
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          console.log('NOT FOUND MEMBER');
+        } else if (json && json.ResponseCode == '629') {
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            'Function Parameter Required', [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        } else if (json && json.ResponseCode == '200') {
+          let responseData = JSON.parse(json.ResponseData)
+          dispatch(loginActions.guidEndPoint(responseData.BPAPUS_GUID))
+
+        } else {
+          console.log('Function Parameter Required');
+          let temp_error = 'error_ser.' + json.ResponseCode;
+          console.log('>> ', temp_error)
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        }
+      })
+      .catch((error) => {
+        console.error('ERROR at _fetchGuidLogin' + error);
+        if (loginReducer.endpointMother == '') {
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+
+        } else {
+
+          Alert.alert(
+            Language.t('alert.errorTitle'),
+            Language.t('alert.internetError') + "1", [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        }
+      });
+    
   };
 
   return (

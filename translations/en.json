@@ -68,6 +68,7 @@
     "changeLanguage": "Change Language",
     "language": "English",
     "logout": "Logout",
+    "alertsaveMessage": "Do you want to save?",
     "alertLogoutMessage": "Do you want to log out?",
     "cancel": "Cancel"
   },

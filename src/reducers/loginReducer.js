@@ -2,8 +2,10 @@ import {
   ACTION_LOGIN,
   ACTION_USERLOGIN,
   ACTION_SET_GUID,
+  ACTION_SET_GUID_ENDPOINTMOTHER,
   ACTION_SET_JSONRESULT,
   ACTION_SET_SERVICEID,
+  ACTION_SET_ENDPOINTMOTHER,
   ACTION_SET_USERNAMESER,
   ACTION_SET_PASSWORDSER,
   ACTION_SET_USERNAMEED,
@@ -17,6 +19,7 @@ import {
   ACTION_SET_SCREEN,
   ACTION_SET_TAKELOGIN,
   SERVICE_ID,
+  ENDPOINTMOTHER,
   USERNAME_SERVICE,
   PASSWORD_SERVICE,
   USERNAME_SER,
@@ -29,8 +32,10 @@ const initialState = {
   loggedIn: false,
   userloggedIn: false,
   guid: '',
+  guidEndPoint: '',
   jsonResult: [],
   serviceID: SERVICE_ID,
+  endpointMother: ENDPOINTMOTHER,
   userNameSer: USERNAME_SERVICE,
   passwordSer: PASSWORD_SERVICE,
   userNameED: ACTION_SET_USERNAMEED,
@@ -53,10 +58,14 @@ const loginReducer = (state = initialState, { type, payload }) => {
       return { ...state, userloggedIn: payload }
     case ACTION_SET_GUID:
       return { ...state, guid: payload }
+    case ACTION_SET_GUID_ENDPOINTMOTHER:
+      return { ...state, guidEndPoint: payload }
     case ACTION_SET_JSONRESULT:
       return { ...state, jsonResult: payload }
     case ACTION_SET_SERVICEID:
       return { ...state, serviceID: payload }
+    case ACTION_SET_ENDPOINTMOTHER:
+      return { ...state, endpointMother: payload }
     case ACTION_SET_USERNAMESER:
       return { ...state, userNameSer: payload }
     case ACTION_SET_PASSWORDSER:

@@ -3,6 +3,7 @@ export const _http =
 export const host = 'blacksakura013';
 export const API_ENDPOINT =
   'http://203.150.55.21:8891/BplusNotiService/BplusNotiIIS.dll/';
+export const ENDPOINTMOTHER ='http://192.168.0.110:2564/Read/BplusGet.dll';
 export const BPLUS_APPID = 'cdaa9350-cb32-416e-a85b-6ecedd81ebdf';
 export const PROJECT_ID = '{6E1D6A9C-540D-454C-9e28-B259F24C95FA}';
 export const NTFU_SVID = '{9c6dd907-45ba-43ec-872b-69b928e64be2}';
@@ -40,8 +41,11 @@ export const ACTION_M_PINCODE = 'ACTION_M_PINCODE';
 
 //Login
 export const ACTION_SET_GUID = 'ACTION_SET_GUID';
+export const ACTION_SET_GUID_ENDPOINTMOTHER = 'ACTION_SET_GUID_ENDPOINTMOTHER';
 export const ACTION_SET_JSONRESULT = 'ACTION_SET_JSONRESULT';
 export const ACTION_SET_SERVICEID = 'ACTION_SET_SERVICEID';
+export const ACTION_SET_ENDPOINTMOTHER = 'ACTION_SET_ENDPOINTMOTHER';
+
 export const ACTION_SET_USERNAMESER = 'ACTION_SET_USERNAMESER';
 export const ACTION_SET_PASSWORDSER = 'ACTION_SET_PASSWORDSER';
 export const ACTION_SET_USERNAMEED = 'ACTION_SET_USERNAMEED';
