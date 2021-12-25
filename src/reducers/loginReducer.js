@@ -15,7 +15,7 @@ import {
   ACTION_SET_PROJECTID,
   ACTION_SET_INDEX,
   ACTION_SET_IP_ADDRESS,
-  ACTION_SET_FINGERPRINT,
+  ACTION_SET_SFEATURES,
   ACTION_SET_SCREEN,
   ACTION_SET_TAKELOGIN,
   SERVICE_ID,
@@ -45,7 +45,7 @@ const initialState = {
   projectID: PROJECT_ID,
   index: '-1',
   ipAddress: [],
-  isFingerprint: false,
+  isSFeatures: false,
   isScreen: '',
   islogin: false,
 }
@@ -84,8 +84,8 @@ const loginReducer = (state = initialState, { type, payload }) => {
       return { ...state, index: payload }
     case ACTION_SET_IP_ADDRESS:
       return { ...state, ipAddress: payload }
-    case ACTION_SET_FINGERPRINT:
-      return { ...state, isFingerprint: payload }
+    case ACTION_SET_SFEATURES:
+      return { ...state, isSFeatures: payload }
     case ACTION_SET_SCREEN:
       return { ...state, isScreen: payload }
     case ACTION_SET_TAKELOGIN:

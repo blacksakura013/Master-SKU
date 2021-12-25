@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { StyleSheet, Platform, View, Text, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Platform, Dimensions, View, Text, Alert, TouchableOpacity } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 
@@ -11,13 +11,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { FontSize } from '../components/FontSizeHelper';
 import { Language } from '../translations/I18n';
-
+import * as Animatable from "react-native-animatable";
 import { QRreader } from 'react-native-qr-decode-image-camera';
+ 
 import { Base64 } from '../src/safe_Format';
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window').height;
 const ScanScreen = ({ navigation, route }) => {
   let checkAndroidPermission = true
+  var a = 0
   useEffect(() => {
-    console.log(route.params)
+    a = Math.floor(100000 + Math.random() * 900000);
+    console.log(route.params, ' code: ', a)
   }, [])
 
   if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -25,8 +30,9 @@ const ScanScreen = ({ navigation, route }) => {
   }
   const onSuccess = (e) => {
 
+
     if (e && e.data) {
-      navigation.navigate(route.params.route, { post: e.data });
+      navigation.navigate(route.params.route, { post: e.data, data: a });
     }
   };
 
@@ -61,8 +67,7 @@ const ScanScreen = ({ navigation, route }) => {
         QRreader(path)
           .then((data) => {
             if (data) {
-              navigation.navigate(route.params.route, { post: data });
-
+              navigation.navigate(route.params.route, { post: data, data: a });
             }
           })
           .catch((error) => {
@@ -72,6 +77,7 @@ const ScanScreen = ({ navigation, route }) => {
       }
     });
   };
+ 
 
   return (
     <QRCodeScanner
@@ -81,6 +87,31 @@ const ScanScreen = ({ navigation, route }) => {
       fadeIn={true}
       reactivate={true}
       showMarker={true}
+      customMarker={
+        <View style={styles.rectangleContainer}>
+        
+
+          <View style={{ flexDirection: "row" }}>
+            <View   />
+
+            <View style={styles.rectangle}>
+         
+              <Animatable.View
+                style={styles.scanBar}
+                direction="alternate-reverse"
+                iterationCount="infinite"
+                duration={1700}
+                easing="linear"
+            
+              />
+            </View>
+
+            <View   />
+          </View>
+
+          <View  />
+        </View>
+      }
       topContent={
 
         <View
@@ -117,7 +148,67 @@ const ScanScreen = ({ navigation, route }) => {
   );
 };
 
+const overlayColor = "rgba(0,0,0,0.5)"; // this gives us a black color with a 50% transparency
+
+const rectDimensions = deviceWidth * 0.65; // this is equivalent to 255 from a 393 device width
+const rectBorderWidth = deviceWidth * 0.005; // this is equivalent to 2 from a 393 device width
+const rectBorderColor = "red";
+
+const scanBarWidth = deviceWidth * 0.46; // this is equivalent to 180 from a 393 device width
+const scanBarHeight = deviceWidth * 0.0025; //this is equivalent to 1 from a 393 device width
+const scanBarColor = "#22ff00";
+
+const iconScanColor = "blue";
+
 const styles = StyleSheet.create({
+  rectangleContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent"
+  },
+
+  rectangle: {
+    height: rectDimensions,
+    width: rectDimensions,
+    borderWidth: rectBorderWidth,
+    borderColor: rectBorderColor,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent"
+  },
+
+  topOverlay: {
+    flex: 1,
+    height: deviceWidth,
+    width: deviceWidth,
+    backgroundColor: overlayColor,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  bottomOverlay: {
+    flex: 1,
+    height: deviceWidth,
+    width: deviceWidth,
+    backgroundColor: overlayColor,
+    paddingBottom: deviceWidth * 0.25
+  },
+
+  leftAndRightOverlay: {
+    height: deviceWidth * 0.65,
+    width: deviceWidth,
+    backgroundColor: overlayColor
+  },
+
+  scanBar: {
+    width: scanBarWidth,
+    height: scanBarHeight,
+    backgroundColor: scanBarColor
+  },
+
+
+
   centerText: {
     flex: 1,
     fontSize: FontSize.medium,

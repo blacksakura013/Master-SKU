@@ -15,7 +15,7 @@ import {
   ACTION_SET_PROJECTID,
   ACTION_SET_INDEX,
   ACTION_SET_IP_ADDRESS,
-  ACTION_SET_FINGERPRINT,
+  ACTION_SET_SFEATURES,
   ACTION_SET_SCREEN,
   ACTION_SET_TAKELOGIN
 } from '../Constants';
@@ -85,7 +85,7 @@ export const ipAddress = (payload) => ({
   payload,
 });
 export const setFingerprint = (payload) => ({
-  type: ACTION_SET_FINGERPRINT,
+  type: ACTION_SET_SFEATURES,
   payload,
 });
 export const setScreen = (payload) => ({

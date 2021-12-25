@@ -75,6 +75,7 @@ const SKUScreen = ({ route }) => {
 
   const [SKUMASTER, setSKUMASTER] = useState({});
   const [GOODSMASTER, setGOODSMASTER] = useState([]);
+  const [isSFeatures, setSFeatures] = useState(loginReducer.isSFeatures == true ? '\"Y\"' : '\"N\"');
   const [data, setData] = useStateIfMounted({
     secureTextEntry: true,
   });
@@ -88,32 +89,29 @@ const SKUScreen = ({ route }) => {
   };
 
   useEffect(() => {
-    console.log('>> Address :', loginReducer.ipAddress)
-
+    console.log('>> Address : ', loginReducer.ipAddress)
+    console.log('>> isSFeatures : ', loginReducer.isSFeatures ,isSFeatures)
   }, []);
-  useEffect(() => {
-    console.log('>> GOODSMASTER :', GOODSMASTER)
-    GOODSMASTER.map((item) => {
-      console.log(item.GOODS_CODE)
-    })
-
-
-
-
-  }, [GOODSMASTER]);
 
   useEffect(() => {
-    if (route.params?.post && route.params.post != GOODS_CODE) {
+    if (route.params.post) {
       setGOODS_CODE(route.params.post)
       fetchBarcodeData(route.params.post)
+
     }
+    console.log(route.params.data)
 
 
-  }, [route.params?.post]);
+  }, [route.params?.data]);
+  const on_scan = () => {
+    on_cancel()
+    navigation.navigate('Scanbarcode', { route: 'SKUScreen', data: 'go' })
+  }
   const on_cancel = () => {
-    setGOODS_CODE('')
+
     setTemp_report('')
     setGOODSMASTER([])
+
   }
 
   const set_SkuP = (GOODS_CODE, ARPLU_U_PRC) => {
@@ -152,6 +150,7 @@ const SKUScreen = ({ route }) => {
   };
 
   const logOut = async () => {
+    setLoading(true)
     await fetch(loginReducer.ipAddress[0].urlser + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
@@ -172,6 +171,7 @@ const SKUScreen = ({ route }) => {
     })
       .then((response) => response.json())
       .then((json) => {
+        setLoading(false)
         if (json && json.ResponseCode == '635') {
           Alert.alert(
             Language.t('alert.errorTitle'),
@@ -182,6 +182,7 @@ const SKUScreen = ({ route }) => {
             Language.t('alert.errorTitle'),
             'Function Parameter Required', [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         } else if (json && json.ResponseCode == '200') {
+
           navigation.dispatch(
             navigation.replace('LoginStackScreen')
           )
@@ -193,6 +194,7 @@ const SKUScreen = ({ route }) => {
       })
       .catch((error) => {
         console.error('ERROR at _fetchGuidLogin' + error);
+        setLoading(false)
         if (loginReducer.ipAddress[0].urlser == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
@@ -203,6 +205,7 @@ const SKUScreen = ({ route }) => {
             Language.t('alert.internetError'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
       });
+
   };
 
   const fetchBarcodeData = async (fetchBarcodeData) => {
@@ -238,11 +241,11 @@ const SKUScreen = ({ route }) => {
             SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
             SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
 
-            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : '',
+            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 0,
             SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
-            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : '',
-            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : '',
-            SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : '',
+            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 0,
+            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 0,
+            SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
 
             UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
             UTQ_K_QTY: responseData.DOCINFO.UTQ_K_QTY ? responseData.DOCINFO.UTQ_K_QTY : '',
@@ -275,7 +278,7 @@ const SKUScreen = ({ route }) => {
             WL_CODE: responseData.DOCINFO.WL_CODE ? responseData.DOCINFO.WL_CODE : '',
             WL_NAME: responseData.DOCINFO.WL_NAME ? responseData.DOCINFO.WL_NAME : '',
 
-            SKU_PROPERTIES: 'Y'
+            SKU_PROPERTIES: isSFeatures
           }
           console.log(newSkuobj)
           setSKUMASTER(newSkuobj)
@@ -341,11 +344,11 @@ const SKUScreen = ({ route }) => {
             SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
             SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
 
-            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : '',
+            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 0,
             SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
-            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : '',
-            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : '',
-            SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : '',
+            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 0,
+            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 0,
+            SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
 
             UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
             UTQ_K_QTY: responseData.DOCINFO.UTQ_K_QTY ? responseData.DOCINFO.UTQ_K_QTY : '',
@@ -378,7 +381,7 @@ const SKUScreen = ({ route }) => {
             WL_CODE: responseData.DOCINFO.WL_CODE ? responseData.DOCINFO.WL_CODE : '',
             WL_NAME: responseData.DOCINFO.WL_NAME ? responseData.DOCINFO.WL_NAME : '',
 
-            SKU_PROPERTIES: 'Y'
+            SKU_PROPERTIES: isSFeatures
           }
           console.log('newSkuobj>>', newSkuobj)
           let temp_GoodData = [];
@@ -441,77 +444,31 @@ const SKUScreen = ({ route }) => {
 
   const pushData = async () => {
     setLoading(true)
-    let temp_good = '';
-    for (var i in GOODSMASTER) {
-      if (i > 0) temp_good += ','
-      temp_good += '{' +
-        '\"GOODS_KEY\": \"' + GOODSMASTER[i].GOODS_KEY +
-        '\",\"GOODS_SKU\": \"' + GOODSMASTER[i].GOODS_SKU +
-        '\",\"GOODS_CODE\": \"' + GOODSMASTER[i].GOODS_CODE +
-        '\",\"GOODS_PRICE\": \"' + GOODSMASTER[i].GOODS_PRICE +
-        '\",\"GOODS_ALIAS\": \"' + GOODSMASTER[i].GOODS_ALIAS +
-        '\",\"GOODS_E_ALIAS\": \"' + GOODSMASTER[i].GOODS_E_ALIAS +
-        '\",\"GOODS_BARTYPE\": \"' + GOODSMASTER[i].GOODS_BARTYPE +
-        '\",\"UTQ_NAME\": \"' + GOODSMASTER[i].UTQ_NAME +
-        '\",\"UTQ_QTY\": \"' + GOODSMASTER[i].UTQ_QTY +
-        '\",\"ARPLU_U_PRC\": \"' + GOODSMASTER[i].ARPLU_U_PRC +
-        '\",\"ARPLU_U_DSC\": \"' + GOODSMASTER[i].ARPLU_U_DSC +
-        '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
-        '\",\"TAG_NAME\": \"' + GOODSMASTER[i].TAG_NAME +
-        '\"}'
+    on_cancel()
+    if (Temp_report != '') {
 
-    }
-    console.log(JSON.stringify({
-      'BPAPUS-BPAPSV': loginReducer.serviceID,
-      'BPAPUS-LOGIN-GUID': loginReducer.guid,
-      'BPAPUS-FUNCTION': 'UPDATESKUINFOBYGOODSCODE',
-      'BPAPUS-PARAM':
-        '{\"UpdateSkuInfoByGoodsCode\":' + '[{\"SKUMASTER\": {' +
-        '\"SKU_KEY\": \"' + SKUMASTER.SKU_KEY +
-        '\",\"SKU_CODE\": \"' + SKUMASTER.SKU_CODE +
-        '\",\"SKU_NAME\": \"' + SKUMASTER.SKU_NAME +
-        '\",\"SKU_E_NAME\": \"' + SKUMASTER.SKU_E_NAME +
-        '\",\"SKU_BARCODE\": \"' + SKUMASTER.SKU_BARCODE +
-        '\",\"SKU_VAT_TY\": \"' + SKUMASTER.SKU_VAT_TY +
-        '\",\"SKU_VAT\": \"' + SKUMASTER.SKU_VAT +
-        '\",\"SKU_COST_TY\": \"' + SKUMASTER.SKU_COST_TY +
-        '\",\"SKU_STOCK\": \"' + SKUMASTER.SKU_STOCK +
-        '\",\"SKU_SENSITIVITY\": \"' + SKUMASTER.SKU_SENSITIVITY +
-        '\",\"UTQ_K_NAME\": \"' + SKUMASTER.UTQ_K_NAME +
-        '\",\"UTQ_K_QTY\": \"' + SKUMASTER.UTQ_K_QTY +
-        '\",\"UTQ_T_NAME\": \"' + SKUMASTER.UTQ_T_NAME +
-        '\",\"UTQ_T_QTY\": \"' + SKUMASTER.UTQ_T_QTY +
-        '\",\"UTQ_S_NAME\": \"' + SKUMASTER.UTQ_S_NAME +
-        '\",\"UTQ_S_QTY\": \"' + SKUMASTER.UTQ_S_QTY +
-        '\",\"BRN_CODE\": \"' + SKUMASTER.BRN_CODE +
-        '\",\"BRN_NAME\": \"' + SKUMASTER.BRN_NAME +
-        '\",\"ICCAT_CODE\": \"' + SKUMASTER.ICCAT_CODE +
-        '\",\"ICCAT_NAME\": \"' + SKUMASTER.ICCAT_NAME +
-        '\",\"ICDEPT_CODE\": \"' + SKUMASTER.ICDEPT_CODE +
-        '\",\"ICDEPT_THAIDESC\": \"' + SKUMASTER.ICDEPT_THAIDESC +
-        '\",\"ICDEPT_ENGDESC\": \"' + SKUMASTER.ICDEPT_ENGDESC +
-        '\",\"SKUALT_CODE\": \"' + SKUMASTER.SKUALT_CODE +
-        '\",\"SKUALT_NAME\": \"' + SKUMASTER.SKUALT_NAME +
-        '\",\"ICCOLOR_CODE\": \"' + SKUMASTER.ICCOLOR_CODE +
-        '\",\"ICCOLOR_NAME\": \"' + SKUMASTER.ICCOLOR_NAME +
-        '\",\"ICSIZE_CODE\": \"' + SKUMASTER.ICSIZE_CODE +
-        '\",\"ICSIZE_NAME\": \"' + SKUMASTER.ICSIZE_NAME +
-        '\",\"ICGL_CODE\": \"' + SKUMASTER.ICGL_CODE +
-        '\",\"ICGL_NAME\": \"' + SKUMASTER.ICGL_NAME +
-        '\",\"ICPRT_CODE\": \"' + SKUMASTER.ICPRT_CODE +
-        '\",\"ICPRT_NAME\": \"' + SKUMASTER.ICPRT_NAME +
-        '\",\"WL_CODE\": \"' + SKUMASTER.WL_CODE +
-        '\",\"WL_NAME\" : \"' + SKUMASTER.WL_NAME +
-        '\",\"SKU_PROPERTIES\" : \"Y\"' +
-        '},\"GOODSMASTER\":[' + temp_good + ']}]' + '}',
-      'BPAPUS-FILTER': '',
-      'BPAPUS-ORDERBY': '',
-      'BPAPUS-OFFSET': '0',
-      'BPAPUS-FETCH': '0',
-    }))
-    await fetch(databaseReducer.Data.urlser + '/SetupErp', {
-      method: 'POST',
-      body: JSON.stringify({
+
+      let temp_good = '';
+      for (var i in GOODSMASTER) {
+        if (i > 0) temp_good += ','
+        temp_good += '{' +
+          '\"GOODS_KEY\": \"' + GOODSMASTER[i].GOODS_KEY +
+          '\",\"GOODS_SKU\": \"' + GOODSMASTER[i].GOODS_SKU +
+          '\",\"GOODS_CODE\": \"' + GOODSMASTER[i].GOODS_CODE +
+          '\",\"GOODS_PRICE\": \"' + GOODSMASTER[i].GOODS_PRICE +
+          '\",\"GOODS_ALIAS\": \"' + GOODSMASTER[i].GOODS_ALIAS +
+          '\",\"GOODS_E_ALIAS\": \"' + GOODSMASTER[i].GOODS_E_ALIAS +
+          '\",\"GOODS_BARTYPE\": \"' + GOODSMASTER[i].GOODS_BARTYPE +
+          '\",\"UTQ_NAME\": \"' + GOODSMASTER[i].UTQ_NAME +
+          '\",\"UTQ_QTY\": \"' + GOODSMASTER[i].UTQ_QTY +
+          '\",\"ARPLU_U_PRC\": \"' + GOODSMASTER[i].ARPLU_U_PRC +
+          '\",\"ARPLU_U_DSC\": \"' + GOODSMASTER[i].ARPLU_U_DSC +
+          '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
+          '\",\"TAG_NAME\": \"' + GOODSMASTER[i].TAG_NAME +
+          '\"}'
+
+      }
+      console.log(JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
         'BPAPUS-LOGIN-GUID': loginReducer.guid,
         'BPAPUS-FUNCTION': 'UPDATESKUINFOBYGOODSCODE',
@@ -552,44 +509,99 @@ const SKUScreen = ({ route }) => {
           '\",\"ICPRT_NAME\": \"' + SKUMASTER.ICPRT_NAME +
           '\",\"WL_CODE\": \"' + SKUMASTER.WL_CODE +
           '\",\"WL_NAME\" : \"' + SKUMASTER.WL_NAME +
-          '\",\"SKU_PROPERTIES\" : \"Y\"' +
+          '\",\"SKU_PROPERTIES\" : ' + isSFeatures +
           '},\"GOODSMASTER\":[' + temp_good + ']}]' + '}',
         'BPAPUS-FILTER': '',
         'BPAPUS-ORDERBY': '',
         'BPAPUS-OFFSET': '0',
         'BPAPUS-FETCH': '0',
+      }))
+      await fetch(databaseReducer.Data.urlser + '/SetupErp', {
+        method: 'POST',
+        body: JSON.stringify({
+          'BPAPUS-BPAPSV': loginReducer.serviceID,
+          'BPAPUS-LOGIN-GUID': loginReducer.guid,
+          'BPAPUS-FUNCTION': 'UPDATESKUINFOBYGOODSCODE',
+          'BPAPUS-PARAM':
+            '{\"UpdateSkuInfoByGoodsCode\":' + '[{\"SKUMASTER\": {' +
+            '\"SKU_KEY\": \"' + SKUMASTER.SKU_KEY +
+            '\",\"SKU_CODE\": \"' + SKUMASTER.SKU_CODE +
+            '\",\"SKU_NAME\": \"' + SKUMASTER.SKU_NAME +
+            '\",\"SKU_E_NAME\": \"' + SKUMASTER.SKU_E_NAME +
+            '\",\"SKU_BARCODE\": \"' + SKUMASTER.SKU_BARCODE +
+            '\",\"SKU_VAT_TY\": \"' + SKUMASTER.SKU_VAT_TY +
+            '\",\"SKU_VAT\": \"' + SKUMASTER.SKU_VAT +
+            '\",\"SKU_COST_TY\": \"' + SKUMASTER.SKU_COST_TY +
+            '\",\"SKU_STOCK\": \"' + SKUMASTER.SKU_STOCK +
+            '\",\"SKU_SENSITIVITY\": \"' + SKUMASTER.SKU_SENSITIVITY +
+            '\",\"UTQ_K_NAME\": \"' + SKUMASTER.UTQ_K_NAME +
+            '\",\"UTQ_K_QTY\": \"' + SKUMASTER.UTQ_K_QTY +
+            '\",\"UTQ_T_NAME\": \"' + SKUMASTER.UTQ_T_NAME +
+            '\",\"UTQ_T_QTY\": \"' + SKUMASTER.UTQ_T_QTY +
+            '\",\"UTQ_S_NAME\": \"' + SKUMASTER.UTQ_S_NAME +
+            '\",\"UTQ_S_QTY\": \"' + SKUMASTER.UTQ_S_QTY +
+            '\",\"BRN_CODE\": \"' + SKUMASTER.BRN_CODE +
+            '\",\"BRN_NAME\": \"' + SKUMASTER.BRN_NAME +
+            '\",\"ICCAT_CODE\": \"' + SKUMASTER.ICCAT_CODE +
+            '\",\"ICCAT_NAME\": \"' + SKUMASTER.ICCAT_NAME +
+            '\",\"ICDEPT_CODE\": \"' + SKUMASTER.ICDEPT_CODE +
+            '\",\"ICDEPT_THAIDESC\": \"' + SKUMASTER.ICDEPT_THAIDESC +
+            '\",\"ICDEPT_ENGDESC\": \"' + SKUMASTER.ICDEPT_ENGDESC +
+            '\",\"SKUALT_CODE\": \"' + SKUMASTER.SKUALT_CODE +
+            '\",\"SKUALT_NAME\": \"' + SKUMASTER.SKUALT_NAME +
+            '\",\"ICCOLOR_CODE\": \"' + SKUMASTER.ICCOLOR_CODE +
+            '\",\"ICCOLOR_NAME\": \"' + SKUMASTER.ICCOLOR_NAME +
+            '\",\"ICSIZE_CODE\": \"' + SKUMASTER.ICSIZE_CODE +
+            '\",\"ICSIZE_NAME\": \"' + SKUMASTER.ICSIZE_NAME +
+            '\",\"ICGL_CODE\": \"' + SKUMASTER.ICGL_CODE +
+            '\",\"ICGL_NAME\": \"' + SKUMASTER.ICGL_NAME +
+            '\",\"ICPRT_CODE\": \"' + SKUMASTER.ICPRT_CODE +
+            '\",\"ICPRT_NAME\": \"' + SKUMASTER.ICPRT_NAME +
+            '\",\"WL_CODE\": \"' + SKUMASTER.WL_CODE +
+            '\",\"WL_NAME\" : \"' + SKUMASTER.WL_NAME +
+            '\",\"SKU_PROPERTIES\" : ' + isSFeatures +
+            '},\"GOODSMASTER\":[' + temp_good + ']}]' + '}',
+          'BPAPUS-FILTER': '',
+          'BPAPUS-ORDERBY': '',
+          'BPAPUS-OFFSET': '0',
+          'BPAPUS-FETCH': '0',
+        })
       })
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        if (json.ResponseCode == '200') Alert.alert('สำเร็จ', [{
-          text: Language.t('alert.ok'), onPress: () => { }
-        }]);
-        else Alert.alert(
-          Language.t('alert.errorTitle') + json.ResponseCode,
-          json.ResponseData, [{
-            text: Language.t('alert.ok'), onPress: () => { }
+        .then((response) => response.json())
+        .then((json) => {
+          if (json.ResponseCode == '200') Alert.alert('สำเร็จ', 'บันทึกข้อมูลสำเร็จ', [{
+            text: Language.t('alert.ok'), onPress: () => { on_cancel() }
           }]);
-        console.log(json)
+          else Alert.alert(
+            Language.t('alert.errorTitle') + json.ResponseCode,
+            json.ResponseData, [{
+              text: Language.t('alert.ok'), onPress: () => { }
+            }]);
+          console.log(json)
 
-        setLoading(false)
-      })
-      .catch((error) => {
+          setLoading(false)
+        })
+        .catch((error) => {
 
-        console.log('Function Parameter Required');
-        let temp_error = 'error_ser.' + 610;
-        console.log('>> ', temp_error)
-        // Alert.alert(
-        //   Language.t('alert.errorTitle'),
-        //   Language.t(temp_error), [{
-        //     text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
-        //       navigation.replace('LoginStackScreen')
-        //     )
-        //   }]);
-        setLoading(false)
+          console.log('Function Parameter Required');
+          let temp_error = 'error_ser.' + 610;
+          console.log('>> ', temp_error)
+          // Alert.alert(
+          //   Language.t('alert.errorTitle'),
+          //   Language.t(temp_error), [{
+          //     text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
+          //       navigation.replace('LoginStackScreen')
+          //     )
+          //   }]);
+          setLoading(false)
 
-        console.error('ERROR at fetchContent >> ' + error)
-      })
+          console.error('ERROR at fetchContent >> ' + error)
+        })
+    } else {
+      Alert.alert(Language.t('alert.errorTitle'), 'ข้อมูลที่ต้องการบันทึก', [{
+        text: Language.t('alert.ok'), onPress: () => { setLoading(false) }
+      }])
+    }
 
   }
 
@@ -880,7 +892,7 @@ const SKUScreen = ({ route }) => {
             </View>
           </TouchableNativeFeedback>
         </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10, }} onPress={() => navigation.navigate('Scanbarcode', { route: 'SKUScreen' })}>
+        <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
           <FontAwesome name="barcode" color={'black'} size={30} />
         </TouchableOpacity>
         <View></View>

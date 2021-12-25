@@ -74,6 +74,7 @@ const LoginScreen = () => {
   const [GUID, setGUID] = useStateIfMounted('');
 
   const [isSelected, setSelection] = useState(loginReducer.userloggedIn == true ? loginReducer.userloggedIn : false);
+  const [isSFeatures, setSFeatures] = useState(loginReducer.isSFeatures == true ? loginReducer.isSFeatures : false);
 
   const [loading, setLoading] = useStateIfMounted(false);
   const [resultJson, setResultJson] = useState([]);
@@ -86,6 +87,7 @@ const LoginScreen = () => {
   });
 
   useEffect(() => {
+    console.log('>> isSFeatures : ',isSFeatures)
     getMac()
 
 
@@ -184,7 +186,7 @@ const LoginScreen = () => {
   };
 
   const _fetchGuidLog = async () => {
-    console.log('FETCH GUID LOGIN');
+    console.log('FETCH GUID LOGIN ', databaseReducer.Data.urlser);
     await fetch(databaseReducer.Data.urlser + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
@@ -220,7 +222,7 @@ const LoginScreen = () => {
           dispatch(loginActions.userlogin(isSelected))
 
           navigation.dispatch(
-            navigation.replace('SKUScreen')
+            navigation.replace('SKUScreen', {})
           )
         } else {
           console.log('Function Parameter Required');
@@ -290,7 +292,7 @@ const LoginScreen = () => {
   };
 
   const _fetchGuidLogED = async () => {
-    console.log('FETCH GUID LOGIN');
+    console.log('FETCH GUID LOGIN ', loginReducer.endpointMother);
     await fetch(loginReducer.endpointMother + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
@@ -345,7 +347,7 @@ const LoginScreen = () => {
             Language.t('alert.internetError') + "1", [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
       });
-    
+
   };
 
   return (
@@ -499,20 +501,31 @@ const LoginScreen = () => {
                   </Text>
                 </View>
               </TouchableNativeFeedback>
-              <View style={{ marginTop: 10 }} >
-                <Text style={{
-                  color: Colors.buttonColorPrimary,
-                  alignSelf: 'center',
-                  fontSize: FontSize.medium,
-                  fontWeight: 'bold',
-                }}>{'23/12'}</Text>
-              </View>
+
 
             </View>
           </View>
 
         </KeyboardAvoidingView>
+        <View style={{ marginTop: 10, alignItems: 'center' }} >
+          <View style={styles.checkboxContainer}>
+            <View></View>
+            <CheckBox
+              value={isSFeatures}
+              onValueChange={(value) => setSFeatures(value)}
 
+              tintColors={{ true: '#FFFF', false: '#FFFF' }}
+              style={styles.checkbox}
+            />
+            <Text style={styles.label}>ใช้คุณสมบัติตามมาตรฐาน</Text>
+          </View>
+          <Text style={{
+            color: Colors.buttonColorPrimary,
+            alignSelf: 'center',
+            fontSize: FontSize.medium,
+            fontWeight: 'bold',
+          }}>{'25/12'}</Text>
+        </View>
       </ScrollView>
       {loading && (
         <View

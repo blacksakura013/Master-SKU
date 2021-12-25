@@ -1,1 +1,55 @@
-{"BRN_CODE": "0243", "BRN_NAME": "ไฟน์ไลน์", "ICCAT_CODE": "001", "ICCAT_NAME": "สินค้าอุปโภค", "ICCOLOR_CODE": "0", "ICCOLOR_NAME": "ไม่กำหนดสี", "ICDEPT_CODE": "001-01", "ICDEPT_ENGDESC": "", "ICDEPT_THAIDESC": "อัดกลีบ/รีดเรียบ", "ICGL_CODE": "01", "ICGL_NAME": "ซื้อ-ขายในประเทศ", "ICPRT_CODE": "0", "ICPRT_NAME": "ไม่ต้องพิมพ์", "ICSIZE_CODE": "0", "ICSIZE_NAME": "ไม่กำหนดขนาด", "SKUALT_CODE": "0", "SKUALT_NAME": "ไม่มีสินค้าทดแทน", "SKU_BARCODE": "8851989031781", "SKU_CODE": "8851989031781", "SKU_COST_TY": undefined, "SKU_E_NAME": "", "SKU_KEY": "574", "SKU_NAME": "ไฟน์ไลน์ รีดเรียบ ไอน้ำ สีแดง ถุง 600มล.", "SKU_PROPERTIES": "Y", "SKU_SENSITIVITY": undefined, "SKU_STOCK": undefined, "SKU_VAT": "", "SKU_VAT_TY": undefined, "UTQ_K_NAME": "ถุง", "UTQ_K_QTY": "1", "UTQ_S_NAME": "ถุง", "UTQ_S_QTY": "1", "UTQ_T_NAME": "ถุง", "UTQ_T_QTY": "1", "WL_CODE": "HO.NA", "WL_NAME": "ไม่ได้กำหนดตำแหน่ง"}
+    {"BPAPUS-PARAM":"{\"ErpUpdFunc\":
+    [
+    {\"ImpTrhDetail\":
+    [
+        {\"TRD_KEYIN\":\"001-13\",
+        \"TRD_K_U_PRC\":\"55\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"},
+
+        {\"TRD_KEYIN\":\"001-9\",
+        \"TRD_K_U_PRC\":\"55\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"}
+    ],
+    \"ImpTrhHeader\":
+        {\"AR_CODE\":\"0\",
+        \"ARPRB_CODE\":\"0\",
+        \"DI_DATE\":\"202110140000\",
+        \"DI_REF\":\"u003cเลขถัดไปu003e\",
+        \"DT_DOCCODE\":\"QKR\",
+        \"DT_PROPERTIES\":\"206\"}
+    },
+    {\"ImpTrhDetail\":
+    [
+        {\"TRD_KEYIN\":\"001-1\",
+        \"TRD_K_U_PRC\":\"100\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"},
+
+        {\"TRD_KEYIN\":\"001-15\",
+        \"TRD_K_U_PRC\":\"55\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"},
+
+        {\"TRD_KEYIN\":\"001-16\",
+        \"TRD_K_U_PRC\":\"25\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"},
+
+        {\"TRD_KEYIN\":\"001-17\",
+        \"TRD_K_U_PRC\":\"20\",
+        \"TRD_QTY\":\"1\",
+        \"TRD_WL\":\"HO.NA\"}
+    ],
+    \"ImpTrhHeader\":
+        {\"AR_CODE\":\"0\",
+        \"ARPRB_CODE\":\"0\",
+        \"DI_DATE\":\"202110150000\",
+        \"DI_REF\":\"u003cเลขถัดไปu003e\",
+        \"DT_DOCCODE\":\"QKR\",
+        \"DT_PROPERTIES\":\"206\"}
+    }
+    ]
+    
+    }"},

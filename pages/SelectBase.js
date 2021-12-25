@@ -240,12 +240,14 @@ const SelectBase = ({ route }) => {
                   Language.t('alert.errorTitle'),
                   Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
               }
+              setLoading(false)
             })
             .catch((error) => {
               Alert.alert(
                 Language.t('alert.errorTitle'),
                 Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
               console.error('_fetchGuidLogin ' + error);
+              setLoading(false)
             });
         } else {
           console.log('Function Parameter Required');
@@ -255,14 +257,16 @@ const SelectBase = ({ route }) => {
             Language.t('alert.errorTitle'),
             Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
+        setLoading(false)
       })
       .catch((error) => {
         Alert.alert(
           Language.t('alert.errorTitle'),
           Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         console.log('checkIPAddress');
+        setLoading(false)
       });
-    setLoading(false)
+    
 
   };
 
