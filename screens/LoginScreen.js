@@ -38,7 +38,7 @@ import { useSelector, connect, useDispatch } from 'react-redux';
 
 
 
-import { Language } from '../translations/I18n';
+import { Language, changeLanguage } from '../translations/I18n';
 import { FontSize } from '../components/FontSizeHelper';
 
 
@@ -69,7 +69,16 @@ const LoginScreen = () => {
     buttonContainer,
   } = styles;
 
+  useEffect(() => {
+    if (loginReducer.language.length > 0) {
+      changeLanguage(loginReducer.language);
+    } else {
+      dispatch(loginActions.setLanguage('th'))
+      changeLanguage('th');
+    }
 
+    //backsakura013
+  }, []);
 
   const [GUID, setGUID] = useStateIfMounted('');
 
@@ -87,11 +96,17 @@ const LoginScreen = () => {
   });
 
   useEffect(() => {
-    console.log('>> isSFeatures : ',isSFeatures)
-    getMac()
+    console.log('>> isSFeatures : ', isSFeatures)
+    if (registerReducer.machineNum.length == 0)
+      getMac()
 
+    console.log('>> Language : ', Language.getLang())
 
   }, []);
+  useEffect(() => {
+    dispatch(loginActions.setFingerprint(isSFeatures));
+
+  }, [isSFeatures]);
   useEffect(() => {
     console.log('>> machineNum :', registerReducer.machineNum + '\n\n\n\n')
   }, [registerReducer.machineNum]);
@@ -122,13 +137,13 @@ const LoginScreen = () => {
       var a = Math.floor(100000 + Math.random() * 900000);
       console.log(DeviceInfo.getDeviceName())
       console.log('\nmachine > > ' + mac + ':' + a)
-      if (mac.length > 0) dispatch(registerActions.machine(mac));
+      if (mac.length > 0) dispatch(registerActions.machine(mac + ':' + a));
       else NetworkInfo.getBSSID().then(macwifi => {
-        console.log('\nmachine(wifi) > > ' + macwifi)
-        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi));
-        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e'));
-      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
-    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
+        console.log('\nmachine(wifi) > > ' + macwifi + ':' + a)
+        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi + ':' + a));
+        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a));
+      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
+    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
   }
 
   useEffect(() => {
@@ -359,7 +374,7 @@ const LoginScreen = () => {
           <View style={tabbar}>
             <TouchableOpacity
               onPress={() => navigation.navigate('SelectScreen')}>
-              <FontAwesomeIcon name="gear" size={30} color={'white'} />
+              <FontAwesomeIcon name="gear" size={30} color={Colors.backgroundLoginColorSecondary} />
             </TouchableOpacity>
             <Text
               style={{
@@ -453,13 +468,13 @@ const LoginScreen = () => {
                     <FontAwesomeIcon
                       name="eye-slash"
                       size={25}
-                      color={Colors.buttonColorPrimary}
+                      color={Colors.backgroundLoginColor}
                     />
                   ) : (
                     <FontAwesomeIcon
                       name="eye"
                       size={25}
-                      color={Colors.buttonColorPrimary}></FontAwesomeIcon>
+                      color={Colors.backgroundLoginColor}></FontAwesomeIcon>
                   )}
                 </TouchableOpacity>
               </View>
@@ -471,10 +486,10 @@ const LoginScreen = () => {
               value={isSelected}
               onValueChange={(value) => setSelection(value)}
 
-              tintColors={{ true: '#FFFF', false: '#FFFF' }}
+              tintColors={{ true: Colors.backgroundLoginColorSecondary, false: Colors.backgroundLoginColorSecondary }}
               style={styles.checkbox}
             />
-            <Text style={styles.label}>จดจำรหัสผ่าน</Text>
+            <Text style={styles.label}>{Language.t('login.rememberpassword')}</Text>
           </View>
           <View style={{ marginLeft: 10, marginRight: 10 }}>
             <View
@@ -492,7 +507,7 @@ const LoginScreen = () => {
                   }}>
                   <Text
                     style={{
-                      color: Colors.fontColor2,
+                      color: Colors.buttonTextColor,
                       alignSelf: 'center',
                       fontSize: FontSize.medium,
                       fontWeight: 'bold',
@@ -514,17 +529,12 @@ const LoginScreen = () => {
               value={isSFeatures}
               onValueChange={(value) => setSFeatures(value)}
 
-              tintColors={{ true: '#FFFF', false: '#FFFF' }}
+              tintColors={{ true: Colors.backgroundLoginColorSecondary, false: Colors.backgroundLoginColorSecondary }}
               style={styles.checkbox}
             />
-            <Text style={styles.label}>ใช้คุณสมบัติตามมาตรฐาน</Text>
+            <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
           </View>
-          <Text style={{
-            color: Colors.buttonColorPrimary,
-            alignSelf: 'center',
-            fontSize: FontSize.medium,
-            fontWeight: 'bold',
-          }}>{'25/12'}</Text>
+
         </View>
       </ScrollView>
       {loading && (
@@ -630,7 +640,7 @@ const styles = StyleSheet.create({
   },
   label: {
     margin: 8,
-    color: '#ffff',
+    color: Colors.backgroundLoginColorSecondary,
   },
 });
 

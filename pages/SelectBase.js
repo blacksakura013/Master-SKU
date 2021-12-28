@@ -26,7 +26,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontSize } from '../components/FontSizeHelper';
 import { useNavigation } from '@react-navigation/native';
 import Dialog from 'react-native-dialog';
-import { Language } from '../translations/I18n';
+import { Language, changeLanguage } from '../translations/I18n';
+
 import DeviceInfo from 'react-native-device-info';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -35,9 +36,10 @@ const deviceHeight = Dimensions.get('window').height;
 import * as loginActions from '../src/actions/loginActions';
 import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
+import { color } from 'styled-system';
 
 const SelectBase = ({ route }) => {
- 
+
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {
@@ -56,7 +58,7 @@ const SelectBase = ({ route }) => {
 
   const [selectedValue, setSelectedValue] = useState('');
   const [selectbaseValue, setSelectbaseValue] = useState(databaseReducer.Data.nameser ? databaseReducer.Data.nameser : "-1");
-  const [selectlanguage, setlanguage] = useState('thai');
+  const [selectlanguage, setlanguage] = useState(Language.getLang() == 'th' ? 'th' : 'en');
   const [basename, setBasename] = useState('');
   const [baseurl, setBsaeurl] = useState('');
   const [username, setUsername] = useState('');
@@ -71,7 +73,12 @@ const SelectBase = ({ route }) => {
   const [data, setData] = useStateIfMounted({
     secureTextEntry: true,
   });
+  const setlanguageState = (itemValue) => {
+    dispatch(loginActions.setLanguage(itemValue))
 
+
+    console.log(itemValue)
+  }
 
   const updateSecureTextEntry = () => {
     setData({
@@ -79,7 +86,16 @@ const SelectBase = ({ route }) => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+  useEffect(() => {
+    if (loginReducer.language != Language.getLang()) {
+      console.log('loginReducer.Language >> ', loginReducer.language)
+      changeLanguage(loginReducer.language);
+      setlanguage(loginReducer.language)
+      RNRestart.Restart();
+    }
 
+    //backsakura 
+  }, [loginReducer.language]);
   useEffect(() => {
     console.log('>> Address :', loginReducer.ipAddress)
   }, []);
@@ -97,12 +113,14 @@ const SelectBase = ({ route }) => {
     for (let i in loginReducer.ipAddress) {
       if (loginReducer.ipAddress[i].nameser == selectbaseValue) {
         dispatch(databaseActions.setData(loginReducer.ipAddress[i]));
-        setTimeout(() => {
+        Alert.alert(
+          Language.t('alert.succeed'),
+          Language.t('selectBase.connect') + ' ' + selectbaseValue + ' ' + Language.t('alert.succeed'), [{
+            text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
+              navigation.replace('LoginStackScreen')
+            )
+          }]);
 
-          navigation.dispatch(
-            navigation.replace('LoginStackScreen')
-          )
-        }, 1000);
       }
     }
   }
@@ -114,19 +132,19 @@ const SelectBase = ({ route }) => {
   const checkValue = () => {
     let c = true
     if (basename == '') {
-      Alert.alert('ข้อมูลไม่ถูกต้อง')
+      Alert.alert(Language.t('alert.incorrect'))
       c = false
     }
     else if (baseurl == '') {
-      Alert.alert('ข้อมูลไม่ถูกต้อง')
+      Alert.alert(Language.t('alert.incorrect'))
       c = false
     }
     else if (username == '') {
-      Alert.alert('ข้อมูลไม่ถูกต้อง')
+      Alert.alert(Language.t('alert.incorrect'))
       c = false
     }
     else if (password == '') {
-      Alert.alert('ข้อมูลไม่ถูกต้อง')
+      Alert.alert(Language.t('alert.incorrect'))
       c = false
     }
     return c
@@ -146,7 +164,7 @@ const SelectBase = ({ route }) => {
           loginReducer.ipAddress[i].nameser == basename
         ) {
 
-          Alert.alert('', 'มีชื่อฐานข้อมูลนี้แล้ว', [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          Alert.alert('', Language.t('selectBase.Alert'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
           check = true;
 
           break;
@@ -154,7 +172,7 @@ const SelectBase = ({ route }) => {
           loginReducer.ipAddress[i].urlser == newurl
         ) {
 
-          Alert.alert('', 'มีที่อยู่ฐานข้อมูลนี้แล้ว', [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          Alert.alert('', Language.t('selectBase.Alert'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
           check = true;
 
           break;
@@ -227,11 +245,13 @@ const SelectBase = ({ route }) => {
                 temp.push(newObj)
                 dispatch(loginActions.ipAddress(temp))
                 dispatch(databaseActions.setData(newObj))
-                setTimeout(() => {
-                  navigation.dispatch(
-                    navigation.replace('LoginStackScreen')
-                  )
-                }, 1000);
+                Alert.alert(
+                  Language.t('alert.succeed'),
+                  Language.t('selectBase.connect') + ' ' + basename + ' ' + Language.t('alert.succeed'), [{
+                    text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
+                      navigation.replace('LoginStackScreen')
+                    )
+                  }]);
               } else {
                 console.log('Function Parameter Required');
                 let temp_error = 'error_ser.' + json.ResponseCode;
@@ -266,7 +286,7 @@ const SelectBase = ({ route }) => {
         console.log('checkIPAddress');
         setLoading(false)
       });
-    
+
 
   };
 
@@ -276,23 +296,23 @@ const SelectBase = ({ route }) => {
         <View style={{ flexDirection: 'row' }}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" style={{ color: 'black', }} size={FontSize.large} />
+            <FontAwesome name="arrow-left" style={{ color: Colors.backgroundLoginColor, }} size={FontSize.large} />
           </TouchableOpacity>
           <Text
             style={{
               marginLeft: 12,
               fontSize: FontSize.medium,
-              color: Colors.backgroundLoginColor,
-            }}> ตั้งค่าฐานข้อมูล</Text>
+              color: Colors.fontColor,
+            }}> {Language.t('selectBase.header')}</Text>
         </View>
         <View>
           <Picker
             selectedValue={selectlanguage}
-            style={{ color: 'black', width: 110 }}
+            style={{ color: Colors.fontColor, width: 110 }}
             mode="dropdown"
-            onValueChange={(itemValue, itemIndex) => setlanguage(itemValue)}>
-            <Picker.Item label="TH" value="thai" />
-            <Picker.Item label="EN" value="eng" />
+            onValueChange={(itemValue, itemIndex) => Alert.alert('', Language.t('menu.changeLanguage'), [{ text: Language.t('alert.ok'), onPress: () => setlanguageState(itemValue) }, { text: Language.t('alert.cancel'), onPress: () => { } }])} >
+            <Picker.Item label="TH" value="th" />
+            <Picker.Item label="EN" value="en" />
           </Picker>
         </View>
 
@@ -306,7 +326,7 @@ const SelectBase = ({ route }) => {
                 <>
                   <View style={styles.body1}>
                     <Text style={styles.textTitle}>
-                      เลือกฐานข้อมูล :
+                      {Language.t('selectBase.title')} :
                     </Text>
                   </View>
                   <View style={styles.body1}>
@@ -314,16 +334,15 @@ const SelectBase = ({ route }) => {
                       <Picker
                         selectedValue={selectbaseValue}
                         enabled={true}
-
                         mode="dropdown"
                         style={{
-                          color: 'black', width: deviceWidth * 0.95, flexDirection: 'column',
+                          color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
                           justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
                         }}
                         onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
                         {loginReducer.ipAddress.map((obj, index) => {
                           return (
-                            <Picker.Item label={obj.nameser} value={obj.nameser} />
+                            <Picker.Item color={Colors.backgroundColorSecondary} label={obj.nameser} value={obj.nameser} />
                           )
                         })}
                       </Picker>
@@ -334,13 +353,14 @@ const SelectBase = ({ route }) => {
                         enabled={false}
                         mode="dropdown"
                         style={{
-                          color: 'black', width: deviceWidth * 0.95, flexDirection: 'column',
+                          color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
                           justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
                         }}
                       >
                         {
                           <Picker.Item
                             value="-1"
+                            color={Colors.backgroundColorSecondary}
                             label={Language.t('selectBase.lebel')}
                           />
                         }
@@ -353,12 +373,12 @@ const SelectBase = ({ route }) => {
                 <>
                   <View style={styles.body1}>
                     <Text style={styles.textTitle}>
-                      เลือกฐานข้อมูล :
+                      {Language.t('selectBase.title')} :
                     </Text>
                   </View>
                   <View style={{
                     marginTop: 10, flexDirection: 'row',
-                    justifyContent: 'center', borderColor: loginReducer.ipAddress.length > 0 ? '#fff' : '#979797', borderWidth: 1, padding: 10, borderRadius: 10,
+                    justifyContent: 'center', borderColor: loginReducer.ipAddress.length > 0 ? Colors.backgroundLoginColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 10, borderRadius: 10,
                   }}>
 
                     <Text style={{ fontSize: FontSize.large }}></Text>
@@ -368,18 +388,18 @@ const SelectBase = ({ route }) => {
                         selectedValue={selectbaseValue}
                         enabled={true}
                         mode="dropdown"
-                        state={{ color: 'black', }}
+                        state={{ color: Colors.backgroundLoginColor, backgroundColor: Colors.backgroundColorSecondary }}
                         onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
                         {loginReducer.ipAddress.map((obj, index) => {
                           return (
-                            <Picker.Item label={obj.nameser} value={obj.nameser} />
+                            <Picker.Item label={obj.nameser} color={Colors.backgroundLoginColor} value={obj.nameser} />
                           )
                         })}
                       </Picker>
                     ) : (
                       <Picker
                         selectedValue={selectbaseValue}
-                        state={{ color: 'black', }}
+                        state={{ color: Colors.backgroundLoginColor, backgroundColor: Colors.backgroundColorSecondary }}
                         onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}
                         enabled={false}
                         mode="dropdown"
@@ -388,6 +408,7 @@ const SelectBase = ({ route }) => {
                         {
                           <Picker.Item
                             value="-1"
+                            color={'#979797'}
                             label={Language.t('selectBase.lebel')}
                           />
                         }
@@ -412,12 +433,13 @@ const SelectBase = ({ route }) => {
                       }}>
                       <Text
                         style={{
-                          color: Colors.fontColor2,
+                          color: Colors.buttonTextColor,
                           alignSelf: 'center',
                           fontSize: FontSize.medium,
                           fontWeight: 'bold',
+
                         }}>
-                        เชื่อมต่อ
+                        {Language.t('selectBase.connect')}
                       </Text>
                     </View>
                   </TouchableNativeFeedback>
@@ -431,16 +453,16 @@ const SelectBase = ({ route }) => {
                         paddingTop: 10,
                         paddingBottom: 10,
                         width: 100,
-                        backgroundColor: 'red',
+                        backgroundColor: Colors.backgroundLoginColor,
                       }}>
                       <Text
                         style={{
-                          color: Colors.fontColor2,
+                          color: Colors.backgroundColorSecondary,
                           alignSelf: 'center',
                           fontSize: FontSize.medium,
                           fontWeight: 'bold',
                         }}>
-                        แก้ไข
+                        {Language.t('selectBase.edit')}
                       </Text>
                     </View>
                   </TouchableNativeFeedback>
@@ -467,7 +489,7 @@ const SelectBase = ({ route }) => {
                             fontSize: FontSize.medium,
                             fontWeight: 'bold',
                           }}>
-                          เชื่อมต่อ
+                          {Language.t('selectBase.connect')}
                         </Text>
                       </View>
                     </TouchableNativeFeedback>
@@ -490,7 +512,7 @@ const SelectBase = ({ route }) => {
                             fontSize: FontSize.medium,
                             fontWeight: 'bold',
                           }}>
-                          แก้ไข
+                          {Language.t('selectBase.edit')}
                         </Text>
                       </View>
                     </TouchableNativeFeedback>
@@ -499,14 +521,13 @@ const SelectBase = ({ route }) => {
               )}
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.textTitle}>
-                  ชื่อฐานข้อมูล :
+                  {Language.t('selectBase.name')} :
                 </Text>
               </View>
-
               <View style={{ marginTop: 10 }}>
                 <View
                   style={{
-                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    backgroundColor: Colors.backgroundColorSecondary,
                     flexDirection: 'column',
                     height: 50,
                     borderRadius: 10,
@@ -516,7 +537,7 @@ const SelectBase = ({ route }) => {
                     paddingBottom: 10
                   }}>
                   <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="database" size={30} color={Colors.backgroundLoginColor} />
+                    <FontAwesome name="database" size={30} color={Colors.backgroundColor} />
                     <TextInput
                       style={{
                         flex: 8,
@@ -528,9 +549,9 @@ const SelectBase = ({ route }) => {
                         borderBottomWidth: 0.7,
                       }}
 
-                      placeholderTextColor={Colors.fontColorSecondary}
+                      placeholderTextColor={Colors.borderColor}
 
-                      placeholder={'ชื่อฐานข้อมูล'}
+                      placeholder={Language.t('selectBase.name') + '..'}
                       value={basename}
                       onChangeText={(val) => {
                         setBasename(val);
@@ -540,7 +561,7 @@ const SelectBase = ({ route }) => {
                       <FontAwesome
                         name="qrcode"
                         size={25}
-                        color={Colors.buttonColorPrimary}
+                        color={Colors.backgroundColor}
                       />
 
                     </TouchableOpacity>
@@ -550,13 +571,13 @@ const SelectBase = ({ route }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.textTitle}>
-                  ที่อยู่ฐานข้อมูล :
+                  {Language.t('selectBase.url')} :
                 </Text>
               </View>
               <View style={{ marginTop: 10 }}>
                 <View
                   style={{
-                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    backgroundColor: Colors.backgroundColorSecondary,
                     flexDirection: 'column',
                     height: 50,
                     borderRadius: 10,
@@ -567,7 +588,7 @@ const SelectBase = ({ route }) => {
                     paddingBottom: 10
                   }}>
                   <View style={{ height: 'auto', flexDirection: 'row' }}>
-                    <FontAwesome name="refresh" size={30} color={Colors.backgroundLoginColor} />
+                    <FontAwesome name="refresh" size={30} color={Colors.backgroundColor} />
                     <TextInput
                       style={{
                         flex: 8,
@@ -580,10 +601,10 @@ const SelectBase = ({ route }) => {
                         borderBottomWidth: 0.7,
                       }}
                       multiline={true}
-                      placeholderTextColor={Colors.fontColorSecondary}
+                      placeholderTextColor={Colors.borderColor}
 
                       value={baseurl}
-                      placeholder={'ที่อยู่ฐานข้อมูล'}
+                      placeholder={Language.t('selectBase.url') + '..'}
                       onChangeText={(val) => {
                         setBsaeurl(val);
                       }}></TextInput>
@@ -593,13 +614,13 @@ const SelectBase = ({ route }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.textTitle}>
-                  ชื่อผู้ใช้ :
+                  {Language.t('login.username')} :
                 </Text>
               </View>
               <View style={{ marginTop: 10 }}>
                 <View
                   style={{
-                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    backgroundColor: Colors.backgroundColorSecondary,
                     flexDirection: 'column',
                     height: 50,
                     borderRadius: 10,
@@ -609,7 +630,7 @@ const SelectBase = ({ route }) => {
                     paddingBottom: 10
                   }}>
                   <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="user" size={30} color={Colors.backgroundLoginColor} />
+                    <FontAwesome name="user" size={30} color={Colors.backgroundColor} />
                     <TextInput
                       style={{
                         flex: 8,
@@ -621,10 +642,10 @@ const SelectBase = ({ route }) => {
                         borderBottomWidth: 0.7,
                       }}
 
-                      placeholderTextColor={Colors.fontColorSecondary}
+                      placeholderTextColor={Colors.borderColor}
 
                       value={username}
-                      placeholder={'ชื่อผู้ใช้'}
+                      placeholder={Language.t('login.username') + '..'}
                       onChangeText={(val) => {
                         setUsername(val);
                       }}></TextInput>
@@ -634,13 +655,13 @@ const SelectBase = ({ route }) => {
               </View>
               <View style={{ marginTop: 10 }}>
                 <Text style={styles.textTitle}>
-                  รหัสผ่าน :
+                  {Language.t('login.password')} :
                 </Text>
               </View>
               <View style={{ marginTop: 10 }}>
                 <View
                   style={{
-                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    backgroundColor: Colors.backgroundColorSecondary,
                     flexDirection: 'column',
                     height: 50,
                     borderRadius: 10,
@@ -650,7 +671,7 @@ const SelectBase = ({ route }) => {
                     paddingBottom: 10
                   }}>
                   <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="lock" size={30} color={Colors.backgroundLoginColor} />
+                    <FontAwesome name="lock" size={30} color={Colors.backgroundColor} />
                     <TextInput
                       style={{
                         flex: 8,
@@ -664,8 +685,8 @@ const SelectBase = ({ route }) => {
                       secureTextEntry={data.secureTextEntry ? true : false}
                       keyboardType="default"
 
-                      placeholderTextColor={Colors.fontColorSecondary}
-                      placeholder={'รหัสผ่าน'}
+                      placeholderTextColor={Colors.borderColor}
+                      placeholder={Language.t('login.password') + '..'}
                       value={password}
                       onChangeText={(val) => {
                         setPassword(val);
@@ -677,13 +698,13 @@ const SelectBase = ({ route }) => {
                         <FontAwesome
                           name="eye-slash"
                           size={25}
-                          color={Colors.buttonColorPrimary}
+                          color={Colors.backgroundColor}
                         />
                       ) : (
                         <FontAwesome
                           name="eye"
                           size={25}
-                          color={Colors.buttonColorPrimary} />
+                          color={Colors.backgroundColor} />
                       )}
                     </TouchableOpacity>
                   </View>
@@ -702,12 +723,12 @@ const SelectBase = ({ route }) => {
                     }}>
                     <Text
                       style={{
-                        color: Colors.fontColor2,
+                        color: Colors.buttonTextColor,
                         alignSelf: 'center',
                         fontSize: FontSize.medium,
                         fontWeight: 'bold',
                       }}>
-                      บันทึก และ เชื่อมต่อ
+                      {Language.t('selectBase.saveandconnect')}
                     </Text>
                   </View>
                 </TouchableNativeFeedback>
@@ -725,7 +746,7 @@ const SelectBase = ({ route }) => {
             width: deviceWidth,
             height: deviceHeight,
             opacity: 0.5,
-            backgroundColor: 'black',
+            backgroundColor: Colors.backgroundColorSecondary,
             alignSelf: 'center',
             justifyContent: 'center',
             alignContent: 'center',
@@ -751,7 +772,7 @@ const SelectBase = ({ route }) => {
 
 const styles = StyleSheet.create({
   container1: {
-    backgroundColor: Colors.backgroundLoginColor,
+    backgroundColor: Colors.backgroundColor,
     flex: 1,
     flexDirection: 'column',
   },
@@ -772,7 +793,7 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingLeft: 20,
     alignItems: 'center',
-    backgroundColor: '#E6EBFF',
+    backgroundColor: Colors.backgroundColorSecondary,
     borderBottomColor: 'gray',
     borderBottomWidth: 0.7,
     justifyContent: 'space-between',

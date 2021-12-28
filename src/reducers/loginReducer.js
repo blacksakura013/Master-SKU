@@ -25,6 +25,7 @@ import {
   USERNAME_SER,
   PASSWORD_SER,
   PROJECT_ID,
+  ACTION_SET_LANGUAGE
 
 } from '../Constants';
 
@@ -48,6 +49,7 @@ const initialState = {
   isSFeatures: false,
   isScreen: '',
   islogin: false,
+  language: ACTION_SET_LANGUAGE
 }
 
 const loginReducer = (state = initialState, { type, payload }) => {
@@ -90,6 +92,8 @@ const loginReducer = (state = initialState, { type, payload }) => {
       return { ...state, isScreen: payload }
     case ACTION_SET_TAKELOGIN:
       return { ...state, islogin: payload }
+    case ACTION_SET_LANGUAGE:
+      return { ...state, language: payload }
     default:
       return state;
   }

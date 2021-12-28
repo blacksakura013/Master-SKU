@@ -39,6 +39,7 @@ import * as loginActions from '../src/actions/loginActions';
 import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 import safe_Format from '../src/safe_Format';
+import { fontWeight } from 'styled-system';
 const SKUScreen = ({ route }) => {
   let arrayResult = [];
 
@@ -90,7 +91,7 @@ const SKUScreen = ({ route }) => {
 
   useEffect(() => {
     console.log('>> Address : ', loginReducer.ipAddress)
-    console.log('>> isSFeatures : ', loginReducer.isSFeatures ,isSFeatures)
+    console.log('>> isSFeatures : ', loginReducer.isSFeatures, isSFeatures)
   }, []);
 
   useEffect(() => {
@@ -399,7 +400,7 @@ const SKUScreen = ({ route }) => {
               UTQ_QTY: responseData.GOODSMASTER[i].UTQ_QTY ? responseData.GOODSMASTER[i].UTQ_QTY : '',
               ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
               ARPLU_U_DSC: responseData.GOODSMASTER[i].ARPLU_U_DSC ? responseData.GOODSMASTER[i].ARPLU_U_DSC : '',
-              TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '',
+              TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '01',
               TAG_NAME: responseData.GOODSMASTER[i].TAG_NAME ? responseData.GOODSMASTER[i].TAG_NAME : ''
             }
             temp_GoodData.push(newGoodobj)
@@ -414,8 +415,10 @@ const SKUScreen = ({ route }) => {
 
 
         } else {
-          setTemp_report('ไม่พบข้อมูล');
-          Alert.alert("ไม่พบข้อมูล");
+          setTemp_report(Language.t('alert.errorDetail'));
+          Alert.alert('', Language.t('alert.errorDetail'), [{
+            text: Language.t('alert.ok'), onPress: () => { }
+          }]);
         }
 
         setLoading(false)
@@ -569,7 +572,7 @@ const SKUScreen = ({ route }) => {
       })
         .then((response) => response.json())
         .then((json) => {
-          if (json.ResponseCode == '200') Alert.alert('สำเร็จ', 'บันทึกข้อมูลสำเร็จ', [{
+          if (json.ResponseCode == '200') Alert.alert(Language.t('profile.succeed'), Language.t('profile.savesucceed'), [{
             text: Language.t('alert.ok'), onPress: () => { on_cancel() }
           }]);
           else Alert.alert(
@@ -598,7 +601,7 @@ const SKUScreen = ({ route }) => {
           console.error('ERROR at fetchContent >> ' + error)
         })
     } else {
-      Alert.alert(Language.t('alert.errorTitle'), 'ข้อมูลที่ต้องการบันทึก', [{
+      Alert.alert(Language.t('alert.errorTitle'), Language.t('alert.errorDetail'), [{
         text: Language.t('alert.ok'), onPress: () => { setLoading(false) }
       }])
     }
@@ -633,14 +636,14 @@ const SKUScreen = ({ route }) => {
             placeholderTextColor={Colors.fontColorSecondary}
             value={GOODS_CODE}
 
-            placeholder={'รหัสสินค้า'}
+            placeholder={Language.t('main.goodscode') + '..'}
             onSubmitEditing={() => fetchMotherData()}
             onChangeText={(val) => {
               setGOODS_CODE(val)
             }} />
 
           <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
-            <FontAwesome name="search" color={'black'} size={30} />
+            <FontAwesome name="search" color={Colors.backgroundLoginColor} size={30} />
           </TouchableOpacity>
 
         </View>
@@ -668,7 +671,6 @@ const SKUScreen = ({ route }) => {
 
       <ScrollView>
         <SafeAreaView >
-
           <KeyboardAvoidingView >
             <View style={styles.body}>
               <View
@@ -677,19 +679,21 @@ const SKUScreen = ({ route }) => {
                   <View style={{ flex: 0.5 }}  >
                     <Text style={{
                       fontSize: FontSize.medium,
-                      color: Colors.fontColor2
-                    }}> รหัส</Text></View>
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}> {Language.t('main.code')}</Text></View>
                   <View style={{ flex: 0.3, }}  >
                     <Text style={{
                       fontSize: FontSize.medium,
-                      color: Colors.fontColor2
-                    }}>หน่วย</Text></View>
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}>{Language.t('main.unit')}</Text></View>
                   <View style={{ flex: 0.3 }} >
                     <Text style={{
                       fontSize: FontSize.medium,
-                      color: Colors.fontColor2,
-
-                    }}> ราคา(บาท) </Text></View>
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}> {Language.t('main.price')} </Text></View>
                 </View>
                 <ScrollView>
                   <KeyboardAvoidingView keyboardVerticalOffset={1} >
@@ -776,7 +780,7 @@ const SKUScreen = ({ route }) => {
                                   placeholderTextColor={Colors.fontColorSecondary}
                                   value={item.GOODS_CODE}
 
-                                  placeholder={'รหัสสินค้า'}
+
 
                                 />
                                 <TextInput
@@ -790,14 +794,14 @@ const SKUScreen = ({ route }) => {
                                   placeholderTextColor={Colors.fontColorSecondary}
                                   value={item.UTQ_NAME}
 
-                                  placeholder={'รหัสสินค้า'}
+
                                 />
                                 <View style={{
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
                                   borderRadius: 10,
                                   padding: 1,
-                                  backgroundColor: Colors.buttonColorPrimary,
+                                  backgroundColor: Colors.backgroundLoginColor,
                                   flex: 0.3,
                                 }}>
                                   <TextInput
@@ -813,7 +817,7 @@ const SKUScreen = ({ route }) => {
                                     value={item.ARPLU_U_PRC}
                                     multiline={true}
                                     textAlign={'center'}
-                                    placeholder={'ราคาสินค้า'}
+                                    placeholder={Language.t('main.pprice')+'..'}
 
                                     onChangeText={(val) => {
                                       set_SkuP(item.GOODS_CODE, val)
@@ -843,57 +847,55 @@ const SKUScreen = ({ route }) => {
               require('../images/iconsMenu/power-on.png')
             }
             style={{
-              width: 30,
-              height: 30,
+              width: 40,
+              height: 40,
             }}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+        <TouchableOpacity style={{ marginTop: 5, width: 100, flexDirection: 'column', padding: 10, backgroundColor: 'green', borderRadius: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
           <TouchableNativeFeedback
             onPress={() => { }}>
             <View
               style={{
-                borderRadius: 10,
-                flexDirection: 'column',
-                padding: 5,
-                backgroundColor: 'green',
+
               }}>
               <Text
                 style={{
-                  color: Colors.fontColor2,
+                  color: Colors.backgroundColorSecondary,
                   alignSelf: 'center',
                   fontSize: 20,
+
                   fontWeight: 'bold',
                 }}>
-                บัททึก
+                {Language.t('main.save')}
               </Text>
             </View>
           </TouchableNativeFeedback>
         </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10, }} onPress={() => on_cancel()}>
+        <TouchableOpacity style={{ marginTop: 5, width: 100, flexDirection: 'column', padding: 10, backgroundColor: 'red', borderRadius: 10, }} onPress={() => on_cancel()}>
           <TouchableNativeFeedback
             onPress={() => { }}>
             <View
               style={{
-                borderRadius: 10,
-                flexDirection: 'column',
-                padding: 5,
-                backgroundColor: 'red',
+
+
+
               }}>
               <Text
                 style={{
-                  color: Colors.fontColor2,
+                  color: Colors.backgroundColorSecondary,
                   alignSelf: 'center',
                   fontSize: 20,
+
                   fontWeight: 'bold',
                 }}>
-                ยกเลิก
+                {Language.t('main.cancel')}
               </Text>
             </View>
           </TouchableNativeFeedback>
         </TouchableOpacity>
         <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
-          <FontAwesome name="barcode" color={'black'} size={30} />
+          <FontAwesome name="barcode" color={'black'} size={40} />
         </TouchableOpacity>
         <View></View>
       </View>
@@ -930,7 +932,7 @@ const SKUScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
   container1: {
-    backgroundColor: Colors.backgroundLoginColor,
+    backgroundColor: Colors.backgroundColor,
     flex: 1,
     flexDirection: 'column',
   },
@@ -939,7 +941,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     padding: 10,
     borderRadius: 15,
-    backgroundColor: Colors.fontColor2
+    backgroundColor: Colors.backgroundColorSecondary
   },
   body1e: {
     marginTop: 20,
@@ -956,7 +958,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     alignItems: 'center',
-    backgroundColor: Colors.backgroundLoginColor,
+    backgroundColor: Colors.backgroundColor,
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
@@ -971,8 +973,7 @@ const styles = StyleSheet.create({
     width: deviceWidth,
   },
   table: {
-
-
+    backgroundColor: Colors.backgroundColorSecondary
   },
   tableView: {
 
@@ -987,7 +988,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     flexDirection: "row",
-    backgroundColor: Colors.buttonColorPrimary,
+    backgroundColor: Colors.backgroundColor,
 
   },
   dorpdown: {

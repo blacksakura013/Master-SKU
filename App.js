@@ -23,12 +23,19 @@ import ScanScreen from './pages/ScanScreen';
 import { Language, changeLanguage } from './translations/I18n';
 import { FontSize } from './components/FontSizeHelper';
 import Colors from './src/Colors';
+import * as loginActions from './src/actions/loginActions';
 import { useSelector } from 'react-redux';
 const App = () => {
-
+  const loginReducer = useSelector(({ loginReducer }) => loginReducer);
   useEffect(() => {
-    changeLanguage('th');
-    //backsakura 
+    if (loginReducer.language.length > 0) {
+      changeLanguage(loginReducer.language);
+    } else {
+      dispatch(loginActions.setLanguage('th'))
+      changeLanguage('th');
+    }
+
+    //backsakura013
   }, []);
   useEffect(() => {
 
@@ -41,7 +48,7 @@ const App = () => {
 
   const BottomTabs = createBottomTabNavigator();
 
- 
+
   const LoginStackScreen = () => {
 
     return (
@@ -85,7 +92,7 @@ const App = () => {
                 name="LoginStackScreen"
                 component={LoginStackScreen}
               />
-             
+
               <MainStack.Screen
                 options={{ headerShown: false }}
                 name="SKUScreen"
@@ -97,7 +104,7 @@ const App = () => {
                 name="Scanbarcode"
                 component={Scanbarcode}
               />
-              
+
             </MainStack.Navigator>
           </SafeAreaView>
         </NavigationContainer>

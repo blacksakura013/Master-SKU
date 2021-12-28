@@ -1,29 +1,30 @@
 // const backgroundColor = "#03A9F4";
-const backgroundColor = "#E6EBFF";
-const backgroundColorSecondary = "#FCFCFC";
-const backgroundLoginColor = "#AC6CCE";
-const backgroundLoginColorSecondary = "#FCFCFC";
+const backgroundColor = "#aed1e0";
+const backgroundColorSecondary = "#FFFFFF";
+const backgroundLoginColor = "#4CA5BD";
+const backgroundLoginColorSecondary = "#aed1e0";
 export default {
   backgroundColor,
   backgroundColorSecondary,
   backgroundLoginColor,
   backgroundLoginColorSecondary,
-  primaryColor: "#AC6CCE",
+  primaryColor: "#aed1e0",
   lightPrimiryColor: "#80d6ff",
   darkPrimiryColor: "#0077c2",
-  fontColor: "#474040",
-  fontColor2: "#FCFCFC",
-  fontColorSecondary: "#B5B7C0",
-  borderColor: "#B5B7C0",
+  fontColor: "#346b83",
+  fontColor2: "#aed1e0",
+  fontColorSecondary: "#346b83",
+  borderColor: "#aed1e0",
   buttonColorPrimary: "#fd8b02",
-  textColor: "#292F39",
-  itemColor: "#B3E5FD",
+  textColor: "#346b83",
+  itemColor: "#346b83",
   linkColor: "#0077c2",
   // buttonColor: "#fd8b02",
   // textColor: "#FFFFFF",
-  textColorSecondary: "#BDBDBD",
+  textColorSecondary: "#4CA5BD",
   inputText: "#757575",
   buttonColorSecondary: "#448AFF",
+  buttonTextColor:'#000000',
   loadingColor: "#fd8b02",
   // backgroundColor: "#F1F1F1",
   headerColor: "#E86C2C",
