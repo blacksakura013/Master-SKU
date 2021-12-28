@@ -7,11 +7,13 @@ import {
   Text,
   Platform,
   Image,
+  ImageBackground,
   ActivityIndicator,
   Alert,
   StatusBar,
   KeyboardAvoidingView
 } from 'react-native';
+import CurrencyInput from 'react-native-currency-input';
 import { Picker, } from 'native-base';
 import { useStateIfMounted } from 'use-state-if-mounted';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -80,7 +82,7 @@ const SKUScreen = ({ route }) => {
   const [data, setData] = useStateIfMounted({
     secureTextEntry: true,
   });
-
+  const image = '../images/UI/SKU/4x/Asset22_4x.png';
   let kye_token = "";
   const updateSecureTextEntry = () => {
     setData({
@@ -109,13 +111,14 @@ const SKUScreen = ({ route }) => {
     navigation.navigate('Scanbarcode', { route: 'SKUScreen', data: 'go' })
   }
   const on_cancel = () => {
-
+    setGOODS_CODE('')
     setTemp_report('')
     setGOODSMASTER([])
 
   }
 
   const set_SkuP = (GOODS_CODE, ARPLU_U_PRC) => {
+    console.log(GOODS_CODE ,' >>   ',ARPLU_U_PRC )
     let temp_array = [];
     for (var i in GOODSMASTER) {
       if (GOODSMASTER[i].GOODS_CODE == GOODS_CODE) {
@@ -572,7 +575,7 @@ const SKUScreen = ({ route }) => {
       })
         .then((response) => response.json())
         .then((json) => {
-          if (json.ResponseCode == '200') Alert.alert(Language.t('profile.succeed'), Language.t('profile.savesucceed'), [{
+          if (json.ResponseCode == '200') Alert.alert(Language.t('alert.succeed'), Language.t('alert.savesucceed'), [{
             text: Language.t('alert.ok'), onPress: () => { on_cancel() }
           }]);
           else Alert.alert(
@@ -613,333 +616,390 @@ const SKUScreen = ({ route }) => {
   return (
     <View style={container1}>
       <StatusBar hidden={true} />
-      <View style={{ marginTop: 10 }}>
+      <ImageBackground source={require(image)} resizeMode="cover" style={styles.image}>
 
-      </View>
-      <View style={tabbar} >
-        <View style={{
-          backgroundColor: '#fff', alignSelf: 'center',
-          justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
-        }}>
-
-          <TextInput
-            style={{
-              flex: 8,
-              marginLeft: 10,
-              borderBottomColor: Colors.borderColor,
-              color: Colors.fontColor,
-              padding: 10,
-              fontSize: FontSize.medium,
-
-            }}
-            keyboardType="number-pad"
-            placeholderTextColor={Colors.fontColorSecondary}
-            value={GOODS_CODE}
-
-            placeholder={Language.t('main.goodscode') + '..'}
-            onSubmitEditing={() => fetchMotherData()}
-            onChangeText={(val) => {
-              setGOODS_CODE(val)
-            }} />
-
-          <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
-            <FontAwesome name="search" color={Colors.backgroundLoginColor} size={30} />
-          </TouchableOpacity>
+        <View style={{ marginTop: 150 }}>
 
         </View>
-      </View>
-      <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <View style={{
-          backgroundColor: '#fff', alignSelf: 'center',
-          justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10,
-        }}>
-          <Text
-            style={{
-              flex: 8,
-              marginLeft: 10,
-              borderBottomColor: Colors.borderColor,
-              color: Colors.fontColor,
-              padding: 40,
-              fontSize: 30,
-              textAlign: 'center'
-            }}
-          >
-            {Temp_report ? Temp_report : null}
-          </Text>
+        <View style={tabbar} >
+          <View style={{
+            backgroundColor: '#fff', alignSelf: 'center',
+            justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
+          }}>
+
+            <TextInput
+              style={{
+                flex: 8,
+                marginLeft: 10,
+                borderBottomColor: Colors.borderColor,
+                color: Colors.fontColor,
+                padding: 10,
+                fontSize: FontSize.medium,
+
+              }}
+              keyboardType="number-pad"
+              placeholderTextColor={Colors.fontColorSecondary}
+              value={GOODS_CODE}
+
+              placeholder={Language.t('main.goodscode') + '..'}
+              onSubmitEditing={() => fetchMotherData()}
+              onChangeText={(val) => {
+                setGOODS_CODE(val)
+              }} />
+
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset26_4x.png')
+                }
+                style={{
+                  width: 30,
+                  height: 30,
+                }}
+              />
+            </TouchableOpacity>
+
+          </View>
         </View>
-      </View>
+        <View style={{ marginLeft: 10, marginRight: 10 }}>
+          <View style={{
+            backgroundColor: '#fff', alignSelf: 'center',
+            justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10,
+          }}>
+            <Text
+              style={{
+                flex: 8,
+                marginLeft: 10,
+                borderBottomColor: Colors.borderColor,
+                color: Colors.fontColor,
+                padding: 40,
+                fontSize: 30,
+                textAlign: 'center'
+              }}
+            >
+              {Temp_report ? Temp_report : null}
+            </Text>
+          </View>
+        </View>
+        <ScrollView>
+          <SafeAreaView >
+            <KeyboardAvoidingView >
+              <View style={styles.body}>
+                <View style={styles.table}>
+                  <View style={styles.tableHeader}>
+                    <View style={{ flex: 0.5 }}  >
+                      <Text style={{
+                        fontSize: FontSize.medium,
+                        color: Colors.backgroundColorSecondary,
+                        fontWeight: 'bold'
+                      }}> {Language.t('main.code')}</Text></View>
+                    <View style={{ flex: 0.3, }}  >
+                      <Text style={{
+                        fontSize: FontSize.medium,
+                        color: Colors.backgroundColorSecondary,
+                        fontWeight: 'bold'
+                      }}>{Language.t('main.unit')}</Text></View>
+                    <View style={{ flex: 0.3 }} >
+                      <Text style={{
+                        fontSize: FontSize.medium,
+                        color: Colors.backgroundColorSecondary,
+                        fontWeight: 'bold'
+                      }}> {Language.t('main.price')} </Text></View>
+                  </View>
+                  <ScrollView>
+                    <KeyboardAvoidingView keyboardVerticalOffset={1} >
+                      <TouchableNativeFeedback >
+                        {GOODSMASTER.length <= 0 ? (
+                          <>
+                            <View style={styles.tableView}>
 
-      <ScrollView>
-        <SafeAreaView >
-          <KeyboardAvoidingView >
-            <View style={styles.body}>
-              <View
-                style={styles.table}>
-                <View style={styles.tableHeader}>
-                  <View style={{ flex: 0.5 }}  >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}> {Language.t('main.code')}</Text></View>
-                  <View style={{ flex: 0.3, }}  >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}>{Language.t('main.unit')}</Text></View>
-                  <View style={{ flex: 0.3 }} >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}> {Language.t('main.price')} </Text></View>
-                </View>
-                <ScrollView>
-                  <KeyboardAvoidingView keyboardVerticalOffset={1} >
-                    <TouchableNativeFeedback >
-                      {GOODSMASTER.length <= 0 ? (
-                        <>
-                          <View style={styles.tableView}>
-
-                            <TextInput
-                              style={{
-                                color: Colors.fontColor,
-                                fontSize: FontSize.medium,
-                                flex: 0.5
-                              }}
-
-                            />
-
-
-                          </View>
-                          <View style={styles.tableView}>
-
-                            <TextInput
-                              style={{
-                                color: Colors.fontColor,
-                                fontSize: FontSize.medium,
-                                flex: 0.5
-                              }}
-
-                            />
-
-
-                          </View>
-                          <View style={styles.tableView}>
-
-                            <TextInput
-                              style={{
-                                color: Colors.fontColor,
-                                fontSize: FontSize.medium,
-                                flex: 0.5
-                              }}
-
-                            />
-
-
-                          </View>
-                          <View style={styles.tableView}>
-
-                            <TextInput
-                              style={{
-                                color: Colors.fontColor,
-                                fontSize: FontSize.medium,
-                                flex: 0.5
-                              }}
-
-                            />
-
-
-                          </View>
-                          <View style={styles.tableView}>
-
-                            <TextInput
-                              style={{
-                                color: Colors.fontColor,
-                                fontSize: FontSize.medium,
-                                flex: 0.5
-                              }}
-
-                            />
-
-
-                          </View>
-                        </>) : (<>
-                          {GOODSMASTER.map((item) => {
-                            return (
-                              <View style={styles.tableView}>
-                                <TextInput
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                  multiline={true}
-                                  editable={false}
-                                  placeholderTextColor={Colors.fontColorSecondary}
-                                  value={item.GOODS_CODE}
-
-
-
-                                />
-                                <TextInput
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.3
-                                  }}
-                                  multiline={true}
-                                  editable={false}
-                                  placeholderTextColor={Colors.fontColorSecondary}
-                                  value={item.UTQ_NAME}
-
-
-                                />
-                                <View style={{
+                              <Text
+                                style={{
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
-                                  borderRadius: 10,
-                                  padding: 1,
-                                  backgroundColor: Colors.backgroundLoginColor,
-                                  flex: 0.3,
-                                }}>
+                                  flex: 0.5
+                                }}
+
+                              >
+                              </Text>
+
+                            </View>
+                            <View style={styles.tableView}>
+
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                          
+                          </>) : (<>
+                            {GOODSMASTER.map((item) => {
+                              return (
+                                <View style={styles.tableView}>
                                   <TextInput
                                     style={{
                                       color: Colors.fontColor,
                                       fontSize: FontSize.medium,
-                                      borderRadius: 10,
-                                      backgroundColor: Colors.fontColor2,
-                                      flex: 0.3,
+                                      flex: 0.5
                                     }}
-                                    keyboardType="number-pad"
-                                    placeholderTextColor={Colors.fontColorSecondary}
-                                    value={item.ARPLU_U_PRC}
                                     multiline={true}
-                                    textAlign={'center'}
-                                    placeholder={Language.t('main.pprice')+'..'}
+                                    editable={false}
+                                    placeholderTextColor={Colors.fontColorSecondary}
+                                    value={item.GOODS_CODE}
 
-                                    onChangeText={(val) => {
-                                      set_SkuP(item.GOODS_CODE, val)
-                                    }} />
+
+
+                                  />
+                                  <TextInput
+                                    style={{
+                                      color: Colors.fontColor,
+                                      fontSize: FontSize.medium,
+                                      flex: 0.3
+                                    }}
+                                    multiline={true}
+                                    editable={false}
+                                    placeholderTextColor={Colors.fontColorSecondary}
+                                    value={item.UTQ_NAME}
+
+
+                                  />
+                                  <View style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    borderRadius: 10,
+                                    padding: 1,
+                                    backgroundColor: Colors.backgroundLoginColor,
+                                    flex: 0.3,
+                                  }}>
+                                    <CurrencyInput
+                                      style={{
+                                        color: Colors.fontColor,
+                                        fontSize: FontSize.medium,
+                                        borderRadius: 10,
+                                        
+                               
+                                        backgroundColor: Colors.backgroundColorSecondary,
+                                        flex: 0.3,
+                                      }}
+                                      delimiter=","
+                                      separator="."
+                                      precision={2}
+                                      
+                                      keyboardType="number-pad"
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.ARPLU_U_PRC}
+                                      multiline={true}
+                                      textAlign={'right'}
+                                      placeholder={Language.t('main.pprice') + '..'}
+                                   
+                                      onChangeValue={(val) => {
+                                        set_SkuP(item.GOODS_CODE, val)
+                                      }}
+                                        />
+                                  </View>
+
                                 </View>
-                              </View>
-                            )
-                          })}
-                        </>)}
-                    </TouchableNativeFeedback>
-                  </KeyboardAvoidingView>
-                </ScrollView>
+                              )
+                            })}
+                            <View style={styles.tableView}>
+                              <Text
+                                style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.5
+                                }}
+                              >
+                              </Text>
+                            </View>
+                          </>)}
+                      </TouchableNativeFeedback>
+                    </KeyboardAvoidingView>
+                  </ScrollView>
 
+                </View>
               </View>
-            </View>
 
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
-        </SafeAreaView>
-      </ScrollView>
+          </SafeAreaView>
+        </ScrollView>
 
-      <View style={styles.footer}>
-        <View></View>
-        <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
-          <Image
-            source={
-              require('../images/iconsMenu/power-on.png')
-            }
-            style={{
-              width: 40,
-              height: 40,
-            }}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: 5, width: 100, flexDirection: 'column', padding: 10, backgroundColor: 'green', borderRadius: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
-          <TouchableNativeFeedback
-            onPress={() => { }}>
-            <View
+        <View style={styles.footer}>
+          <View></View>
+          <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+            <Image
+              source={
+                require('../images/UI/SKU/4x/Asset27_4x.png')
+              }
               style={{
-
-              }}>
-              <Text
-                style={{
-                  color: Colors.backgroundColorSecondary,
-                  alignSelf: 'center',
-                  fontSize: 20,
-
-                  fontWeight: 'bold',
-                }}>
-                {Language.t('main.save')}
-              </Text>
-            </View>
-          </TouchableNativeFeedback>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ marginTop: 5, width: 100, flexDirection: 'column', padding: 10, backgroundColor: 'red', borderRadius: 10, }} onPress={() => on_cancel()}>
-          <TouchableNativeFeedback
-            onPress={() => { }}>
-            <View
+                width: 60,
+                height: 60,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+            <Image
+              source={
+                require('../images/UI/SKU/4x/Asset28_4x.png')
+              }
               style={{
-
-
-
-              }}>
-              <Text
-                style={{
-                  color: Colors.backgroundColorSecondary,
-                  alignSelf: 'center',
-                  fontSize: 20,
-
-                  fontWeight: 'bold',
-                }}>
-                {Language.t('main.cancel')}
-              </Text>
-            </View>
-          </TouchableNativeFeedback>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
-          <FontAwesome name="barcode" color={'black'} size={40} />
-        </TouchableOpacity>
-        <View></View>
-      </View>
-
-      {loading && (
-        <View
-          style={{
-            width: deviceWidth,
-            height: deviceHeight,
-            opacity: 0.5,
-            backgroundColor: 'black',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            alignContent: 'center',
-            position: 'absolute',
-          }}>
-          <ActivityIndicator
-            style={{
-              borderRadius: 15,
-              backgroundColor: null,
-              width: 100,
-              height: 100,
-              alignSelf: 'center',
-            }}
-            animating={loading}
-            size="large"
-            color={Colors.lightPrimiryColor}
-          />
+                width: 60,
+                height: 60,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10, }} onPress={() => on_cancel()}>
+            <Image
+              source={
+                require('../images/UI/SKU/4x/Asset29_4x.png')
+              }
+              style={{
+                width: 60,
+                height: 60,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
+            <Image
+              source={
+                require('../images/UI/SKU/4x/Asset30_4x.png')
+              }
+              style={{
+                width: 60,
+                height: 60,
+              }}
+            />
+          </TouchableOpacity>
+          <View></View>
         </View>
-      )}
+
+        {loading && (
+          <View
+            style={{
+              width: deviceWidth,
+              height: deviceHeight,
+              opacity: 0.5,
+              backgroundColor: 'black',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              alignContent: 'center',
+              position: 'absolute',
+            }}>
+            <ActivityIndicator
+              style={{
+                borderRadius: 15,
+                backgroundColor: null,
+                width: 100,
+                height: 100,
+                alignSelf: 'center',
+              }}
+              animating={loading}
+              size="large"
+              color={Colors.lightPrimiryColor}
+            />
+          </View>
+        )}
+
+      </ImageBackground>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container1: {
-    backgroundColor: Colors.backgroundColor,
+    
     flex: 1,
     flexDirection: 'column',
   },
   body: {
     margin: 10,
     marginBottom: 60,
-    padding: 10,
+
     borderRadius: 15,
     backgroundColor: Colors.backgroundColorSecondary
   },
@@ -958,22 +1018,22 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     alignItems: 'center',
-    backgroundColor: Colors.backgroundColor,
+
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
   footer: {
     position: 'absolute',
-    backgroundColor: '#FAFAFA',
-    justifyContent: 'space-between',
+
+    justifyContent: 'center',
     flexDirection: "row",
-    height: 60,
+    height: 80,
     left: 0,
-    top: deviceHeight - 60,
+    top: deviceHeight - 80,
     width: deviceWidth,
   },
   table: {
-    backgroundColor: Colors.backgroundColorSecondary
+
   },
   tableView: {
 
@@ -985,10 +1045,11 @@ const styles = StyleSheet.create({
 
   },
   tableHeader: {
-    borderRadius: 15,
+    borderTopLeftRadius: 15,
+    borderTopEndRadius: 15,
     padding: 10,
     flexDirection: "row",
-    backgroundColor: Colors.backgroundColor,
+    backgroundColor: Colors.buttonColorPrimary,
 
   },
   dorpdown: {
@@ -1003,6 +1064,15 @@ const styles = StyleSheet.create({
     fontSize: FontSize.medium,
     fontWeight: 'bold',
     color: '#ffff',
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center"
+  },
+  topImage: {
+    height: deviceHeight / 3,
+    width: deviceWidth,
+
   },
   imageIcon: {
     width: 30,

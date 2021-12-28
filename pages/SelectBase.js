@@ -8,6 +8,8 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  Image,
+  ImageBackground,
   KeyboardAvoidingView
 } from 'react-native';
 import { Picker, } from 'native-base';
@@ -73,6 +75,7 @@ const SelectBase = ({ route }) => {
   const [data, setData] = useStateIfMounted({
     secureTextEntry: true,
   });
+  const image = '../images/UI/endpoint/4x/Asset12_4x.png';
   const setlanguageState = (itemValue) => {
     dispatch(loginActions.setLanguage(itemValue))
 
@@ -292,186 +295,136 @@ const SelectBase = ({ route }) => {
 
   return (
     <View style={container1}>
-      <View style={tabbar}>
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" style={{ color: Colors.backgroundLoginColor, }} size={FontSize.large} />
-          </TouchableOpacity>
-          <Text
-            style={{
-              marginLeft: 12,
-              fontSize: FontSize.medium,
-              color: Colors.fontColor,
-            }}> {Language.t('selectBase.header')}</Text>
-        </View>
-        <View>
-          <Picker
-            selectedValue={selectlanguage}
-            style={{ color: Colors.fontColor, width: 110 }}
-            mode="dropdown"
-            onValueChange={(itemValue, itemIndex) => Alert.alert('', Language.t('menu.changeLanguage'), [{ text: Language.t('alert.ok'), onPress: () => setlanguageState(itemValue) }, { text: Language.t('alert.cancel'), onPress: () => { } }])} >
-            <Picker.Item label="TH" value="th" />
-            <Picker.Item label="EN" value="en" />
-          </Picker>
-        </View>
-
-      </View>
-      <ScrollView>
-        <SafeAreaView >
-
-          <KeyboardAvoidingView >
-            <View style={styles.body}>
-              {Platform.OS == 'ios' ? (
-                <>
-                  <View style={styles.body1}>
-                    <Text style={styles.textTitle}>
-                      {Language.t('selectBase.title')} :
-                    </Text>
-                  </View>
-                  <View style={styles.body1}>
-                    {loginReducer.ipAddress.length > 0 ? (
-                      <Picker
-                        selectedValue={selectbaseValue}
-                        enabled={true}
-                        mode="dropdown"
-                        style={{
-                          color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
-                          justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
-                        }}
-                        onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
-                        {loginReducer.ipAddress.map((obj, index) => {
-                          return (
-                            <Picker.Item color={Colors.backgroundColorSecondary} label={obj.nameser} value={obj.nameser} />
-                          )
-                        })}
-                      </Picker>
-                    ) : (
-                      <Picker
-                        selectedValue={selectbaseValue}
-                        onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}
-                        enabled={false}
-                        mode="dropdown"
-                        style={{
-                          color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
-                          justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
-                        }}
-                      >
-                        {
-                          <Picker.Item
-                            value="-1"
-                            color={Colors.backgroundColorSecondary}
-                            label={Language.t('selectBase.lebel')}
-                          />
-                        }
-                      </Picker>
-                    )}
-                  </View>
-
-                </>
-              ) : (
-                <>
-                  <View style={styles.body1}>
-                    <Text style={styles.textTitle}>
-                      {Language.t('selectBase.title')} :
-                    </Text>
-                  </View>
-                  <View style={{
-                    marginTop: 10, flexDirection: 'row',
-                    justifyContent: 'center', borderColor: loginReducer.ipAddress.length > 0 ? Colors.backgroundLoginColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 10, borderRadius: 10,
-                  }}>
-
-                    <Text style={{ fontSize: FontSize.large }}></Text>
-
-                    {loginReducer.ipAddress.length > 0 ? (
-                      <Picker
-                        selectedValue={selectbaseValue}
-                        enabled={true}
-                        mode="dropdown"
-                        state={{ color: Colors.backgroundLoginColor, backgroundColor: Colors.backgroundColorSecondary }}
-                        onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
-                        {loginReducer.ipAddress.map((obj, index) => {
-                          return (
-                            <Picker.Item label={obj.nameser} color={Colors.backgroundLoginColor} value={obj.nameser} />
-                          )
-                        })}
-                      </Picker>
-                    ) : (
-                      <Picker
-                        selectedValue={selectbaseValue}
-                        state={{ color: Colors.backgroundLoginColor, backgroundColor: Colors.backgroundColorSecondary }}
-                        onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}
-                        enabled={false}
-                        mode="dropdown"
-
-                      >
-                        {
-                          <Picker.Item
-                            value="-1"
-                            color={'#979797'}
-                            label={Language.t('selectBase.lebel')}
-                          />
-                        }
-                      </Picker>
-                    )}
-                  </View>
-                </>
-              )}
-              {loginReducer.ipAddress.length > 0 ? (
-                <View style={styles.body1e}>
-                  <TouchableNativeFeedback
-                    onPress={() => _onPressSelected()}>
-                    <View
-                      style={{
-                        borderRadius: 10,
-                        flexDirection: 'column',
-                        marginLeft: 10,
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        width: 100,
-                        backgroundColor: Colors.buttonColorPrimary,
-                      }}>
-                      <Text
-                        style={{
-                          color: Colors.buttonTextColor,
-                          alignSelf: 'center',
-                          fontSize: FontSize.medium,
-                          fontWeight: 'bold',
-
-                        }}>
-                        {Language.t('selectBase.connect')}
+      <ImageBackground source={require(image)} resizeMode="cover" style={styles.image}>
+        <ImageBackground source={require('../images/UI/endpoint/4x/Asset13_4x.png')} resizeMode="cover" style={topImage}>
+          <View style={tabbar}>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}>
+                <FontAwesome name="arrow-left" style={{ color: Colors.backgroundLoginColorSecondary, }} size={FontSize.large} />
+              </TouchableOpacity>
+              <Text
+                style={{
+                  marginLeft: 12,
+                  fontSize: FontSize.medium,
+                  color: Colors.backgroundLoginColorSecondary,
+                }}> {Language.t('selectBase.header')}</Text>
+            </View>
+            <View>
+              <Picker
+                selectedValue={selectlanguage}
+                style={{ color: Colors.backgroundLoginColorSecondary, width: 110 }}
+                mode="dropdown"
+                onValueChange={(itemValue, itemIndex) => Alert.alert('', Language.t('menu.changeLanguage'), [{ text: Language.t('alert.ok'), onPress: () => setlanguageState(itemValue) }, { text: Language.t('alert.cancel'), onPress: () => { } }])} >
+                <Picker.Item label="TH" value="th" />
+                <Picker.Item label="EN" value="en" />
+              </Picker>
+            </View>
+          </View>
+        </ImageBackground>
+        <ScrollView>
+          <SafeAreaView >
+            <KeyboardAvoidingView >
+              <View style={styles.body}>
+                {Platform.OS == 'ios' ? (
+                  <>
+                    <View style={styles.body1}>
+                      <Text style={styles.textTitle}>
+                        {Language.t('selectBase.title')} :
                       </Text>
                     </View>
-                  </TouchableNativeFeedback>
-                  <TouchableNativeFeedback
-                    onPress={() => _onPressEdit()}>
-                    <View
-                      style={{
-                        borderRadius: 10,
-                        flexDirection: 'column',
-                        marginLeft: 10,
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        width: 100,
-                        backgroundColor: Colors.backgroundLoginColor,
-                      }}>
-                      <Text
-                        style={{
-                          color: Colors.backgroundColorSecondary,
-                          alignSelf: 'center',
-                          fontSize: FontSize.medium,
-                          fontWeight: 'bold',
-                        }}>
-                        {Language.t('selectBase.edit')}
+                    <View style={styles.body1}>
+                      {loginReducer.ipAddress.length > 0 ? (
+                        <Picker
+                          selectedValue={selectbaseValue}
+                          enabled={true}
+                          mode="dropdown"
+                          style={{
+                            color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
+                            justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
+                          }}
+                          onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
+                          {loginReducer.ipAddress.map((obj, index) => {
+                            return (
+                              <Picker.Item color={Colors.backgroundColorSecondary} label={obj.nameser} value={obj.nameser} />
+                            )
+                          })}
+                        </Picker>
+                      ) : (
+                        <Picker
+                          selectedValue={selectbaseValue}
+                          onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}
+                          enabled={false}
+                          mode="dropdown"
+                          style={{
+                            color: Colors.backgroundColorSecondary, width: deviceWidth * 0.95, flexDirection: 'column',
+                            justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
+                          }}
+                        >
+                          {
+                            <Picker.Item
+                              value="-1"
+                              color={Colors.backgroundColorSecondary}
+                              label={Language.t('selectBase.lebel')}
+                            />
+                          }
+                        </Picker>
+                      )}
+                    </View>
+
+                  </>
+                ) : (
+                  <>
+                    <View style={styles.body1}>
+                      <Text style={styles.textTitle}>
+                        {Language.t('selectBase.title')} :
                       </Text>
                     </View>
-                  </TouchableNativeFeedback>
-                </View>
-              ) : (
-                <>
+                    <View style={{
+                      marginTop: 10, flexDirection: 'row',
+                      justifyContent: 'center', borderColor: loginReducer.ipAddress.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 10, borderRadius: 10,
+                    }}>
+
+                      <Text style={{ fontSize: FontSize.large }}></Text>
+
+                      {loginReducer.ipAddress.length > 0 ? (
+                        <Picker
+                          selectedValue={selectbaseValue}
+                          enabled={true}
+                          mode="dropdown"
+                          state={{ color: Colors.borderColor, backgroundColor: Colors.backgroundColorSecondary }}
+                          onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}>
+                          {loginReducer.ipAddress.map((obj, index) => {
+                            return (
+                              <Picker.Item label={obj.nameser} color={Colors.borderColor} value={obj.nameser} />
+                            )
+                          })}
+                        </Picker>
+                      ) : (
+                        <Picker
+                          selectedValue={selectbaseValue}
+                          state={{ color: Colors.borderColor, backgroundColor: Colors.backgroundColorSecondary }}
+                          onValueChange={(itemValue, itemIndex) => setSelectbaseValue(itemValue)}
+                          enabled={false}
+                          mode="dropdown"
+
+                        >
+                          {
+                            <Picker.Item
+                              value="-1"
+                              color={'#979797'}
+                              label={Language.t('selectBase.lebel')}
+                            />
+                          }
+                        </Picker>
+                      )}
+                    </View>
+                  </>
+                )}
+                {loginReducer.ipAddress.length > 0 ? (
                   <View style={styles.body1e}>
                     <TouchableNativeFeedback
-                      onPress={() => null}>
+                      onPress={() => _onPressSelected()}>
                       <View
                         style={{
                           borderRadius: 10,
@@ -480,21 +433,22 @@ const SelectBase = ({ route }) => {
                           paddingTop: 10,
                           paddingBottom: 10,
                           width: 100,
-                          backgroundColor: '#979797',
+                          backgroundColor: Colors.buttonColorPrimary,
                         }}>
                         <Text
                           style={{
-                            color: '#C5C5C5',
+                            color: Colors.buttonTextColor,
                             alignSelf: 'center',
                             fontSize: FontSize.medium,
                             fontWeight: 'bold',
+
                           }}>
                           {Language.t('selectBase.connect')}
                         </Text>
                       </View>
                     </TouchableNativeFeedback>
                     <TouchableNativeFeedback
-                      onPress={() => null}>
+                      onPress={() => _onPressEdit()}>
                       <View
                         style={{
                           borderRadius: 10,
@@ -503,11 +457,11 @@ const SelectBase = ({ route }) => {
                           paddingTop: 10,
                           paddingBottom: 10,
                           width: 100,
-                          backgroundColor: '#979797',
+                          backgroundColor: Colors.backgroundLoginColor,
                         }}>
                         <Text
                           style={{
-                            color: '#C5C5C5',
+                            color: Colors.backgroundColorSecondary,
                             alignSelf: 'center',
                             fontSize: FontSize.medium,
                             fontWeight: 'bold',
@@ -517,275 +471,349 @@ const SelectBase = ({ route }) => {
                       </View>
                     </TouchableNativeFeedback>
                   </View>
-                </>
-              )}
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('selectBase.name')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="database" size={30} color={Colors.backgroundColor} />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 10,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomWidth: 0.7,
-                      }}
-
-                      placeholderTextColor={Colors.borderColor}
-
-                      placeholder={Language.t('selectBase.name') + '..'}
-                      value={basename}
-                      onChangeText={(val) => {
-                        setBasename(val);
-                      }}></TextInput>
-                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.navigate('ScanScreen', { route: 'SelectScreen' })}>
-
-                      <FontAwesome
-                        name="qrcode"
-                        size={25}
-                        color={Colors.backgroundColor}
-                      />
-
-                    </TouchableOpacity>
-
-                  </View>
+                ) : (
+                  <>
+                    <View style={styles.body1e}>
+                      <TouchableNativeFeedback
+                        onPress={() => null}>
+                        <View
+                          style={{
+                            borderRadius: 10,
+                            flexDirection: 'column',
+                            marginLeft: 10,
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            width: 100,
+                            backgroundColor: '#979797',
+                          }}>
+                          <Text
+                            style={{
+                              color: '#C5C5C5',
+                              alignSelf: 'center',
+                              fontSize: FontSize.medium,
+                              fontWeight: 'bold',
+                            }}>
+                            {Language.t('selectBase.connect')}
+                          </Text>
+                        </View>
+                      </TouchableNativeFeedback>
+                      <TouchableNativeFeedback
+                        onPress={() => null}>
+                        <View
+                          style={{
+                            borderRadius: 10,
+                            flexDirection: 'column',
+                            marginLeft: 10,
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            width: 100,
+                            backgroundColor: '#979797',
+                          }}>
+                          <Text
+                            style={{
+                              color: '#C5C5C5',
+                              alignSelf: 'center',
+                              fontSize: FontSize.medium,
+                              fontWeight: 'bold',
+                            }}>
+                            {Language.t('selectBase.edit')}
+                          </Text>
+                        </View>
+                      </TouchableNativeFeedback>
+                    </View>
+                  </>
+                )}
+                
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('selectBase.name')} :
+                  </Text>
                 </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('selectBase.url')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    height: 'auto',
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 'auto', flexDirection: 'row' }}>
-                    <FontAwesome name="refresh" size={30} color={Colors.backgroundColor} />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 10,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        height: 'auto',
-                        borderBottomWidth: 0.7,
-                      }}
-                      multiline={true}
-                      placeholderTextColor={Colors.borderColor}
-
-                      value={baseurl}
-                      placeholder={Language.t('selectBase.url') + '..'}
-                      onChangeText={(val) => {
-                        setBsaeurl(val);
-                      }}></TextInput>
-
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('login.username')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="user" size={30} color={Colors.backgroundColor} />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 5,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomWidth: 0.7,
-                      }}
-
-                      placeholderTextColor={Colors.borderColor}
-
-                      value={username}
-                      placeholder={Language.t('login.username') + '..'}
-                      onChangeText={(val) => {
-                        setUsername(val);
-                      }}></TextInput>
-
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('login.password')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <FontAwesome name="lock" size={30} color={Colors.backgroundColor} />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 5,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomColor: Colors.borderColor,
-                        borderBottomWidth: 0.7,
-                      }}
-                      secureTextEntry={data.secureTextEntry ? true : false}
-                      keyboardType="default"
-
-                      placeholderTextColor={Colors.borderColor}
-                      placeholder={Language.t('login.password') + '..'}
-                      value={password}
-                      onChangeText={(val) => {
-                        setPassword(val);
-                      }}
-                    />
-
-                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={updateSecureTextEntry}>
-                      {data.secureTextEntry ? (
-                        <FontAwesome
-                          name="eye-slash"
-                          size={25}
-                          color={Colors.backgroundColor}
-                        />
-                      ) : (
-                        <FontAwesome
-                          name="eye"
-                          size={25}
-                          color={Colors.backgroundColor} />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 20 }}>
-                <TouchableNativeFeedback
-                  onPress={() => _onPressAddbase()}>
+                <View style={{ marginTop: 10 }}>
                   <View
                     style={{
-                      borderRadius: 10,
+                      backgroundColor: Colors.backgroundColorSecondary,
                       flexDirection: 'column',
-                      justifyContent: 'center',
                       height: 50,
-                      backgroundColor: Colors.buttonColorPrimary,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10,
+
+
                     }}>
-                    <Text
-                      style={{
-                        color: Colors.buttonTextColor,
-                        alignSelf: 'center',
-                        fontSize: FontSize.medium,
-                        fontWeight: 'bold',
-                      }}>
-                      {Language.t('selectBase.saveandconnect')}
-                    </Text>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset18_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 10,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomWidth: 0.7,
+                        }}
+
+                        placeholderTextColor={Colors.backgroundColor}
+
+                        placeholder={Language.t('selectBase.name') + '..'}
+                        value={basename}
+                        onChangeText={(val) => {
+                          setBasename(val);
+                        }}></TextInput>
+                      <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.navigate('ScanScreen', { route: 'SelectScreen' })}>
+
+                        <FontAwesome
+                          name="qrcode"
+                          size={25}
+                          color={Colors.borderColor}
+                        />
+
+                      </TouchableOpacity>
+
+                    </View>
                   </View>
-                </TouchableNativeFeedback>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('selectBase.url')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      height: 'auto',
+                      paddingBottom: 10
+
+                    }}>
+                    <View style={{ height: 'auto', flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset19_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 10,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          height: 'auto',
+                          borderBottomWidth: 0.7,
+                        }}
+                        multiline={true}
+                        placeholderTextColor={Colors.backgroundColor}
+
+                        value={baseurl}
+                        placeholder={Language.t('selectBase.url') + '..'}
+                        onChangeText={(val) => {
+                          setBsaeurl(val);
+                        }}></TextInput>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('login.username')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }}>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset20_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 5,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomWidth: 0.7,
+                        }}
+
+                        placeholderTextColor={Colors.backgroundColor}
+
+                        value={username}
+                        placeholder={Language.t('login.username') + '..'}
+                        onChangeText={(val) => {
+                          setUsername(val);
+                        }}></TextInput>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('login.password')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }}>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset21_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 5,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomColor: Colors.borderColor,
+                          borderBottomWidth: 0.7,
+                        }}
+                        secureTextEntry={data.secureTextEntry ? true : false}
+                        keyboardType="default"
+
+                        placeholderTextColor={Colors.backgroundColor}
+                        placeholder={Language.t('login.password') + '..'}
+                        value={password}
+                        onChangeText={(val) => {
+                          setPassword(val);
+                        }}
+                      />
+
+                      <TouchableOpacity style={{ marginLeft: 10 }} onPress={updateSecureTextEntry}>
+                        {data.secureTextEntry ? (
+                          <FontAwesome
+                            name="eye-slash"
+                            size={25}
+                            color={Colors.borderColor}
+                          />
+                        ) : (
+                          <FontAwesome
+                            name="eye"
+                            size={25}
+                            color={Colors.borderColor} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={{ marginTop: 20, marginBottom:20, }}>
+                  <TouchableNativeFeedback
+                    onPress={() => _onPressAddbase()}>
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        height: 50,
+                       
+                        backgroundColor: Colors.buttonColorPrimary,
+                      }}>
+                      <Text
+                        style={{
+                          color: Colors.buttonTextColor,
+                          alignSelf: 'center',
+                          fontSize: FontSize.medium,
+                          fontWeight: 'bold',
+                        }}>
+                        {Language.t('selectBase.saveandconnect')}
+                      </Text>
+                    </View>
+                  </TouchableNativeFeedback>
+                </View>
+
               </View>
 
-            </View>
+            </KeyboardAvoidingView>
 
-          </KeyboardAvoidingView>
-
-        </SafeAreaView>
-      </ScrollView>
-      {loading && (
-        <View
-          style={{
-            width: deviceWidth,
-            height: deviceHeight,
-            opacity: 0.5,
-            backgroundColor: Colors.backgroundColorSecondary,
-            alignSelf: 'center',
-            justifyContent: 'center',
-            alignContent: 'center',
-            position: 'absolute',
-          }}>
-          <ActivityIndicator
+          </SafeAreaView>
+        </ScrollView>
+        {loading && (
+          <View
             style={{
-              borderRadius: 15,
-              backgroundColor: null,
-              width: 100,
-              height: 100,
+              width: deviceWidth,
+              height: deviceHeight,
+              opacity: 0.5,
+              backgroundColor: Colors.backgroundColorSecondary,
               alignSelf: 'center',
-            }}
-            animating={loading}
-            size="large"
-            color={Colors.lightPrimiryColor}
-          />
-        </View>
-      )}
+              justifyContent: 'center',
+              alignContent: 'center',
+              position: 'absolute',
+            }}>
+            <ActivityIndicator
+              style={{
+                borderRadius: 15,
+                backgroundColor: null,
+                width: 100,
+                height: 100,
+                alignSelf: 'center',
+              }}
+              animating={loading}
+              size="large"
+              color={Colors.lightPrimiryColor}
+            />
+          </View>
+        )}
+      </ImageBackground>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container1: {
-    backgroundColor: Colors.backgroundColor,
+
     flex: 1,
-    flexDirection: 'column',
+
   },
   body: {
-    margin: 10
+    marginLeft: 20,
+    marginRight: 20
   },
   body1e: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: "row",
     justifyContent: 'flex-end'
   },
   body1: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: "row",
   },
   tabbar: {
@@ -793,11 +821,14 @@ const styles = StyleSheet.create({
     padding: 12,
     paddingLeft: 20,
     alignItems: 'center',
-    backgroundColor: Colors.backgroundColorSecondary,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 0.7,
+
+
     justifyContent: 'space-between',
     flexDirection: 'row',
+  },
+  image: {
+    flex: 1,
+    justifyContent: "center"
   },
   dorpdown: {
     justifyContent: 'center',
@@ -810,7 +841,7 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: FontSize.medium,
     fontWeight: 'bold',
-    color: '#ffff',
+    color: Colors.fontColor,
   },
   imageIcon: {
     width: 30,
@@ -818,7 +849,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  topImage: {
+    height: deviceHeight / 3,
+    width: deviceWidth,
 
+  },
   button: {
     marginTop: 10,
     marginBottom: 25,
