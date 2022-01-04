@@ -19,6 +19,11 @@ const ScanScreen = ({ navigation, route }) => {
   useEffect(() => {
     console.log(route.params)
   }, [])
+  var a = 0
+  useEffect(() => {
+    a = Math.floor(100000 + Math.random() * 900000);
+    console.log(route.params, ' code: ', a)
+  }, [])
 
   if (Platform.OS === 'android' && Platform.Version < 23) {
     checkAndroidPermission = false
@@ -40,7 +45,7 @@ const ScanScreen = ({ navigation, route }) => {
           let urlnmae = null;
           for (var s in tempnmae) if (tempnmae[s].search('.dll') > -1) urlnmae = tempnmae[s].split('.dll')
           let newObj = { label: serurl, value: urlnmae[0] };
-          navigation.navigate(route.params.route, { post: newObj });
+          navigation.navigate(route.params.route, { post: newObj, data: a });
         }
       }
     }
@@ -88,7 +93,7 @@ const ScanScreen = ({ navigation, route }) => {
                 let urlnmae = null;
                 for (var s in tempnmae) if (tempnmae[s].search('.dll') > -1) urlnmae = tempnmae[s].split('.dll')
                 let newObj = { label: serurl, value: urlnmae[0] };
-                navigation.navigate(route.params.route, { post: newObj });
+                navigation.navigate(route.params.route, { post: newObj, data: a });
               }
             }
           })

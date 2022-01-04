@@ -35,6 +35,7 @@ const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
+import { Col } from 'antd';
 
 const EditBase = ({ route }) => {
 
@@ -60,7 +61,7 @@ const EditBase = ({ route }) => {
   const [password, setPassword] = useState('');
   const [isShowDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useStateIfMounted(false);
-
+  const [loading_backG, setLoading_backG] = useStateIfMounted(true);
   const [machineNo, setMachineNo] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -71,6 +72,7 @@ const EditBase = ({ route }) => {
   });
 
   const image = '../images/UI/endpoint/4x/Asset12_4x.png';
+
   const updateSecureTextEntry = () => {
     setData({
       ...data,
@@ -78,18 +80,33 @@ const EditBase = ({ route }) => {
     });
   };
 
+  var a = 0
   useEffect(() => {
-
-
-    console.log('/n/n/nipAddress :', loginReducer.ipAddress)
-
-
-  }, []);
-
+    
+     
+  }, [])
 
   useEffect(() => {
     setLoading(true)
-    if (route.params?.selectbaseValue) {
+    console.log(route.params.data)
+    console.log(route.params.selectbaseValue)
+    for (let i in loginReducer.ipAddress) {
+      if (loginReducer.ipAddress[i].nameser == route.params.selectbaseValue) {
+        setBasename(loginReducer.ipAddress[i].nameser)
+        setBsaeurl(loginReducer.ipAddress[i].urlser)
+        setUsername(loginReducer.ipAddress[i].usernameser)
+        setPassword(loginReducer.ipAddress[i].passwordser)
+        setUpdateindex(i)
+      }
+    }
+    setLoading(false)
+
+  }, [route.params?.data]);
+  useEffect(() => {
+    setLoading(true)
+    console.log('length>>', loginReducer.ipAddress.length)
+    if (route.params?.selectbaseValue  ) {
+      
       for (let i in loginReducer.ipAddress) {
         if (loginReducer.ipAddress[i].nameser == route.params.selectbaseValue) {
           setBasename(loginReducer.ipAddress[i].nameser)
@@ -102,7 +119,7 @@ const EditBase = ({ route }) => {
     }
     setLoading(false)
 
-  }, [route.params?.selectbaseValue]);
+  }, [route.params?.selectbaseValue  ]);
   useEffect(() => {
 
     console.log('\n', registerReducer.machineNum)
@@ -181,7 +198,9 @@ const EditBase = ({ route }) => {
               text: Language.t('alert.ok'), onPress: () => {
                 temp.splice(i, 1);
                 setLoading(false)
-                navigation.goBack();
+                navigation.dispatch(
+                  navigation.replace('SelectScreen', { data: a })
+                )
               }
             }, { text: Language.t('alert.cancel'), onPress: () => console.log('cancel Pressed') }]);
             break;
@@ -254,7 +273,7 @@ const EditBase = ({ route }) => {
                 dispatch(databaseActions.setData(newObj))
 
                 navigation.dispatch(
-                  navigation.goBack()
+                  navigation.replace('SelectScreen', { data: a })
                 )
               } else {
                 console.log('Function Parameter Required');
@@ -294,298 +313,323 @@ const EditBase = ({ route }) => {
   return (
     <View style={container1}>
 
-      <ImageBackground source={require(image)} resizeMode="cover" style={styles.image}>
-        <ImageBackground source={require('../images/UI/endpoint/4x/Asset13_4x.png')} resizeMode="cover" style={topImage}>
-          <View style={tabbar}>
-            <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}>
-                <FontAwesome name="arrow-left" color={Colors.backgroundLoginColorSecondary} size={FontSize.large} />
-              </TouchableOpacity>
-              <Text
-                style={{
-                  marginLeft: 12,
-                  fontSize: FontSize.medium,
-                  color: Colors.backgroundLoginColorSecondary,
-                }}> {Language.t('selectBase.editheader')} </Text>
-            </View>
-            <View>
-
-            </View>
-          </View>
-        </ImageBackground>
-        <ScrollView>
-          <SafeAreaView >
-            <View style={styles.body}>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('selectBase.name')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
+      <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
+        {!loading_backG ? <>
+          <ImageBackground source={require('../images/UI/endpoint/4x/Asset13_4x.png')} resizeMode="cover" style={topImage}>
+            <View style={tabbar}>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}>
+                  <FontAwesome name="arrow-left" color={Colors.backgroundLoginColorSecondary} size={FontSize.large} />
+                </TouchableOpacity>
+                <Text
                   style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10,
+                    marginLeft: 12,
+                    fontSize: FontSize.medium,
+                    color: Colors.backgroundLoginColorSecondary,
+                  }}> {Language.t('selectBase.editheader')} </Text>
+              </View>
+              <View>
+
+              </View>
+            </View>
+          </ImageBackground>
+          <ScrollView>
+            <SafeAreaView >
+              <View style={styles.body}>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('selectBase.name')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10,
 
 
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <Image
-                      style={{ height: 30, width: 30 }}
-                      resizeMode={'contain'}
-                      source={require('../images/UI/endpoint/4x/Asset18_4x.png')}
-                    />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 10,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomWidth: 0.7,
-                      }}
-
-                      placeholderTextColor={Colors.backgroundColor}
-
-                      placeholder={Language.t('selectBase.name') + '..'}
-                      value={basename}
-                      onChangeText={(val) => {
-                        setBasename(val);
-                      }}></TextInput>
-                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.navigate('ScanScreen', { route: 'SelectScreen' })}>
-
-                      <FontAwesome
-                        name="qrcode"
-                        size={25}
-                        color={Colors.borderColor}
+                    }}>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset18_4x.png')}
                       />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 10,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomWidth: 0.7,
+                        }}
 
-                    </TouchableOpacity>
+                        placeholderTextColor={Colors.backgroundColor}
 
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('selectBase.url')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    height: 'auto',
-                    paddingBottom: 10
+                        placeholder={Language.t('selectBase.name') + '..'}
+                        value={basename}
+                        onChangeText={(val) => {
+                          setBasename(val);
+                        }}></TextInput>
+                      <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => navigation.navigate('ScanScreen', { route: 'EditBase' })}>
 
-                  }}>
-                  <View style={{ height: 'auto', flexDirection: 'row' }}>
-                    <Image
-                      style={{ height: 30, width: 30 }}
-                      resizeMode={'contain'}
-                      source={require('../images/UI/endpoint/4x/Asset19_4x.png')}
-                    />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 10,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        height: 'auto',
-                        borderBottomWidth: 0.7,
-                      }}
-                      multiline={true}
-                      placeholderTextColor={Colors.backgroundColor}
-
-                      value={baseurl}
-                      placeholder={Language.t('selectBase.url') + '..'}
-                      onChangeText={(val) => {
-                        setBsaeurl(val);
-                      }}></TextInput>
-
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('login.username')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <Image
-                      style={{ height: 30, width: 30 }}
-                      resizeMode={'contain'}
-                      source={require('../images/UI/endpoint/4x/Asset20_4x.png')}
-                    />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 5,
-                        borderBottomColor: Colors.borderColor,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomWidth: 0.7,
-                      }}
-
-                      placeholderTextColor={Colors.backgroundColor}
-
-                      value={username}
-                      placeholder={Language.t('login.username') + '..'}
-                      onChangeText={(val) => {
-                        setUsername(val);
-                      }}></TextInput>
-
-                  </View>
-                </View>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <Text style={styles.textTitle}>
-                  {Language.t('login.password')} :
-                </Text>
-              </View>
-              <View style={{ marginTop: 10 }}>
-                <View
-                  style={{
-                    backgroundColor: Colors.backgroundColorSecondary,
-                    flexDirection: 'column',
-                    height: 50,
-                    borderRadius: 10,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                  }}>
-                  <View style={{ height: 30, flexDirection: 'row' }}>
-                    <Image
-                      style={{ height: 30, width: 30 }}
-                      resizeMode={'contain'}
-                      source={require('../images/UI/endpoint/4x/Asset21_4x.png')}
-                    />
-                    <TextInput
-                      style={{
-                        flex: 8,
-                        marginLeft: 5,
-                        color: Colors.fontColor,
-                        paddingVertical: 3,
-                        fontSize: FontSize.medium,
-                        borderBottomColor: Colors.borderColor,
-                        borderBottomWidth: 0.7,
-                      }}
-                      secureTextEntry={data.secureTextEntry ? true : false}
-                      keyboardType="default"
-
-                      placeholderTextColor={Colors.backgroundColor}
-                      placeholder={Language.t('login.password') + '..'}
-                      value={password}
-                      onChangeText={(val) => {
-                        setPassword(val);
-                      }}
-                    />
-
-                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={updateSecureTextEntry}>
-                      {data.secureTextEntry ? (
                         <FontAwesome
-                          name="eye-slash"
+                          name="qrcode"
                           size={25}
                           color={Colors.borderColor}
                         />
-                      ) : (
-                        <FontAwesome
-                          name="eye"
-                          size={25}
-                          color={Colors.borderColor} />
-                      )}
-                    </TouchableOpacity>
+
+                      </TouchableOpacity>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('selectBase.url')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      height: 'auto',
+                      paddingBottom: 10
+
+                    }}>
+                    <View style={{ height: 'auto', flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset19_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 10,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          height: 'auto',
+                          borderBottomWidth: 0.7,
+                        }}
+                        multiline={true}
+                        placeholderTextColor={Colors.backgroundColor}
+
+                        value={baseurl}
+                        placeholder={Language.t('selectBase.url') + '..'}
+                        onChangeText={(val) => {
+                          setBsaeurl(val);
+                        }}></TextInput>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('login.username')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }}>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset20_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 5,
+                          borderBottomColor: Colors.borderColor,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomWidth: 0.7,
+                        }}
+
+                        placeholderTextColor={Colors.backgroundColor}
+
+                        value={username}
+                        placeholder={Language.t('login.username') + '..'}
+                        onChangeText={(val) => {
+                          setUsername(val);
+                        }}></TextInput>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.textTitle}>
+                    {Language.t('login.password')} :
+                  </Text>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <View
+                    style={{
+                      backgroundColor: Colors.backgroundColorSecondary,
+                      flexDirection: 'column',
+                      height: 50,
+                      borderRadius: 10,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                      paddingTop: 10,
+                      paddingBottom: 10
+                    }}>
+                    <View style={{ height: 30, flexDirection: 'row' }}>
+                      <Image
+                        style={{ height: 30, width: 30 }}
+                        resizeMode={'contain'}
+                        source={require('../images/UI/endpoint/4x/Asset21_4x.png')}
+                      />
+                      <TextInput
+                        style={{
+                          flex: 8,
+                          marginLeft: 5,
+                          color: Colors.fontColor,
+                          paddingVertical: 3,
+                          fontSize: FontSize.medium,
+                          borderBottomColor: Colors.borderColor,
+                          borderBottomWidth: 0.7,
+                        }}
+                        secureTextEntry={data.secureTextEntry ? true : false}
+                        keyboardType="default"
+
+                        placeholderTextColor={Colors.backgroundColor}
+                        placeholder={Language.t('login.password') + '..'}
+                        value={password}
+                        onChangeText={(val) => {
+                          setPassword(val);
+                        }}
+                      />
+
+                      <TouchableOpacity style={{ marginLeft: 10 }} onPress={updateSecureTextEntry}>
+                        {data.secureTextEntry ? (
+                          <FontAwesome
+                            name="eye-slash"
+                            size={25}
+                            color={Colors.borderColor}
+                          />
+                        ) : (
+                          <FontAwesome
+                            name="eye"
+                            size={25}
+                            color={Colors.borderColor} />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+
+
+                <View
+                  style={{
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                  }}>
+                  <View style={{ marginTop: 20, width: deviceWidth / 2.2 }}>
+                    <TouchableNativeFeedback
+                      onPress={() => _onPressUpdate()}>
+                      <View
+                        style={{
+                          borderRadius: 10,
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          height: 50,
+                          backgroundColor: Colors.buttonColorPrimary,
+                        }}>
+                        <Text
+                          style={{
+                            color: Colors.buttonTextColor,
+                            alignSelf: 'center',
+                            fontSize: FontSize.medium,
+                            fontWeight: 'bold',
+                          }}>
+                          {Language.t('selectBase.edit')}
+                        </Text>
+                      </View>
+                    </TouchableNativeFeedback>
+                  </View>
+
+
+                  <View style={{ marginTop: 20, width: deviceWidth / 2.2 }}>
+                    <TouchableNativeFeedback
+                      onPress={() => _onPressDelete()}>
+                      <View
+                        style={{
+                          borderRadius: 10,
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          height: 50,
+                          backgroundColor: Colors.backgroundLoginColor,
+                        }}>
+                        <Text
+                          style={{
+                            color: Colors.backgroundColorSecondary,
+                            alignSelf: 'center',
+                            fontSize: FontSize.medium,
+                            fontWeight: 'bold',
+                          }}>
+                          {Language.t('selectBase.delete')}
+                        </Text>
+                      </View>
+                    </TouchableNativeFeedback>
                   </View>
                 </View>
               </View>
-
-
-              <View
-                style={{
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                }}>
-                <View style={{ marginTop: 20, width: deviceWidth / 2.2 }}>
-                  <TouchableNativeFeedback
-                    onPress={() => _onPressUpdate()}>
-                    <View
-                      style={{
-                        borderRadius: 10,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: 50,
-                        backgroundColor: Colors.buttonColorPrimary,
-                      }}>
-                      <Text
-                        style={{
-                          color: Colors.buttonTextColor,
-                          alignSelf: 'center',
-                          fontSize: FontSize.medium,
-                          fontWeight: 'bold',
-                        }}>
-                        {Language.t('selectBase.edit')}
-                      </Text>
-                    </View>
-                  </TouchableNativeFeedback>
-                </View>
-
-
-                <View style={{ marginTop: 20, width: deviceWidth / 2.2 }}>
-                  <TouchableNativeFeedback
-                    onPress={() => _onPressDelete()}>
-                    <View
-                      style={{
-                        borderRadius: 10,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: 50,
-                        backgroundColor: Colors.backgroundLoginColor,
-                      }}>
-                      <Text
-                        style={{
-                          color: Colors.backgroundColorSecondary,
-                          alignSelf: 'center',
-                          fontSize: FontSize.medium,
-                          fontWeight: 'bold',
-                        }}>
-                        {Language.t('selectBase.delete')}
-                      </Text>
-                    </View>
-                  </TouchableNativeFeedback>
-                </View>
-              </View>
-            </View>
-          </SafeAreaView>
-        </ScrollView>
+            </SafeAreaView>
+          </ScrollView>
+        </> : <View
+          style={{
+            width: deviceWidth,
+            height: deviceHeight,
+            opacity: 0.5,
+            backgroundColor: Colors.backgroundLoginColorSecondary,
+            alignSelf: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+            position: 'absolute',
+          }}>
+          {/* <ActivityIndicator
+              style={{
+                borderRadius: 15,
+                backgroundColor: null,
+                width: 100,
+                height: 100,
+                alignSelf: 'center',
+              }}
+              animating={loading}
+              size="large"
+              color={Colors.lightPrimiryColor}
+            /> */}
+        </View>}
         {loading && (
           <View
             style={{

@@ -70,7 +70,7 @@ const SKUScreen = ({ route }) => {
 
   const [isShowDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useStateIfMounted(false);
-
+  const [loading_backG, setLoading_backG] = useStateIfMounted(true);
   const [machineNo, setMachineNo] = useState('');
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -118,7 +118,7 @@ const SKUScreen = ({ route }) => {
   }
 
   const set_SkuP = (GOODS_CODE, ARPLU_U_PRC) => {
-    console.log(GOODS_CODE ,' >>   ',ARPLU_U_PRC )
+    console.log(GOODS_CODE, ' >>   ', ARPLU_U_PRC)
     let temp_array = [];
     for (var i in GOODSMASTER) {
       if (GOODSMASTER[i].GOODS_CODE == GOODS_CODE) {
@@ -616,348 +616,371 @@ const SKUScreen = ({ route }) => {
   return (
     <View style={container1}>
       <StatusBar hidden={true} />
-      <ImageBackground source={require(image)} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require(image)} onLoadEnd={()=>{setLoading_backG(false)}} resizeMode="cover" style={styles.image}>
+        {!loading_backG ? <>
+          <View style={{ marginTop: 150 }}>
 
-        <View style={{ marginTop: 150 }}>
+          </View>
+          <View style={tabbar} >
+            <View style={{
+              backgroundColor: '#fff', alignSelf: 'center',
+              justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
+            }}>
 
-        </View>
-        <View style={tabbar} >
-          <View style={{
-            backgroundColor: '#fff', alignSelf: 'center',
-            justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
-          }}>
-
-            <TextInput
-              style={{
-                flex: 8,
-                marginLeft: 10,
-                borderBottomColor: Colors.borderColor,
-                color: Colors.fontColor,
-                padding: 10,
-                fontSize: FontSize.medium,
-
-              }}
-              keyboardType="number-pad"
-              placeholderTextColor={Colors.fontColorSecondary}
-              value={GOODS_CODE}
-
-              placeholder={Language.t('main.goodscode') + '..'}
-              onSubmitEditing={() => fetchMotherData()}
-              onChangeText={(val) => {
-                setGOODS_CODE(val)
-              }} />
-
-            <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
-              <Image
-                source={
-                  require('../images/UI/SKU/4x/Asset26_4x.png')
-                }
+              <TextInput
                 style={{
-                  width: 30,
-                  height: 30,
+                  flex: 8,
+                  marginLeft: 10,
+                  borderBottomColor: Colors.borderColor,
+                  color: Colors.fontColor,
+                  padding: 10,
+                  fontSize: FontSize.medium,
+
                 }}
-              />
-            </TouchableOpacity>
+                keyboardType="number-pad"
+                placeholderTextColor={Colors.fontColorSecondary}
+                value={GOODS_CODE}
 
+                placeholder={Language.t('main.goodscode') + '..'}
+                onSubmitEditing={() => fetchMotherData()}
+                onChangeText={(val) => {
+                  setGOODS_CODE(val)
+                }} />
+
+              <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
+                <Image
+                  source={
+                    require('../images/UI/SKU/4x/Asset26_4x.png')
+                  }
+                  style={{
+                    width: 30,
+                    height: 30,
+                  }}
+                />
+              </TouchableOpacity>
+
+            </View>
           </View>
-        </View>
-        <View style={{ marginLeft: 10, marginRight: 10 }}>
-          <View style={{
-            backgroundColor: '#fff', alignSelf: 'center',
-            justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10,
-          }}>
-            <Text
-              style={{
-                flex: 8,
-                marginLeft: 10,
-                borderBottomColor: Colors.borderColor,
-                color: Colors.fontColor,
-                padding: 40,
-                fontSize: 30,
-                textAlign: 'center'
-              }}
-            >
-              {Temp_report ? Temp_report : null}
-            </Text>
+          <View style={{ marginLeft: 10, marginRight: 10 }}>
+            <View style={{
+              backgroundColor: '#fff', alignSelf: 'center',
+              justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10,
+            }}>
+              <Text
+                style={{
+                  flex: 8,
+                  marginLeft: 10,
+                  borderBottomColor: Colors.borderColor,
+                  color: Colors.fontColor,
+                  padding: 40,
+                  fontSize: 30,
+                  textAlign: 'center'
+                }}
+              >
+                {Temp_report ? Temp_report : null}
+              </Text>
+            </View>
           </View>
-        </View>
-        <ScrollView>
-          <SafeAreaView >
-            <KeyboardAvoidingView >
-              <View style={styles.body}>
-                <View style={styles.table}>
-                  <View style={styles.tableHeader}>
-                    <View style={{ flex: 0.5 }}  >
-                      <Text style={{
-                        fontSize: FontSize.medium,
-                        color: Colors.backgroundColorSecondary,
-                        fontWeight: 'bold'
-                      }}> {Language.t('main.code')}</Text></View>
-                    <View style={{ flex: 0.3, }}  >
-                      <Text style={{
-                        fontSize: FontSize.medium,
-                        color: Colors.backgroundColorSecondary,
-                        fontWeight: 'bold'
-                      }}>{Language.t('main.unit')}</Text></View>
-                    <View style={{ flex: 0.3 }} >
-                      <Text style={{
-                        fontSize: FontSize.medium,
-                        color: Colors.backgroundColorSecondary,
-                        fontWeight: 'bold'
-                      }}> {Language.t('main.price')} </Text></View>
-                  </View>
-                  <ScrollView>
-                    <KeyboardAvoidingView keyboardVerticalOffset={1} >
-                      <TouchableNativeFeedback >
-                        {GOODSMASTER.length <= 0 ? (
-                          <>
-                            <View style={styles.tableView}>
+          <ScrollView>
+            <SafeAreaView >
+              <KeyboardAvoidingView >
+                <View style={styles.body}>
+                  <View style={styles.table}>
+                    <View style={styles.tableHeader}>
+                      <View style={{ flex: 0.5 }}  >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}> {Language.t('main.code')}</Text></View>
+                      <View style={{ flex: 0.3, }}  >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}>{Language.t('main.unit')}</Text></View>
+                      <View style={{ flex: 0.3 }} >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}> {Language.t('main.price')} </Text></View>
+                    </View>
+                    <ScrollView>
+                      <KeyboardAvoidingView keyboardVerticalOffset={1} >
+                        <TouchableNativeFeedback >
+                          {GOODSMASTER.length <= 0 ? (
+                            <>
+                              <View style={styles.tableView}>
 
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-
-                              >
-                              </Text>
-
-                            </View>
-                            <View style={styles.tableView}>
-
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                          
-                          </>) : (<>
-                            {GOODSMASTER.map((item) => {
-                              return (
-                                <View style={styles.tableView}>
-                                  <TextInput
-                                    style={{
-                                      color: Colors.fontColor,
-                                      fontSize: FontSize.medium,
-                                      flex: 0.5
-                                    }}
-                                    multiline={true}
-                                    editable={false}
-                                    placeholderTextColor={Colors.fontColorSecondary}
-                                    value={item.GOODS_CODE}
-
-
-
-                                  />
-                                  <TextInput
-                                    style={{
-                                      color: Colors.fontColor,
-                                      fontSize: FontSize.medium,
-                                      flex: 0.3
-                                    }}
-                                    multiline={true}
-                                    editable={false}
-                                    placeholderTextColor={Colors.fontColorSecondary}
-                                    value={item.UTQ_NAME}
-
-
-                                  />
-                                  <View style={{
+                                <Text
+                                  style={{
                                     color: Colors.fontColor,
                                     fontSize: FontSize.medium,
-                                    borderRadius: 10,
-                                    padding: 1,
-                                    backgroundColor: Colors.backgroundLoginColor,
-                                    flex: 0.3,
-                                  }}>
-                                    <CurrencyInput
+                                    flex: 0.5
+                                  }}
+
+                                >
+                                </Text>
+
+                              </View>
+                              <View style={styles.tableView}>
+
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+
+                            </>) : (<>
+                              {GOODSMASTER.map((item) => {
+                                return (
+                                  <View style={styles.tableView}>
+                                    <TextInput
                                       style={{
                                         color: Colors.fontColor,
                                         fontSize: FontSize.medium,
-                                        borderRadius: 10,
-                                        
-                               
-                                        backgroundColor: Colors.backgroundColorSecondary,
-                                        flex: 0.3,
+                                        flex: 0.5
                                       }}
-                                      delimiter=","
-                                      separator="."
-                                      precision={2}
-                                      
-                                      keyboardType="number-pad"
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.ARPLU_U_PRC}
                                       multiline={true}
-                                      textAlign={'right'}
-                                      placeholder={Language.t('main.pprice') + '..'}
-                                   
-                                      onChangeValue={(val) => {
-                                        set_SkuP(item.GOODS_CODE, val)
+                                      editable={false}
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.GOODS_CODE}
+
+
+
+                                    />
+                                    <TextInput
+                                      style={{
+                                        color: Colors.fontColor,
+                                        fontSize: FontSize.medium,
+                                        flex: 0.3
                                       }}
-                                        />
+                                      multiline={true}
+                                      editable={false}
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.UTQ_NAME}
+
+
+                                    />
+                                    <View style={{
+                                      color: Colors.fontColor,
+                                      fontSize: FontSize.medium,
+                                      borderRadius: 10,
+                                      padding: 1,
+                                      backgroundColor: Colors.backgroundLoginColor,
+                                      flex: 0.3,
+                                    }}>
+                                      <CurrencyInput
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderRadius: 10,
+
+
+                                          backgroundColor: Colors.backgroundColorSecondary,
+                                          flex: 0.3,
+                                        }}
+                                        delimiter=","
+                                        separator="."
+                                        precision={2}
+
+                                        keyboardType="number-pad"
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={item.ARPLU_U_PRC}
+                                        multiline={true}
+                                        textAlign={'right'}
+                                        placeholder={Language.t('main.pprice') + '..'}
+
+                                        onChangeValue={(val) => {
+                                          set_SkuP(item.GOODS_CODE, val)
+                                        }}
+                                      />
+                                    </View>
+
                                   </View>
+                                )
+                              })}
+                              <View style={styles.tableView}>
+                                <Text
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                >
+                                </Text>
+                              </View>
+                            </>)}
+                        </TouchableNativeFeedback>
+                      </KeyboardAvoidingView>
+                    </ScrollView>
 
-                                </View>
-                              )
-                            })}
-                            <View style={styles.tableView}>
-                              <Text
-                                style={{
-                                  color: Colors.fontColor,
-                                  fontSize: FontSize.medium,
-                                  flex: 0.5
-                                }}
-                              >
-                              </Text>
-                            </View>
-                          </>)}
-                      </TouchableNativeFeedback>
-                    </KeyboardAvoidingView>
-                  </ScrollView>
-
+                  </View>
                 </View>
-              </View>
 
-            </KeyboardAvoidingView>
+              </KeyboardAvoidingView>
 
-          </SafeAreaView>
-        </ScrollView>
+            </SafeAreaView>
+          </ScrollView>
 
-        <View style={styles.footer}>
-          <View></View>
-          <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
-            <Image
-              source={
-                require('../images/UI/SKU/4x/Asset27_4x.png')
-              }
+          <View style={styles.footer}>
+            <View></View>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset27_4x.png')
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset28_4x.png')
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => on_cancel()}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset29_4x.png')
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset30_4x.png')
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                }}
+              />
+            </TouchableOpacity>
+            <View></View>
+          </View>
+        </> : <View
+          style={{
+            width: deviceWidth,
+            height: deviceHeight,
+            opacity: 0.5,
+            backgroundColor:  Colors.backgroundLoginColorSecondary,
+            alignSelf: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+            position: 'absolute',
+          }}>
+          {/* <ActivityIndicator
               style={{
-                width: 60,
-                height: 60,
+                borderRadius: 15,
+                backgroundColor: null,
+                width: 100,
+                height: 100,
+                alignSelf: 'center',
               }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
-            <Image
-              source={
-                require('../images/UI/SKU/4x/Asset28_4x.png')
-              }
-              style={{
-                width: 60,
-                height: 60,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ padding: 10, }} onPress={() => on_cancel()}>
-            <Image
-              source={
-                require('../images/UI/SKU/4x/Asset29_4x.png')
-              }
-              style={{
-                width: 60,
-                height: 60,
-              }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ padding: 10, }} onPress={() => on_scan()}>
-            <Image
-              source={
-                require('../images/UI/SKU/4x/Asset30_4x.png')
-              }
-              style={{
-                width: 60,
-                height: 60,
-              }}
-            />
-          </TouchableOpacity>
-          <View></View>
-        </View>
-
+              animating={loading}
+              size="large"
+              color={Colors.lightPrimiryColor}
+            /> */}
+        </View>}
         {loading && (
           <View
             style={{
@@ -992,7 +1015,7 @@ const SKUScreen = ({ route }) => {
 
 const styles = StyleSheet.create({
   container1: {
-    
+
     flex: 1,
     flexDirection: 'column',
   },

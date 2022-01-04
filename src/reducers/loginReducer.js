@@ -46,10 +46,10 @@ const initialState = {
   projectID: PROJECT_ID,
   index: '-1',
   ipAddress: [],
-  isSFeatures: false,
+  isSFeatures: true,
   isScreen: '',
   islogin: false,
-  language: ACTION_SET_LANGUAGE
+  language: 'th'
 }
 
 const loginReducer = (state = initialState, { type, payload }) => {

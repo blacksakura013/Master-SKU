@@ -13,7 +13,7 @@
     "errorIncorrentUsernameOrPassword": "Mobile number or password is incorrect",
     "errorNotfoundUsername": "Mobile number not found",
     "rememberpassword":"Remember password",
-    "usestandard":"Use standard features"
+    "usestandard":"Use standard product features"
   },
   "register": {
     "header": "Register",
@@ -190,9 +190,9 @@
   },
   "selectBase": {
     "header": "Set up database",
-    "editheader": "Edit database",
+    "editheader": "\nPress \"Edit\" to edit ",
     "lebel": "Please Specify",
-    "name":"Database name",
+    "name":"Business name",
     "url":"Database address",
     "scanQR": "Scan QRCode",
     "questionAdd": "Would you like to add the ",
@@ -201,18 +201,21 @@
     "invalid":"The QR_CODE is invalid",
     "notfound":"QR_CODE not found",
     "UnableConnec":"Unable to connect to the system",
-    "Alert": "Database was exited",
-    "Alert2": "Application will reset after press \" Ok \"",
-    "Alert3": "Please fill in or Scan QRcode",
-    "title": "Select Base",
+    "Alert": "There is already information in the system.",
+    "Alert2": "Want to edit ",
+    "Alert3": "There is this information in the system. Can't save data.",
+    "title": "Select business",
     "connect": "Connect",
     "saveandconnect": "Save and connect",
     "edit": "Edit",
     "add": "Add",
+    "yes": "ํYes",
+    "no": "No",
     "delete": "Delete",
     "error": "No Database",
     "SelectImg": "Choose Image",
-    "cannotDelete": "Can not delete the active database"
+    "cannotDelete": "Can not delete the active database",
+    "cannotEdit": "Can not edit the active database"
   },
   "SelectImg":{
     "SelectImg":"Choose Image",

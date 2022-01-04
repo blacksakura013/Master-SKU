@@ -24,11 +24,11 @@ import { Language, changeLanguage } from './translations/I18n';
 import { FontSize } from './components/FontSizeHelper';
 import Colors from './src/Colors';
 import * as loginActions from './src/actions/loginActions';
-import { useSelector } from 'react-redux';
+import { useSelector, connect, useDispatch } from 'react-redux';
 const App = () => {
   const loginReducer = useSelector(({ loginReducer }) => loginReducer);
   useEffect(() => {
-    if (loginReducer.language.length > 0) {
+    if (loginReducer.language != 'th') {
       changeLanguage(loginReducer.language);
     } else {
       dispatch(loginActions.setLanguage('th'))
@@ -41,7 +41,7 @@ const App = () => {
 
 
   }, []);
-
+  const dispatch = useDispatch();
   const MainStack = createStackNavigator();
 
   const LoginStack = createStackNavigator();

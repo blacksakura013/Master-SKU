@@ -88,6 +88,8 @@ const LoginScreen = () => {
   const [isSFeatures, setSFeatures] = useState(loginReducer.isSFeatures == true ? loginReducer.isSFeatures : false);
 
   const [loading, setLoading] = useStateIfMounted(false);
+  const [loading_backG, setLoading_backG] = useStateIfMounted(true);
+  
   const [resultJson, setResultJson] = useState([]);
   const [marker, setMarker] = useState(false);
   const [username, setUsername] = useState(loginReducer.userloggedIn == true ? loginReducer.userNameED : '');
@@ -371,14 +373,14 @@ const LoginScreen = () => {
   return (
 
     <SafeAreaView style={container1}>
-
       <StatusBar hidden={true} />
-      <ImageBackground source={require(image)} onLoadEnd={()=>{}} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require(image)} onLoadEnd={()=>{setLoading_backG(false)}} resizeMode="cover" style={styles.image}>
+        {!loading_backG?
         <ScrollView>
           <KeyboardAvoidingView keyboardVerticalOffset={1} behavior={'position'}>
             <View style={tabbar}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SelectScreen')}>
+                onPress={() => navigation.navigate('SelectScreen',{data: '' })}>
                 <FontAwesomeIcon name="gear" size={30} color={Colors.backgroundLoginColorSecondary} />
               </TouchableOpacity>
               <Text
@@ -577,7 +579,30 @@ const LoginScreen = () => {
             </View>
 
           </View>
-        </ScrollView>
+        </ScrollView>: <View
+            style={{
+              width: deviceWidth,
+              height: deviceHeight,
+              opacity: 0.5,
+              backgroundColor: 'black',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              alignContent: 'center',
+              position: 'absolute',
+            }}>
+            {/* <ActivityIndicator
+              style={{
+                borderRadius: 15,
+                backgroundColor: null,
+                width: 100,
+                height: 100,
+                alignSelf: 'center',
+              }}
+              animating={loading}
+              size="large"
+              color={Colors.lightPrimiryColor}
+            /> */}
+          </View>}
         {loading && (
           <View
             style={{
@@ -606,8 +631,6 @@ const LoginScreen = () => {
         )}
       </ImageBackground>
     </SafeAreaView>
-
-
   );
 };
 
