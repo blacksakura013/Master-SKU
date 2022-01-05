@@ -11,6 +11,26 @@ target 'Bplus_Check_Price' do
     # to enable hermes on iOS, change `false` to `true` and then install pods
     :hermes_enabled => false
   )
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNI18n', :path => '../node_modules/react-native-i18n'
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+
+
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
+
+  pod 'react-native-network-info', :path => '../node_modules/react-native-network-info'
 
   target 'Bplus_Check_PriceTests' do
     inherit! :complete

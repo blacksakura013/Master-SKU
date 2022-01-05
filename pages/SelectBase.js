@@ -440,63 +440,7 @@ const SelectBase = ({ route }) => {
             <SafeAreaView >
               <KeyboardAvoidingView >
                 <View style={styles.body}>
-                  {Platform.OS == 'ios' ? (
-                    <>
-                      <View style={styles.body1}>
-                        <Text style={styles.textTitle}>
-                          {Language.t('selectBase.title')} :
-                        </Text>
-                      </View>
-                      <View style={styles.body1}>
-                        {items.length > 0 ? (
-                          <Picker
-                            selectedValue={selectbaseValue}
-                            enabled={true}
-                            mode="dropdown"
-                            style={{
-                              color: Colors.borderColor, width: deviceWidth * 0.95, flexDirection: 'column',
-                              justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
-                            }}
-
-                            onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}>
-                            {items.map((obj, index) => {
-                              return (
-                                <Picker.Item color={Colors.borderColor} label={obj.nameser} value={obj.nameser} />
-                              )
-                            })}
-                            {
-                              <Picker.Item
-                                value="-1"
-                                color={"#979797"}
-                                label={Language.t('selectBase.lebel')}
-                              />
-                            }
-                          </Picker>
-                        ) : (
-                          <Picker
-                            selectedValue={selectbaseValue}
-                            onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}
-                            enabled={false}
-                            mode="dropdown"
-                            style={{
-                              color: Colors.borderColor, width: deviceWidth * 0.95, flexDirection: 'column',
-                              justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10,
-                            }}
-                          >
-                            {
-                              <Picker.Item
-                                value="-1"
-                                color={"#979797"}
-                                label={Language.t('selectBase.lebel')}
-                              />
-                            }
-                          </Picker>
-                        )}
-                      </View>
-
-                    </>
-                  ) : (
-                    <>
+                
                       <View style={styles.body1}>
                         <Text style={styles.textTitle}>
                           {Language.t('selectBase.title')} :
@@ -548,8 +492,7 @@ const SelectBase = ({ route }) => {
                           </Picker>
                         )}
                       </View>
-                    </>
-                  )}
+                    
 
                   <View style={{ marginTop: 10 }}>
                     <Text style={styles.textTitle}>
