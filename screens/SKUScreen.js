@@ -12,17 +12,17 @@ import {
   Alert,
   StatusBar,
   KeyboardAvoidingView
+,
+  ScrollView,
+  TouchableNativeFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import CurrencyInput from 'react-native-currency-input';
 import { Picker, } from 'native-base';
 import { useStateIfMounted } from 'use-state-if-mounted';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNRestart from 'react-native-restart';
-import {
-  ScrollView,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+
 import { connect } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Colors from '../src/Colors';

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-import { StyleSheet, Platform, View, Text, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Platform, View, Text, Alert, TouchableOpacity ,
+  ScrollView,
+  TouchableNativeFeedback,
+} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
 

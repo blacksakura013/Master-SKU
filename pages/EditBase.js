@@ -10,16 +10,16 @@ import {
   ImageBackground,
   ActivityIndicator,
   Alert,
+ 
+  ScrollView,
+  TouchableNativeFeedback,
+  TouchableOpacity,
 } from 'react-native';
 
 import { useStateIfMounted } from 'use-state-if-mounted';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {
-  ScrollView,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+
 
 
 import { connect } from 'react-redux';

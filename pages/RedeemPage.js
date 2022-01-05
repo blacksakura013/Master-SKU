@@ -9,6 +9,10 @@ import {
   Dimensions,
   ActivityIndicator,
   TouchableOpacity,
+ 
+  ScrollView,
+  TouchableNativeFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import RNFetchBlob from 'rn-fetch-blob';
