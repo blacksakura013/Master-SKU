@@ -6,10 +6,7 @@ import { StyleSheet, Platform, Dimensions, View, Text, Alert, TouchableOpacity ,
  
 } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-
-
 import * as  ImagePicker from 'react-native-image-picker';
-
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 

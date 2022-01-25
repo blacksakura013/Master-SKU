@@ -902,7 +902,6 @@ const styles = StyleSheet.create({
   topImage: {
     height: deviceHeight / 3,
     width: deviceWidth,
-
   },
   button: {
     marginTop: 10,

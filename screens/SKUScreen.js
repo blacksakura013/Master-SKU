@@ -12,7 +12,7 @@ import {
   Alert,
   StatusBar,
   KeyboardAvoidingView
-,
+  ,
   ScrollView,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -29,7 +29,9 @@ import Colors from '../src/Colors';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontSize } from '../components/FontSizeHelper';
 import { useNavigation } from '@react-navigation/native';
+
 // import { View } from 'react-native-paper';
+
 import Dialog from 'react-native-dialog';
 import { Language } from '../translations/I18n';
 import DeviceInfo from 'react-native-device-info';
@@ -67,7 +69,6 @@ const SKUScreen = ({ route }) => {
   const [GOODS_CODE, setGOODS_CODE] = useState('');
   const [Temp_report, setTemp_report] = useState('');
 
-
   const [isShowDialog, setShowDialog] = useState(false);
   const [loading, setLoading] = useStateIfMounted(false);
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
@@ -83,7 +84,9 @@ const SKUScreen = ({ route }) => {
     secureTextEntry: true,
   });
   const image = '../images/UI/SKU/4x/Asset22_4x.png';
+
   let kye_token = "";
+
   const updateSecureTextEntry = () => {
     setData({
       ...data,
@@ -94,6 +97,7 @@ const SKUScreen = ({ route }) => {
   useEffect(() => {
     console.log('>> Address : ', loginReducer.ipAddress)
     console.log('>> isSFeatures : ', loginReducer.isSFeatures, isSFeatures)
+    console.log(`>> loginReducer.endpointMother ${loginReducer.endpointMother}`)
   }, []);
 
   useEffect(() => {
@@ -155,7 +159,7 @@ const SKUScreen = ({ route }) => {
 
   const logOut = async () => {
     setLoading(true)
-    await fetch(loginReducer.ipAddress[0].urlser + '/DevUsers', {
+    await fetch(databaseReducer.Data.urlser + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
@@ -199,7 +203,7 @@ const SKUScreen = ({ route }) => {
       .catch((error) => {
         console.error('ERROR at _fetchGuidLogin' + error);
         setLoading(false)
-        if (loginReducer.ipAddress[0].urlser == '') {
+        if (databaseReducer.Data.urlser == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
@@ -616,7 +620,7 @@ const SKUScreen = ({ route }) => {
   return (
     <View style={container1}>
       <StatusBar hidden={true} />
-      <ImageBackground source={require(image)} onLoadEnd={()=>{setLoading_backG(false)}} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
         {!loading_backG ? <>
           <View style={{ marginTop: 150 }}>
 
@@ -962,7 +966,7 @@ const SKUScreen = ({ route }) => {
             width: deviceWidth,
             height: deviceHeight,
             opacity: 0.5,
-            backgroundColor:  Colors.backgroundLoginColorSecondary,
+            backgroundColor: Colors.backgroundLoginColorSecondary,
             alignSelf: 'center',
             justifyContent: 'center',
             alignContent: 'center',
