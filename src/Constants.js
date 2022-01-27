@@ -3,7 +3,7 @@ export const _http =
 export const host = 'blacksakura013';
 export const API_ENDPOINT =
   'http://203.150.55.21:8891/BplusNotiService/BplusNotiIIS.dll/';
-export const ENDPOINTMOTHER ='http://223.27.215.37:2564/Read/BplusGet.dll';
+export const ENDPOINTMOTHER ='https://basket.businessplus.co.th:8890/read/bplusget.dll';
 export const BPLUS_APPID = 'cdaa9350-cb32-416e-a85b-6ecedd81ebdf';
 export const PROJECT_ID = '{6E1D6A9C-540D-454C-9e28-B259F24C95FA}';
 export const NTFU_SVID = '{9c6dd907-45ba-43ec-872b-69b928e64be2}';

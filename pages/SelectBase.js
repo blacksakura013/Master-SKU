@@ -230,12 +230,13 @@ const SelectBase = ({ route }) => {
   }
 
   const _onPressAddbase = async () => {
+    await setLoading(true)
     let tempurl = baseurl.split('.dll')
     let newurl = tempurl[0] + '.dll'
     let temp = []
     let check = false;
     let checktest = false;
-    setLoading(true)
+
     if (checkValue() == true) {
       temp = items;
       for (let i in items) {
@@ -439,59 +440,59 @@ const SelectBase = ({ route }) => {
             <SafeAreaView >
               <KeyboardAvoidingView >
                 <View style={styles.body}>
-                
-                      <View style={styles.body1}>
-                        <Text style={styles.textTitle}>
-                          {Language.t('selectBase.title')} :
-                        </Text>
-                      </View>
-                      <View style={{
-                        marginTop: 10, flexDirection: 'row',
-                        justifyContent: 'center', borderColor: items.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 10, borderRadius: 10,
-                      }}>
 
-                        <Text style={{ fontSize: FontSize.large }}></Text>
+                  <View style={styles.body1}>
+                    <Text style={styles.textTitle}>
+                      {Language.t('selectBase.title')} :
+                    </Text>
+                  </View>
+                  <View style={{
+                    marginTop: 10, flexDirection: 'row',
+                    justifyContent: 'center', borderColor: items.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 10, borderRadius: 10,
+                  }}>
 
-                        {items.length > 0 ? (
-                          <Picker
-                            selectedValue={selectbaseValue}
-                            enabled={true}
-                            mode="dropdown"
-                            state={{ color: Colors.borderColor, backgroundColor: Colors.backgroundColorSecondary }}
-                            onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}>
-                            {items.map((obj, index) => {
-                              return (
-                                <Picker.Item label={obj.nameser} color={Colors.borderColor} value={obj.nameser} />
-                              )
-                            })}
-                            {
-                              <Picker.Item
-                                value="-1"
-                                color={"#979797"}
-                                label={Language.t('selectBase.lebel')}
-                              />
-                            }
-                          </Picker>
-                        ) : (
-                          <Picker
-                            selectedValue={selectbaseValue}
-                            state={{ color: Colors.borderColor, backgroundColor: Colors.borderColor }}
-                            onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}
-                            enabled={false}
-                            mode="dropdown"
+                    <Text style={{ fontSize: FontSize.large }}></Text>
 
-                          >
-                            {
-                              <Picker.Item
-                                value="-1"
-                                color={"#979797"}
-                                label={Language.t('selectBase.lebel')}
-                              />
-                            }
-                          </Picker>
-                        )}
-                      </View>
-                    
+                    {items.length > 0 ? (
+                      <Picker
+                        selectedValue={selectbaseValue}
+                        enabled={true}
+                        mode="dropdown"
+                        state={{ color: Colors.borderColor, backgroundColor: Colors.backgroundColorSecondary }}
+                        onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}>
+                        {items.map((obj, index) => {
+                          return (
+                            <Picker.Item label={obj.nameser} color={Colors.borderColor} value={obj.nameser} />
+                          )
+                        })}
+                        {
+                          <Picker.Item
+                            value="-1"
+                            color={"#979797"}
+                            label={Language.t('selectBase.lebel')}
+                          />
+                        }
+                      </Picker>
+                    ) : (
+                      <Picker
+                        selectedValue={selectbaseValue}
+                        state={{ color: Colors.borderColor, backgroundColor: Colors.borderColor }}
+                        onValueChange={(itemValue, itemIndex) => _onPressSelectbaseValue(itemValue)}
+                        enabled={false}
+                        mode="dropdown"
+
+                      >
+                        {
+                          <Picker.Item
+                            value="-1"
+                            color={"#979797"}
+                            label={Language.t('selectBase.lebel')}
+                          />
+                        }
+                      </Picker>
+                    )}
+                  </View>
+
 
                   <View style={{ marginTop: 10 }}>
                     <Text style={styles.textTitle}>

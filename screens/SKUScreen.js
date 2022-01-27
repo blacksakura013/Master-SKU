@@ -120,7 +120,37 @@ const SKUScreen = ({ route }) => {
     setGOODSMASTER([])
 
   }
-
+  const set_Focus = (GOODS_CODE, onFocus) => {
+    console.log(GOODS_CODE, ' >>   ', onFocus)
+    let temp_array = [];
+    for (var i in GOODSMASTER) {
+      if (GOODSMASTER[i].GOODS_CODE == GOODS_CODE) {
+        let jsonObj = {
+          GOODS_KEY: GOODSMASTER[i].GOODS_KEY,
+          GOODS_CODE: GOODSMASTER[i].GOODS_CODE,
+          GOODS_SKU: GOODSMASTER[i].GOODS_SKU,
+          GOODS_PRICE: GOODSMASTER[i].GOODS_PRICE,
+          GOODS_ALIAS: GOODSMASTER[i].GOODS_ALIAS,
+          GOODS_E_ALIAS: GOODSMASTER[i].GOODS_E_ALIAS,
+          GOODS_BARTYPE: GOODSMASTER[i].GOODS_BARTYPE,
+          UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
+          UTQ_QTY: GOODSMASTER[i].UTQ_QTY,
+          Temp_ARPLU_U_PRC: GOODSMASTER[i].Temp_ARPLU_U_PRC,
+          onFocus: onFocus,
+          ARPLU_U_PRC: GOODSMASTER[i].ARPLU_U_PRC,
+          ARPLU_U_DSC: GOODSMASTER[i].ARPLU_U_DSC,
+          TAG_CODE: GOODSMASTER[i].TAG_CODE,
+          TAG_NAME: GOODSMASTER[i].TAG_NAME
+        }
+        temp_array.push(jsonObj)
+      } else {
+        temp_array.push(GOODSMASTER[i])
+      }
+      console.log(GOODSMASTER[i].GOODS_CODE)
+    }
+    setGOODSMASTER(temp_array)
+    console.log(temp_array)
+  }
   const set_SkuP = (GOODS_CODE, ARPLU_U_PRC) => {
     console.log(GOODS_CODE, ' >>   ', ARPLU_U_PRC)
     let temp_array = [];
@@ -136,6 +166,8 @@ const SKUScreen = ({ route }) => {
           GOODS_BARTYPE: GOODSMASTER[i].GOODS_BARTYPE,
           UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
           UTQ_QTY: GOODSMASTER[i].UTQ_QTY,
+          Temp_ARPLU_U_PRC: GOODSMASTER[i].Temp_ARPLU_U_PRC,
+          onFocus: true,
           ARPLU_U_PRC: ARPLU_U_PRC,
           ARPLU_U_DSC: GOODSMASTER[i].ARPLU_U_DSC,
           TAG_CODE: GOODSMASTER[i].TAG_CODE,
@@ -289,8 +321,33 @@ const SKUScreen = ({ route }) => {
             SKU_PROPERTIES: isSFeatures
           }
           console.log(newSkuobj)
+
+          let temp_GoodData = [];
+          for (var i in responseData.GOODSMASTER) {
+
+            let newGoodobj = {
+              GOODS_KEY: responseData.GOODSMASTER[i].GOODS_KEY ? responseData.GOODSMASTER[i].GOODS_KEY : '',
+              GOODS_CODE: responseData.GOODSMASTER[i].GOODS_CODE ? responseData.GOODSMASTER[i].GOODS_CODE : '',
+              GOODS_SKU: responseData.GOODSMASTER[i].GOODS_SKU ? responseData.GOODSMASTER[i].GOODS_SKU : '',
+              GOODS_PRICE: responseData.GOODSMASTER[i].GOODS_PRICE ? responseData.GOODSMASTER[i].GOODS_PRICE : '',
+              GOODS_ALIAS: responseData.GOODSMASTER[i].GOODS_ALIAS ? responseData.GOODSMASTER[i].GOODS_ALIAS : '',
+              GOODS_E_ALIAS: responseData.GOODSMASTER[i].GOODS_E_ALIAS ? responseData.GOODSMASTER[i].GOODS_E_ALIAS : '',
+              GOODS_BARTYPE: responseData.GOODSMASTER[i].GOODS_BARTYPE ? responseData.GOODSMASTER[i].GOODS_BARTYPE : '',
+              UTQ_NAME: responseData.GOODSMASTER[i].UTQ_NAME ? responseData.GOODSMASTER[i].UTQ_NAME : '',
+              UTQ_QTY: responseData.GOODSMASTER[i].UTQ_QTY ? responseData.GOODSMASTER[i].UTQ_QTY : '',
+              Temp_ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+              onFocus: false,
+              ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+              ARPLU_U_DSC: responseData.GOODSMASTER[i].ARPLU_U_DSC ? responseData.GOODSMASTER[i].ARPLU_U_DSC : '',
+              TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '01',
+              TAG_NAME: responseData.GOODSMASTER[i].TAG_NAME ? responseData.GOODSMASTER[i].TAG_NAME : ''
+            }
+            temp_GoodData.push(newGoodobj)
+
+
+          }
+          setGOODSMASTER(temp_GoodData)
           setSKUMASTER(newSkuobj)
-          setGOODSMASTER(responseData.GOODSMASTER)
         } else {
           setTemp_report('ไม่พบข้อมูล');
           Alert.alert("ไม่พบข้อมูล");
@@ -405,6 +462,8 @@ const SKUScreen = ({ route }) => {
               GOODS_BARTYPE: responseData.GOODSMASTER[i].GOODS_BARTYPE ? responseData.GOODSMASTER[i].GOODS_BARTYPE : '',
               UTQ_NAME: responseData.GOODSMASTER[i].UTQ_NAME ? responseData.GOODSMASTER[i].UTQ_NAME : '',
               UTQ_QTY: responseData.GOODSMASTER[i].UTQ_QTY ? responseData.GOODSMASTER[i].UTQ_QTY : '',
+              Temp_ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+              onFocus: false,
               ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
               ARPLU_U_DSC: responseData.GOODSMASTER[i].ARPLU_U_DSC ? responseData.GOODSMASTER[i].ARPLU_U_DSC : '',
               TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '01',
@@ -478,6 +537,7 @@ const SKUScreen = ({ route }) => {
           '\"}'
 
       }
+
       console.log(JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
         'BPAPUS-LOGIN-GUID': loginReducer.guid,
@@ -526,6 +586,7 @@ const SKUScreen = ({ route }) => {
         'BPAPUS-OFFSET': '0',
         'BPAPUS-FETCH': '0',
       }))
+      console.log(databaseReducer.Data.urlser)
       await fetch(databaseReducer.Data.urlser + '/SetupErp', {
         method: 'POST',
         body: JSON.stringify({
@@ -614,7 +675,6 @@ const SKUScreen = ({ route }) => {
     }
 
   }
-
 
 
   return (
@@ -729,7 +789,6 @@ const SKUScreen = ({ route }) => {
 
                               </View>
                               <View style={styles.tableView}>
-
                                 <Text
                                   style={{
                                     color: Colors.fontColor,
@@ -839,40 +898,39 @@ const SKUScreen = ({ route }) => {
 
 
                                     />
-                                    <TextInput
-                                      style={{
-                                        color: Colors.fontColor,
-                                        fontSize: FontSize.medium,
-                                        flex: 0.3
-                                      }}
-                                      multiline={true}
-                                      editable={false}
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.UTQ_NAME}
-
-
-                                    />
                                     <View style={{
                                       color: Colors.fontColor,
                                       fontSize: FontSize.medium,
-                                      borderRadius: 10,
-                                      padding: 1,
-                                      backgroundColor: Colors.backgroundLoginColor,
-                                      flex: 0.3,
+                                      flex: 0.3
                                     }}>
-                                      <CurrencyInput
+
+
+                                      <TextInput
+                                        style={{
+                                          color: Colors.fontColor,
+
+                                        }}
+                                        multiline={true}
+                                        editable={false}
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={item.onFocus == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_ARPLU_U_PRC.length > 0 ? item.Temp_ARPLU_U_PRC : 0} )`}
+                                      />
+
+
+                                    </View>
+
+                                    {item.onFocus == true ? <>
+                                      <TextInput
                                         style={{
                                           color: Colors.fontColor,
                                           fontSize: FontSize.medium,
-                                          borderRadius: 10,
-
-
+                                          borderBottomColor: Colors.backgroundLoginColor,
+                                          borderBottomWidth: 1,
+                                          padding: 0,
                                           backgroundColor: Colors.backgroundColorSecondary,
                                           flex: 0.3,
                                         }}
-                                        delimiter=","
-                                        separator="."
-                                        precision={2}
+
 
                                         keyboardType="number-pad"
                                         placeholderTextColor={Colors.fontColorSecondary}
@@ -880,16 +938,57 @@ const SKUScreen = ({ route }) => {
                                         multiline={true}
                                         textAlign={'right'}
                                         placeholder={Language.t('main.pprice') + '..'}
-
-                                        onChangeValue={(val) => {
+                                        onBlur={() => set_Focus(item.GOODS_CODE, false)}
+                                        onChangeText={(val) => {
                                           set_SkuP(item.GOODS_CODE, val)
                                         }}
                                       />
-                                    </View>
+                                    </> : <>
+                                      < TouchableOpacity
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderBottomColor: Colors.backgroundLoginColor,
+                                          borderBottomWidth: 1,
+
+                                          padding: 0,
+                                          backgroundColor: Colors.backgroundColorSecondary,
+                                          flex: 0.3,
+                                        }}
+                                        onPress={() => {
+                                          set_Focus(item.GOODS_CODE, true)
+                                        }}>
+                                        <CurrencyInput
+                                          style={{
+                                            color: Colors.fontColor,
+
+                                          }}
+                                          editable={false}
+
+                                          delimiter=","
+                                          separator="."
+                                          precision={2}
+
+                                          keyboardType="number-pad"
+                                          placeholderTextColor={Colors.fontColorSecondary}
+                                          value={item.ARPLU_U_PRC}
+                                          multiline={true}
+                                          textAlign={'right'}
+                                          placeholder={Language.t('main.pprice') + '..'}
+                                          onPress={() => {
+                                            set_Focus(item.GOODS_CODE, true)
+                                          }}
+
+                                        />
+                                      </TouchableOpacity>
+
+                                    </>}
+
 
                                   </View>
                                 )
                               })}
+
                               <View style={styles.tableView}>
                                 <Text
                                   style={{
@@ -1067,7 +1166,7 @@ const styles = StyleSheet.create({
 
     paddingLeft: 10,
     paddingRight: 10,
-    paddingTop: 2,
+
     flexDirection: "row",
 
   },
