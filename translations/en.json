@@ -2,7 +2,7 @@
   "login": {
     "header": "",
     "mobileNo": "Mobile No",
-    "username":"User name",
+    "username": "User name",
     "password": "Password",
     "or": "Or",
     "and": " and ",
@@ -12,8 +12,8 @@
     "errorPasswordEmpty": "Please enter password",
     "errorIncorrentUsernameOrPassword": "Mobile number or password is incorrect",
     "errorNotfoundUsername": "Mobile number not found",
-    "rememberpassword":"Remember password",
-    "usestandard":"Use standard product features"
+    "rememberpassword": "Remember password",
+    "usestandard": "Use standard product features"
   },
   "register": {
     "header": "Register",
@@ -50,16 +50,16 @@
   },
   "main": {
     "header": "",
-    "goodscode":"Goods code",
-    "code":"code",
-    "unit":"unit",
-    "price":"price (baht)",
-    "pprice":"price",
+    "goodscode": "Goods code",
+    "code": "code",
+    "unit": "unit",
+    "price": "price (baht)",
+    "pprice": "price",
     "save": "save",
     "cancel": "cancel",
     "feeds": "Activities",
-    "promotion":"promotion",
-    "sppromotion":"special promotion",
+    "promotion": "promotion",
+    "sppromotion": "special promotion",
     "campaign": "Campaign",
     "privilage": "Privilage",
     "banner": "Banner",
@@ -77,8 +77,11 @@
     "changeLanguage": "Change Language",
     "language": "English",
     "logout": "Logout",
+    "alertsave0Message": "The price data is 0 or is empty.",
     "alertsaveMessage": "Do you want to save?",
     "alertLogoutMessage": "Do you want to log out?",
+    "exitProgram":"exit the program",
+    "DoexitProgram":"Do you want to exit the program?",
     "cancel": "Cancel"
   },
   "profile": {
@@ -101,14 +104,14 @@
     "lastName": "Last Name",
     "email": "E-mail",
     "savesucceed": "Save the information successfully.",
-    "succeed":"Succeed",
+    "succeed": "Succeed",
     "save": "Save",
     "alert": "Successful",
     "confirmEditProfile": "Confirm for edit profile?",
     "update7days": "The system will update within 7 working days",
-    "point":"point",
-    "Hellouse1":"Hello",
-    "Hellouse2":"now you have"
+    "point": "point",
+    "Hellouse1": "Hello",
+    "Hellouse2": "now you have"
   },
   "history": {
     "header": "Purchase / Redeem History",
@@ -129,6 +132,10 @@
   },
   "privilage": {
     "header": "Privilage",
+    "noData": "Data not found."
+  },
+  "Data": {
+    "header": "Data",
     "noData": "Data not found."
   },
   "banner": {
@@ -180,9 +187,10 @@
     "skip": "Skip",
     "next": "Next",
     "ok": "Ok",
-    "incorrect ":"Incorrect information",
+    "incompleteInformation": "Incomplete information.",
+    "incorrect ": "Incorrect information",
     "savesucceed": "Save the information successfully.",
-    "succeed":"Succeed",
+    "succeed": "Succeed",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "errorDetail": "Data not found",
@@ -192,19 +200,22 @@
     "header": "Set up database",
     "editheader": "\nPress \"Edit\" to edit ",
     "lebel": "Please Specify",
-    "name":"Business name",
-    "url":"Database address",
+    "name": "Business name",
+    "url": "Database address",
     "scanQR": "Scan QRCode",
     "questionAdd": "Would you like to add the ",
     "questionConnect": "Would you like to connect ?",
     "questionDelete": "Would you like to delete ?",
-    "invalid":"The QR_CODE is invalid",
-    "notfound":"QR_CODE not found",
-    "UnableConnec":"Unable to connect to the system",
+    "invalid": "The QR_CODE is invalid",
+    "notfound": "QR_CODE not found",
+    "UnableConnec": "Unable to connect to the system",
+    "UnableConnec1": "Unable to connect to",
+    "UnableConnec2": "",
     "Alert": "There is already information in the system.",
     "Alert2": "Want to edit ",
     "Alert3": "There is this information in the system. Can't save data.",
     "title": "Select business",
+    "connectAgain": "connect again",
     "connect": "Connect",
     "saveandconnect": "Save and connect",
     "edit": "Edit",
@@ -217,11 +228,11 @@
     "cannotDelete": "Can not delete the active database",
     "cannotEdit": "Can not edit the active database"
   },
-  "SelectImg":{
-    "SelectImg":"Choose Image",
-    "TakePhoto":"Take Photo",
-    "ChooseImage":"Choose from Library",
-    "Cancel":"Cancel"
+  "SelectImg": {
+    "SelectImg": "Choose Image",
+    "TakePhoto": "Take Photo",
+    "ChooseImage": "Choose from Library",
+    "Cancel": "Cancel"
   },
   "listEmpty": "Item not found",
   "qa": {

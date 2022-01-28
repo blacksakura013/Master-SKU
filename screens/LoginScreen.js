@@ -13,7 +13,7 @@ import {
   Platform,
   BackHandler,
   StatusBar,
- 
+
   ScrollView,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -81,7 +81,7 @@ const LoginScreen = () => {
 
     //backsakura013
   }, []);
-
+  let ED = false
   const [GUID, setGUID] = useStateIfMounted('');
 
   const [isSelected, setSelection] = useState(loginReducer.userloggedIn == true ? loginReducer.userloggedIn : false);
@@ -89,7 +89,7 @@ const LoginScreen = () => {
 
   const [loading, setLoading] = useStateIfMounted(false);
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
-  
+
   const [resultJson, setResultJson] = useState([]);
   const [marker, setMarker] = useState(false);
   const [username, setUsername] = useState(loginReducer.userloggedIn == true ? loginReducer.userNameED : '');
@@ -113,6 +113,7 @@ const LoginScreen = () => {
 
   }, [isSFeatures]);
   useEffect(() => {
+    console.log(`>> databaseReducer : ${databaseReducer.Data.nameser}`)
     console.log('>> machineNum :', registerReducer.machineNum + '\n\n\n\n')
   }, [registerReducer.machineNum]);
 
@@ -156,9 +157,11 @@ const LoginScreen = () => {
 
 
   const tslogin = async () => {
+    ED = false
     await setLoading(true)
     await regisMacAddED()
-    await regisMacAdd()
+    if (ED == true)
+      await regisMacAdd()
     await setLoading(false)
   }
 
@@ -199,7 +202,7 @@ const LoginScreen = () => {
         } else {
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t('alert.internetError'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + databaseReducer.Data.nameser + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
 
       });
@@ -264,7 +267,7 @@ const LoginScreen = () => {
 
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t('alert.internetError') + "1", [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + databaseReducer.Data.nameser + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
       });
     setLoading(false)
@@ -286,6 +289,7 @@ const LoginScreen = () => {
       .then(async (json) => {
         if (json.ResponseCode == 200 && json.ReasonString == 'Completed') {
           await _fetchGuidLogED();
+
         } else {
           console.log('Function Parameter Required');
           let temp_error = 'error_ser.' + json.ResponseCode;
@@ -293,6 +297,7 @@ const LoginScreen = () => {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          ED = false
         }
       })
       .catch((error) => {
@@ -303,12 +308,14 @@ const LoginScreen = () => {
             Language.t('alert.errorTitle'),
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         } else {
+          let tempurl = loginReducer.endpointMother.split(':8890')
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t('alert.internetError'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + tempurl[0] + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
-
+        ED = false
       });
+
   };
 
   const _fetchGuidLogED = async () => {
@@ -322,11 +329,7 @@ const LoginScreen = () => {
         'BPAPUS-PARAM':
           '{"BPAPUS-MACHINE": "' +
           registerReducer.machineNum +
-          '","BPAPUS-USERID": "' +
-          username +
-          '","BPAPUS-PASSWORD": "' +
-          password +
-          '"}',
+          '","BPAPUS-USERID": "BUSINESS","BPAPUS-PASSWORD": "SYSTEM"}',
       }),
     })
       .then((response) => response.json())
@@ -336,14 +339,16 @@ const LoginScreen = () => {
             Language.t('alert.errorTitle'),
             Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
           console.log('NOT FOUND MEMBER');
+          ED = false
         } else if (json && json.ResponseCode == '629') {
           Alert.alert(
             Language.t('alert.errorTitle'),
             'Function Parameter Required', [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          ED = false
         } else if (json && json.ResponseCode == '200') {
           let responseData = JSON.parse(json.ResponseData)
           dispatch(loginActions.guidEndPoint(responseData.BPAPUS_GUID))
-
+          ED = true
         } else {
           console.log('Function Parameter Required');
           let temp_error = 'error_ser.' + json.ResponseCode;
@@ -351,6 +356,7 @@ const LoginScreen = () => {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          ED = false
         }
       })
       .catch((error) => {
@@ -361,11 +367,13 @@ const LoginScreen = () => {
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
 
         } else {
-
+          let tempurl = loginReducer.endpointMother.split(':8890')
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t('alert.internetError') + "1", [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + tempurl[0] + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+
         }
+        ED = false
       });
 
   };
@@ -374,212 +382,212 @@ const LoginScreen = () => {
 
     <SafeAreaView style={container1}>
       <StatusBar hidden={true} />
-      <ImageBackground source={require(image)} onLoadEnd={()=>{setLoading_backG(false)}} resizeMode="cover" style={styles.image}>
-        {!loading_backG?
-        <ScrollView>
-          <KeyboardAvoidingView keyboardVerticalOffset={1} behavior={'position'}>
-            <View style={tabbar}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('SelectScreen',{data: '' })}>
-                <FontAwesomeIcon name="gear" size={30} color={Colors.backgroundLoginColorSecondary} />
-              </TouchableOpacity>
-              <Text
-                style={{
-                  marginLeft: 12,
-                  fontSize: FontSize.medium,
-                  color: Colors.backgroundLoginColorSecondary,
-                }}></Text>
-            </View>
-            <View>
-              <TouchableNativeFeedback>
-                <Image
-                  style={topImage}
-                  resizeMode={'contain'}
-                  source={require('../images/UI/Login/4x/Asset4_4x.png')}
-                />
-              </TouchableNativeFeedback>
-              <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: FontSize.large * 2, color: Colors.fontColor, fontWeight: 'bold' }}>Master SKU</Text>
+      <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
+        {!loading_backG ?
+          <ScrollView>
+            <KeyboardAvoidingView keyboardVerticalOffset={1} behavior={'position'}>
+              <View style={tabbar}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('SelectScreen', { data: '' })}>
+                  <FontAwesomeIcon name="gear" size={30} color={Colors.backgroundLoginColorSecondary} />
+                </TouchableOpacity>
+                <Text
+                  style={{
+                    marginLeft: 12,
+                    fontSize: FontSize.medium,
+                    color: Colors.backgroundLoginColorSecondary,
+                  }}></Text>
               </View>
-            </View>
-
-
-            <View style={{ margin: 10 }}>
-              <View
-                style={{
-                  backgroundColor: Colors.backgroundLoginColorSecondary,
-                  flexDirection: 'column',
-                  borderRadius: 10,
-                  paddingLeft: 20,
-                  paddingRight: 20,
-                  paddingTop: 20,
-                  paddingBottom: 10,
-
-                  shadowColor: Colors.borderColor,
-                  shadowOffset: {
-                    width: 0,
-                    height: 6,
-                  },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 1.0,
-
-                  elevation: 15,
-                }}>
-                <View style={{ height: 40, flexDirection: 'row' }}>
+              <View>
+                <TouchableNativeFeedback>
                   <Image
-                    style={{ height: 30, width: 30 }}
+                    style={topImage}
                     resizeMode={'contain'}
-                    source={require('../images/UI/Login/4x/Asset7_4x.png')}
+                    source={require('../images/UI/Login/4x/Asset4_4x.png')}
                   />
-
-                  <TextInput
-                    style={{
-                      flex: 8,
-                      marginLeft: 10,
-                      borderBottomColor: Colors.borderColor,
-                      color: Colors.fontColor,
-                      paddingVertical: 7,
-                      fontSize: FontSize.medium,
-                      borderBottomWidth: 0.7,
-
-                    }}
-
-                    placeholderTextColor={Colors.fontColorSecondary}
-                    value={username}
-                    maxLength={10}
-                    placeholder={Language.t('login.username')}
-                    onChangeText={(val) => {
-                      setUsername(val);
-                    }}></TextInput>
-                </View>
-              </View>
-            </View>
-
-            <View style={{ marginLeft: 10, marginRight: 10 }}>
-              <View
-                style={{
-                  backgroundColor: Colors.backgroundLoginColorSecondary,
-                  flexDirection: 'column',
-
-                  borderRadius: 10,
-                  paddingLeft: 20,
-                  paddingRight: 20,
-                  paddingTop: 20,
-                  paddingBottom: 10,
-
-                  shadowColor: Colors.borderColor,
-                  shadowOffset: {
-                    width: 0,
-                    height: 6,
-                  },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 1.0,
-
-                  elevation: 15,
-                }}>
-
-                <View style={{ height: 40, flexDirection: 'row' }}>
-                  <Image
-                    style={{ height: 30, width: 30 }}
-                    resizeMode={'contain'}
-                    source={require('../images/UI/Login/4x/Asset8_4x.png')}
-                  />
-
-                  <TextInput
-                    style={{
-                      flex: 8,
-                      marginLeft: 10,
-                      color: Colors.fontColor,
-                      paddingVertical: 7,
-                      fontSize: FontSize.medium,
-                      borderBottomColor: Colors.borderColor,
-                      borderBottomWidth: 0.7,
-                    }}
-                    secureTextEntry={data.secureTextEntry ? true : false}
-                    keyboardType="default"
-                    maxLength={8}
-                    value={password}
-                    placeholderTextColor={Colors.fontColorSecondary}
-                    placeholder={Language.t('login.password')}
-                    onChangeText={(val) => {
-                      setPassword(val);
-                    }}
-                  />
-
-                  <TouchableOpacity onPress={updateSecureTextEntry}>
-                    {data.secureTextEntry ? (
-                      <FontAwesomeIcon
-                        name="eye-slash"
-                        size={25}
-                        color={Colors.borderColor}
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        name="eye"
-                        size={25}
-                        color={Colors.borderColor}></FontAwesomeIcon>
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-            <View style={styles.checkboxContainer}>
-              <View></View>
-              <CheckBox
-                value={isSelected}
-                onValueChange={(value) => setSelection(value)}
-
-                tintColors={{ true: Colors.fontColor, false: Colors.fontColor }}
-                style={styles.checkbox}
-              />
-              <Text style={styles.label}>{Language.t('login.rememberpassword')}</Text>
-            </View>
-            <View style={{ marginLeft: 10, marginRight: 10 }}>
-              <View
-                style={{
-                  flexDirection: 'column',
-                }}>
-                <TouchableNativeFeedback
-                  onPress={() => tslogin()}>
-                  <View
-                    style={{
-                      borderRadius: 10,
-                      flexDirection: 'column',
-                      padding: 20,
-                      backgroundColor: Colors.buttonColorPrimary,
-                    }}>
-                    <Text
-                      style={{
-                        color: Colors.buttonTextColor,
-                        alignSelf: 'center',
-                        fontSize: FontSize.medium,
-                        fontWeight: 'bold',
-                      }}>
-                      {Language.t('login.buttonLogin')}
-                    </Text>
-                  </View>
                 </TouchableNativeFeedback>
-
-
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={{ fontSize: FontSize.large * 2, color: Colors.fontColor, fontWeight: 'bold' }}>Master SKU</Text>
+                </View>
               </View>
+
+
+              <View style={{ margin: 10 }}>
+                <View
+                  style={{
+                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    flexDirection: 'column',
+                    borderRadius: 10,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    paddingTop: 20,
+                    paddingBottom: 10,
+
+                    shadowColor: Colors.borderColor,
+                    shadowOffset: {
+                      width: 0,
+                      height: 6,
+                    },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 1.0,
+
+                    elevation: 15,
+                  }}>
+                  <View style={{ height: 40, flexDirection: 'row' }}>
+                    <Image
+                      style={{ height: 30, width: 30 }}
+                      resizeMode={'contain'}
+                      source={require('../images/UI/Login/4x/Asset7_4x.png')}
+                    />
+
+                    <TextInput
+                      style={{
+                        flex: 8,
+                        marginLeft: 10,
+                        borderBottomColor: Colors.borderColor,
+                        color: Colors.fontColor,
+                        paddingVertical: 7,
+                        fontSize: FontSize.medium,
+                        borderBottomWidth: 0.7,
+
+                      }}
+
+                      placeholderTextColor={Colors.fontColorSecondary}
+                      value={username}
+                      maxLength={10}
+                      placeholder={Language.t('login.username')}
+                      onChangeText={(val) => {
+                        setUsername(val);
+                      }}></TextInput>
+                  </View>
+                </View>
+              </View>
+
+              <View style={{ marginLeft: 10, marginRight: 10 }}>
+                <View
+                  style={{
+                    backgroundColor: Colors.backgroundLoginColorSecondary,
+                    flexDirection: 'column',
+
+                    borderRadius: 10,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    paddingTop: 20,
+                    paddingBottom: 10,
+
+                    shadowColor: Colors.borderColor,
+                    shadowOffset: {
+                      width: 0,
+                      height: 6,
+                    },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 1.0,
+
+                    elevation: 15,
+                  }}>
+
+                  <View style={{ height: 40, flexDirection: 'row' }}>
+                    <Image
+                      style={{ height: 30, width: 30 }}
+                      resizeMode={'contain'}
+                      source={require('../images/UI/Login/4x/Asset8_4x.png')}
+                    />
+
+                    <TextInput
+                      style={{
+                        flex: 8,
+                        marginLeft: 10,
+                        color: Colors.fontColor,
+                        paddingVertical: 7,
+                        fontSize: FontSize.medium,
+                        borderBottomColor: Colors.borderColor,
+                        borderBottomWidth: 0.7,
+                      }}
+                      secureTextEntry={data.secureTextEntry ? true : false}
+                      keyboardType="default"
+                      maxLength={8}
+                      value={password}
+                      placeholderTextColor={Colors.fontColorSecondary}
+                      placeholder={Language.t('login.password')}
+                      onChangeText={(val) => {
+                        setPassword(val);
+                      }}
+                    />
+
+                    <TouchableOpacity onPress={updateSecureTextEntry}>
+                      {data.secureTextEntry ? (
+                        <FontAwesomeIcon
+                          name="eye-slash"
+                          size={25}
+                          color={Colors.borderColor}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          name="eye"
+                          size={25}
+                          color={Colors.borderColor}></FontAwesomeIcon>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.checkboxContainer}>
+                <View></View>
+                <CheckBox
+                  value={isSelected}
+                  onValueChange={(value) => setSelection(value)}
+
+                  tintColors={{ true: Colors.fontColor, false: Colors.fontColor }}
+                  style={styles.checkbox}
+                />
+                <Text style={styles.label}>{Language.t('login.rememberpassword')}</Text>
+              </View>
+              <View style={{ marginLeft: 10, marginRight: 10 }}>
+                <View
+                  style={{
+                    flexDirection: 'column',
+                  }}>
+                  <TouchableNativeFeedback
+                    onPress={() => tslogin()}>
+                    <View
+                      style={{
+                        borderRadius: 10,
+                        flexDirection: 'column',
+                        padding: 20,
+                        backgroundColor: Colors.buttonColorPrimary,
+                      }}>
+                      <Text
+                        style={{
+                          color: Colors.buttonTextColor,
+                          alignSelf: 'center',
+                          fontSize: FontSize.medium,
+                          fontWeight: 'bold',
+                        }}>
+                        {Language.t('login.buttonLogin')}
+                      </Text>
+                    </View>
+                  </TouchableNativeFeedback>
+
+
+                </View>
+              </View>
+
+            </KeyboardAvoidingView>
+            <View style={{ marginTop: 10, alignItems: 'center' }} >
+              <View style={styles.checkboxContainer}>
+                <View></View>
+                <CheckBox
+                  value={isSFeatures}
+                  onValueChange={(value) => setSFeatures(value)}
+
+                  tintColors={{ true: Colors.fontColor, false: Colors.fontColor }}
+                  style={styles.checkbox}
+                />
+                <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
+              </View>
+
             </View>
-
-          </KeyboardAvoidingView>
-          <View style={{ marginTop: 10, alignItems: 'center' }} >
-            <View style={styles.checkboxContainer}>
-              <View></View>
-              <CheckBox
-                value={isSFeatures}
-                onValueChange={(value) => setSFeatures(value)}
-
-                tintColors={{ true: Colors.fontColor, false: Colors.fontColor }}
-                style={styles.checkbox}
-              />
-              <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
-            </View>
-
-          </View>
-        </ScrollView>: <View
+          </ScrollView> : <View
             style={{
               width: deviceWidth,
               height: deviceHeight,
@@ -636,7 +644,7 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container1: {
-   
+
     flex: 1,
     flexDirection: 'column',
   },

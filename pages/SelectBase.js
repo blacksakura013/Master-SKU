@@ -136,43 +136,10 @@ const SelectBase = ({ route }) => {
     }
   }
 
-  const _onPressSelected = async () => {
-    setLoading(true)
-    for (let i in items) {
-      if (items[i].nameser == selectbaseValue) {
-        dispatch(databaseActions.setData(items[i]));
-        Alert.alert(
-          Language.t('alert.succeed'),
-          Language.t('selectBase.connect') + ' ' + selectbaseValue + ' ' + Language.t('alert.succeed'), [{
-            text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
-              navigation.replace('LoginStackScreen')
-            )
-          }]);
 
-      }
-    }
-  }
-  const _onPressEdit = () => {
-    a = Math.floor(100000 + Math.random() * 900000);
-    console.log(a)
-    console.log(databaseReducer.Data.nameser)
-    console.log(selectbaseValue)
-    if (databaseReducer.Data.nameser == selectbaseValue) {
-      Alert.alert(
-        Language.t('alert.errorTitle'),
-        Language.t('selectBase.cannotEdit'), [{
-          text: Language.t('alert.ok'), onPress: () => { }
-        }]);
-    } else {
-      navigation.navigate('EditBase', {
-        selectbaseValue: selectbaseValue,
-        data: a
-      });
-    }
-
-  }
 
   const checkValue = () => {
+    setLoading(true)
     let c = true
     if (basename == '') {
 
@@ -230,7 +197,8 @@ const SelectBase = ({ route }) => {
   }
 
   const _onPressAddbase = async () => {
-    await setLoading(true)
+    setLoading(true)
+    console.log(loading)
     let tempurl = baseurl.split('.dll')
     let newurl = tempurl[0] + '.dll'
     let temp = []
@@ -707,7 +675,7 @@ const SelectBase = ({ route }) => {
 
 
                   <View style={styles.body1e}>
-                    <TouchableNativeFeedback
+                    <TouchableOpacity
                       onPress={() => _onPressAddbase()}>
                       <View
                         style={{
@@ -728,11 +696,11 @@ const SelectBase = ({ route }) => {
                           {Language.t('selectBase.saveandconnect')}
                         </Text>
                       </View>
-                    </TouchableNativeFeedback>
+                    </TouchableOpacity>
 
                     {items.length > 0 ? (
 
-                      <TouchableNativeFeedback
+                      <TouchableOpacity
                         onPress={() => _onPressDelete()}>
                         <View
                           style={{
@@ -753,11 +721,11 @@ const SelectBase = ({ route }) => {
                             {Language.t('selectBase.delete')}
                           </Text>
                         </View>
-                      </TouchableNativeFeedback>
+                      </TouchableOpacity>
 
                     ) : (
 
-                      <TouchableNativeFeedback
+                      <TouchableOpacity
                         onPress={() => null}>
                         <View
                           style={{
@@ -779,7 +747,7 @@ const SelectBase = ({ route }) => {
                             {Language.t('selectBase.delete')}
                           </Text>
                         </View>
-                      </TouchableNativeFeedback>
+                      </TouchableOpacity>
                     )}
 
                   </View>
@@ -792,6 +760,7 @@ const SelectBase = ({ route }) => {
 
             </SafeAreaView>
           </ScrollView>
+
         </> : <View
           style={{
             width: deviceWidth,
@@ -822,7 +791,7 @@ const SelectBase = ({ route }) => {
               width: deviceWidth,
               height: deviceHeight,
               opacity: 0.5,
-              backgroundColor: Colors.backgroundColorSecondary,
+              backgroundColor: 'black',
               alignSelf: 'center',
               justifyContent: 'center',
               alignContent: 'center',
@@ -843,6 +812,7 @@ const SelectBase = ({ route }) => {
           </View>
         )}
       </ImageBackground>
+
     </View>
   )
 }
