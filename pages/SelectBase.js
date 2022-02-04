@@ -66,6 +66,7 @@ const SelectBase = ({ route }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isShowDialog, setShowDialog] = useState(false);
+  
   const [loading, setLoading] = useStateIfMounted(false);
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
   const [machineNo, setMachineNo] = useState('');
@@ -261,7 +262,71 @@ const SelectBase = ({ route }) => {
     }
 
   }
+  const _onPressAdd = async () => {
+    setLoading(true)
+    console.log(loading)
+    let tempurl = baseurl.split('.dll')
+    let newurl = tempurl[0] + '.dll'
+    let temp = []
+    let check = false;
+    let checktest = false;
 
+    if (checkValue() == true) {
+      temp = items;
+      for (let i in items) {
+        if (i != updateindex) {
+          if (items[i].nameser != basename && items[i].urlser == newurl) {
+            checktest = true
+          } else if (items[i].nameser == basename && items[i].urlser != newurl) {
+            checktest = true
+          }
+        }
+      }
+      if (!checktest) {
+        for (let i in items) {
+          if (items[i].nameser == basename && items[i].urlser == newurl) {
+            checkIPAddress('0')
+            check = true;
+          } else {
+            if (
+              items[i].nameser == basename
+            ) {
+              Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.url'), [{
+                text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
+              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              check = true;
+              break;
+            } else if (
+              items[i].urlser == newurl
+            ) {
+              Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.name'), [{
+                text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
+              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              check = true;
+              break;
+            }
+          }
+        }
+        if (!check) {
+          checkIPAddress('1')
+        } else {
+          setLoading(false)
+        }
+      } else {
+        Alert.alert(
+          Language.t('alert.errorTitle'),
+          Language.t('selectBase.Alert3'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
+        setLoading(false)
+      }
+      setLoading(false)
+    } else {
+      Alert.alert(
+        Language.t('alert.errorTitle'),
+        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+      setLoading(false)
+    }
+
+  }
 
 
   const checkIPAddress = async (state) => {

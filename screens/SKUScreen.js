@@ -396,7 +396,6 @@ const SKUScreen = ({ route }) => {
 
           let temp_GoodData = [];
           for (var i in responseData.GOODSMASTER) {
-
             let newGoodobj = {
               GOODS_KEY: responseData.GOODSMASTER[i].GOODS_KEY ? responseData.GOODSMASTER[i].GOODS_KEY : '',
               GOODS_CODE: responseData.GOODSMASTER[i].GOODS_CODE ? responseData.GOODSMASTER[i].GOODS_CODE : '',
@@ -558,10 +557,7 @@ const SKUScreen = ({ route }) => {
         })
         .catch((error) => {
           console.log(ser_die)
-
           console.error('ERROR at fetchContent >> ' + error)
-
-
         })
     } else {
       setSKUMASTER([])
@@ -590,7 +586,7 @@ const SKUScreen = ({ route }) => {
   const pushData = async () => {
     dieSer('pushData')
     setLoading(true)
-    on_cancel()
+   
     if (Temp_report != '') {
 
 
@@ -680,15 +676,14 @@ const SKUScreen = ({ route }) => {
           console.log(json)
 
           setLoading(false)
+          on_cancel()
           setCountdown(-1)
         })
         .catch((error) => {
 
           console.log('Function Parameter Required');
 
-          Alert.alert(Language.t('alert.errorTitle'), Language.t('alert.errorDetail'), [{
-            text: Language.t('alert.ok'), onPress: () => { setLoading(false) }
-          }])
+       
 
         })
     } else {
