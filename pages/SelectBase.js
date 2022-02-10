@@ -66,7 +66,7 @@ const SelectBase = ({ route }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isShowDialog, setShowDialog] = useState(false);
-  
+
   const [loading, setLoading] = useStateIfMounted(false);
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
   const [machineNo, setMachineNo] = useState('');
@@ -194,7 +194,7 @@ const SelectBase = ({ route }) => {
 
       }
     }
-    setLoading(false)
+    
   }
 
   const _onPressAddbase = async () => {
@@ -244,16 +244,14 @@ const SelectBase = ({ route }) => {
         }
         if (!check) {
           checkIPAddress('1')
-        } else {
-          setLoading(false)
-        }
+        }  
       } else {
         Alert.alert(
           Language.t('alert.errorTitle'),
           Language.t('selectBase.Alert3'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
         setLoading(false)
       }
-      setLoading(false)
+      
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
@@ -309,8 +307,6 @@ const SelectBase = ({ route }) => {
         }
         if (!check) {
           checkIPAddress('1')
-        } else {
-          setLoading(false)
         }
       } else {
         Alert.alert(
@@ -318,7 +314,7 @@ const SelectBase = ({ route }) => {
           Language.t('selectBase.Alert3'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
         setLoading(false)
       }
-      setLoading(false)
+
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
@@ -404,12 +400,13 @@ const SelectBase = ({ route }) => {
               } else {
                 console.log('Function Parameter Required');
                 let temp_error = 'error_ser.' + json.ResponseCode;
-                console.log('>> ', temp_error)
+                
                 Alert.alert(
                   Language.t('alert.errorTitle'),
                   Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
+                setLoading(false)
               }
-              setLoading(false)
+
             })
             .catch((error) => {
               Alert.alert(
@@ -425,8 +422,9 @@ const SelectBase = ({ route }) => {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            setLoading(false)
         }
-        setLoading(false)
+     
       })
       .catch((error) => {
         Alert.alert(

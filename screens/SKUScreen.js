@@ -226,6 +226,7 @@ const SKUScreen = ({ route }) => {
       }
       console.log(GOODSMASTER[i].GOODS_CODE)
     }
+
     setGOODSMASTER(temp_array)
     console.log(temp_array)
   }
@@ -257,6 +258,7 @@ const SKUScreen = ({ route }) => {
       }
       console.log(GOODSMASTER[i].GOODS_CODE)
     }
+
     setGOODSMASTER(temp_array)
     console.log(temp_array)
   }
@@ -415,6 +417,7 @@ const SKUScreen = ({ route }) => {
             }
             temp_GoodData.push(newGoodobj)
           }
+          temp_GoodData.sort((a, b) => (parseInt(a.UTQ_QTY) > parseInt(b.UTQ_QTY)) ? 1 : ((parseInt(b.UTQ_QTY) > parseInt(a.UTQ_QTY)) ? -1 : 0))
           setGOODSMASTER(temp_GoodData)
           setSKUMASTER(newSkuobj)
         } else {
@@ -533,11 +536,9 @@ const SKUScreen = ({ route }) => {
                 TAG_NAME: responseData.GOODSMASTER[i].TAG_NAME ? responseData.GOODSMASTER[i].TAG_NAME : ''
               }
               temp_GoodData.push(newGoodobj)
-
-
             }
-
-
+            temp_GoodData.sort((a, b) => (parseInt(a.UTQ_QTY) > parseInt(b.UTQ_QTY)) ? 1 : ((parseInt(b.UTQ_QTY) > parseInt(a.UTQ_QTY)) ? -1 : 0))
+            console.log(temp_GoodData)
             setSKUMASTER(newSkuobj)
             setGOODSMASTER(temp_GoodData)
 
@@ -586,7 +587,7 @@ const SKUScreen = ({ route }) => {
   const pushData = async () => {
     dieSer('pushData')
     setLoading(true)
-   
+
     if (Temp_report != '') {
 
 
@@ -683,7 +684,7 @@ const SKUScreen = ({ route }) => {
 
           console.log('Function Parameter Required');
 
-       
+
 
         })
     } else {
@@ -714,6 +715,7 @@ const SKUScreen = ({ route }) => {
                   flex: 8,
                   marginLeft: 10,
                   borderBottomColor: Colors.borderColor,
+                 
                   color: Colors.fontColor,
                   padding: 10,
                   fontSize: FontSize.medium,
@@ -911,9 +913,6 @@ const SKUScreen = ({ route }) => {
                                       editable={false}
                                       placeholderTextColor={Colors.fontColorSecondary}
                                       value={item.GOODS_CODE}
-
-
-
                                     />
                                     <View style={{
                                       color: Colors.fontColor,
@@ -947,8 +946,6 @@ const SKUScreen = ({ route }) => {
                                           backgroundColor: Colors.backgroundColorSecondary,
                                           flex: 0.3,
                                         }}
-
-
                                         keyboardType="number-pad"
                                         placeholderTextColor={Colors.fontColorSecondary}
                                         value={item.ARPLU_U_PRC}
