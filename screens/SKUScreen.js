@@ -43,7 +43,7 @@ import * as loginActions from '../src/actions/loginActions';
 import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 import safe_Format from '../src/safe_Format';
-import { fontWeight } from 'styled-system';
+import { fontWeight, height, margin } from 'styled-system';
 const SKUScreen = ({ route }) => {
   let arrayResult = [];
 
@@ -128,9 +128,30 @@ const SKUScreen = ({ route }) => {
     if (route.params.post) {
       setGOODS_CODE(route.params.post)
       fetchBarcodeData(route.params.post)
-
     }
-    console.log(route.params.data)
+    if (route.params?.GOODSMASTER) {
+      for (var i in route.params.GOODSMASTER)
+        console.log(`GOODSMASTER >> ${route.params.GOODSMASTER[i]}`)
+      // route.params.GOODSMASTER.map((item) => {
+      //   return console.log(`GOODSMASTER >> ${item}`)
+      // })
+
+
+
+      setGOODSMASTER(route.params.GOODSMASTER)
+    }
+    if (route.params?.SKUMASTER) {
+
+      console.log(`SKUMASTER >> ${route.params.SKUMASTER.UTQ_S_NAME}`)
+
+      setSKUMASTER(route.params.SKUMASTER)
+      setTemp_report(route.params.SKUMASTER.SKU_NAME)
+      setGOODS_CODE(route.params.SKUMASTER.SKU_CODE)
+    }
+    if (route.params?.data && route.params.data == 'on_cancel') {
+      on_cancel()
+    }
+
 
 
   }, [route.params?.data]);
@@ -270,6 +291,12 @@ const SKUScreen = ({ route }) => {
     fetchMotherData(tempGuid)
   };
 
+  const AddNewData = (fetchBarcodeData) => {
+    Alert.alert(
+      Language.t('alert.errorDetail'),
+      Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.add'), onPress: () => navigation.navigate('NewSKUScreen', { post: fetchBarcodeData ? fetchBarcodeData : GOODS_CODE, data: GOODSMASTER }) }, { text: Language.t('alert.cancel'), onPress: () => console.log('cancel Pressed') }]);
+  }
+
   const logOut = async () => {
     setLoading(true)
     dieSer('logOut')
@@ -295,9 +322,7 @@ const SKUScreen = ({ route }) => {
       .then((json) => {
         setLoading(false)
         if (json && json.ResponseCode == '635') {
-          Alert.alert(
-            Language.t('alert.errorTitle'),
-            Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+
           console.log('NOT FOUND MEMBER');
         } else if (json && json.ResponseCode == '629') {
           Alert.alert(
@@ -355,10 +380,10 @@ const SKUScreen = ({ route }) => {
             SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
             SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
 
-            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 0,
+            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 3,
             SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
-            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 0,
-            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 0,
+            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 2,
+            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 1,
             SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
 
             UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
@@ -424,9 +449,8 @@ const SKUScreen = ({ route }) => {
           setGOODSMASTER([])
           setSKUMASTER([])
           setTemp_report(Language.t('alert.errorDetail'));
-          Alert.alert('', Language.t('alert.errorDetail'), [{
-            text: Language.t('alert.ok'), onPress: () => { }
-          }]);
+          AddNewData(fetchBarcodeData)
+
         }
         setLoading(false)
         setCountdown(-1)
@@ -475,10 +499,10 @@ const SKUScreen = ({ route }) => {
               SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
               SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
 
-              SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 0,
+              SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 3,
               SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
-              SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 0,
-              SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 0,
+              SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 2,
+              SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 1,
               SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
 
               UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
@@ -548,9 +572,8 @@ const SKUScreen = ({ route }) => {
             setSKUMASTER([])
             setGOODSMASTER([])
             setTemp_report(Language.t('alert.errorDetail'));
-            Alert.alert('', Language.t('alert.errorDetail'), [{
-              text: Language.t('alert.ok'), onPress: () => { }
-            }]);
+            AddNewData()
+
             setLoading(false)
           }
           setCountdown(-1)
@@ -589,8 +612,6 @@ const SKUScreen = ({ route }) => {
     setLoading(true)
 
     if (Temp_report != '') {
-
-
       let temp_good = '';
       for (var i in GOODSMASTER) {
         if (i > 0) temp_good += ','
@@ -609,7 +630,6 @@ const SKUScreen = ({ route }) => {
           '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
           '\",\"TAG_NAME\": \"' + GOODSMASTER[i].TAG_NAME +
           '\"}'
-
       }
 
       console.log(databaseReducer.Data.urlser)
@@ -681,16 +701,12 @@ const SKUScreen = ({ route }) => {
           setCountdown(-1)
         })
         .catch((error) => {
-
           console.log('Function Parameter Required');
-
-
-
         })
     } else {
-      Alert.alert(Language.t('alert.errorTitle'), Language.t('alert.errorDetail'), [{
-        text: Language.t('alert.ok'), onPress: () => { setLoading(false) }
-      }])
+      setLoading(false)
+      AddNewData()
+
     }
 
   }
@@ -701,25 +717,20 @@ const SKUScreen = ({ route }) => {
       <StatusBar hidden={true} />
       <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
         {!loading_backG ? <>
-          <View style={{ marginTop: 150 }}>
-
-          </View>
+           
           <View style={tabbar} >
             <View style={{
               backgroundColor: '#fff', alignSelf: 'center',
               justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
             }}>
-
               <TextInput
                 style={{
                   flex: 8,
                   marginLeft: 10,
                   borderBottomColor: Colors.borderColor,
-                 
                   color: Colors.fontColor,
                   padding: 10,
                   fontSize: FontSize.medium,
-
                 }}
                 keyboardType="number-pad"
                 placeholderTextColor={Colors.fontColorSecondary}
@@ -731,7 +742,7 @@ const SKUScreen = ({ route }) => {
                   setGOODS_CODE(val)
                 }} />
 
-              <TouchableOpacity style={{ padding: 10, }} onPress={() => fetchMotherData()}>
+              <TouchableOpacity style={{ paddingTop: 10,paddingBottom: 10, }} onPress={() => fetchMotherData()}>
                 <Image
                   source={
                     require('../images/UI/SKU/4x/Asset26_4x.png')
@@ -742,6 +753,17 @@ const SKUScreen = ({ route }) => {
                   }}
                 />
               </TouchableOpacity>
+              <TouchableOpacity style={{ padding: 5,  }} onPress={() => on_scan()}>
+              <Image
+                source={
+                  require('../images/UI/SKU/4x/Asset30_4x.png')
+                }
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </TouchableOpacity>
             </View>
           </View>
           <View style={{ marginLeft: 10, marginRight: 10 }}>
@@ -758,274 +780,250 @@ const SKUScreen = ({ route }) => {
                   padding: 40,
                   fontSize: 30,
                   textAlign: 'center'
-                }}
-              >
+                }}>
                 {Temp_report ? Temp_report : null}
               </Text>
             </View>
           </View>
-          <ScrollView>
-            <SafeAreaView >
-              <KeyboardAvoidingView >
-                <View style={styles.body}>
-                  <View style={styles.table}>
-                    <View style={styles.tableHeader}>
-                      <View style={{ flex: 0.5 }}  >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> {Language.t('main.code')}</Text></View>
-                      <View style={{ flex: 0.3, }}  >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}>{Language.t('main.unit')}</Text></View>
-                      <View style={{ flex: 0.3 }} >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> {Language.t('main.price')} </Text></View>
-                    </View>
-                    <ScrollView>
-                      <KeyboardAvoidingView keyboardVerticalOffset={1} >
-                        <TouchableNativeFeedback >
-                          {GOODSMASTER.length <= 0 ? (
-                            <>
+        <View style={{height:deviceHeight/2.2}}>
+        <ScrollView   >
+          
+          <KeyboardAvoidingView keyboardVerticalOffset={1}>
+            <View style={styles.body}>
+              <View style={styles.table}>
+                <View style={styles.tableHeader}>
+                  <View style={{ flex: 0.5 }}  >
+                    <Text style={{
+                      fontSize: FontSize.medium,
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}> {Language.t('main.code')}</Text></View>
+                  <View style={{ flex: 0.3, }}  >
+                    <Text style={{
+                      fontSize: FontSize.medium,
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}>{Language.t('main.unit')}</Text></View>
+                  <View style={{ flex: 0.3 }} >
+                    <Text style={{
+                      fontSize: FontSize.medium,
+                      color: Colors.backgroundColorSecondary,
+                      fontWeight: 'bold'
+                    }}> {Language.t('main.price')} </Text></View>
+                </View>
+                <ScrollView>
+                      {GOODSMASTER.length <= 0 ? (
+                        <>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}>
+                            </Text>
+                          </View>
+                        </>) : (<>
+                          {GOODSMASTER.map((item) => {
+                            return (
                               <View style={styles.tableView}>
+                                <TextInput
+                                  style={{
+                                    color: Colors.fontColor,
+                                    fontSize: FontSize.medium,
+                                    flex: 0.5
+                                  }}
+                                  multiline={true}
+                                  editable={false}
+                                  placeholderTextColor={Colors.fontColorSecondary}
+                                  value={item.GOODS_CODE}
+                                />
+                                <View style={{
+                                  color: Colors.fontColor,
+                                  fontSize: FontSize.medium,
+                                  flex: 0.3
+                                }}>
+                                  <TextInput
+                                    style={{
+                                      color: Colors.fontColor,
+                                    }}
+                                    multiline={true}
+                                    editable={false}
+                                    placeholderTextColor={Colors.fontColorSecondary}
+                                    value={item.onFocus == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_ARPLU_U_PRC.length > 0 ? item.Temp_ARPLU_U_PRC : 0} )`}
+                                  />
+                                </View>
 
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-
-                                >
-                                </Text>
-
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
-                              </View>
-
-                            </>) : (<>
-                              {GOODSMASTER.map((item) => {
-                                return (
-                                  <View style={styles.tableView}>
-                                    <TextInput
-                                      style={{
-                                        color: Colors.fontColor,
-                                        fontSize: FontSize.medium,
-                                        flex: 0.5
-                                      }}
-                                      multiline={true}
-                                      editable={false}
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.GOODS_CODE}
-                                    />
-                                    <View style={{
+                                {item.onFocus == true ? <>
+                                  <TextInput
+                                    style={{
                                       color: Colors.fontColor,
                                       fontSize: FontSize.medium,
-                                      flex: 0.3
+                                      borderBottomColor: Colors.backgroundLoginColor,
+                                      borderBottomWidth: 1,
+                                      padding: 0,
+                                      backgroundColor: Colors.backgroundColorSecondary,
+                                      flex: 0.3,
+                                    }}
+                                    keyboardType="number-pad"
+                                    placeholderTextColor={Colors.fontColorSecondary}
+                                    value={item.ARPLU_U_PRC}
+                                    multiline={true}
+                                    textAlign={'right'}
+                                    placeholder={Language.t('main.pprice') + '..'}
+                                    onBlur={() => set_Focus(item.GOODS_CODE, false)}
+                                    onChangeText={(val) => {
+                                      set_SkuP(item.GOODS_CODE, val)
+                                    }}
+                                  />
+                                </> : <>
+                                  < TouchableOpacity
+                                    style={{
+                                      color: Colors.fontColor,
+                                      fontSize: FontSize.medium,
+                                      borderBottomColor: Colors.backgroundLoginColor,
+                                      borderBottomWidth: 1,
+                                      padding: 0,
+                                      backgroundColor: Colors.backgroundColorSecondary,
+                                      flex: 0.3,
+                                    }}
+                                    onPress={() => {
+                                      set_Focus(item.GOODS_CODE, true)
                                     }}>
-
-
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-
-                                        }}
-                                        multiline={true}
-                                        editable={false}
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={item.onFocus == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_ARPLU_U_PRC.length > 0 ? item.Temp_ARPLU_U_PRC : 0} )`}
-                                      />
-
-
-                                    </View>
-
-                                    {item.onFocus == true ? <>
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: Colors.backgroundLoginColor,
-                                          borderBottomWidth: 1,
-                                          padding: 0,
-                                          backgroundColor: Colors.backgroundColorSecondary,
-                                          flex: 0.3,
-                                        }}
-                                        keyboardType="number-pad"
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={item.ARPLU_U_PRC}
-                                        multiline={true}
-                                        textAlign={'right'}
-                                        placeholder={Language.t('main.pprice') + '..'}
-                                        onBlur={() => set_Focus(item.GOODS_CODE, false)}
-                                        onChangeText={(val) => {
-                                          set_SkuP(item.GOODS_CODE, val)
-                                        }}
-                                      />
-                                    </> : <>
-                                      < TouchableOpacity
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: Colors.backgroundLoginColor,
-                                          borderBottomWidth: 1,
-
-                                          padding: 0,
-                                          backgroundColor: Colors.backgroundColorSecondary,
-                                          flex: 0.3,
-                                        }}
-                                        onPress={() => {
-                                          set_Focus(item.GOODS_CODE, true)
-                                        }}>
-                                        <CurrencyInput
-                                          style={{
-                                            color: Colors.fontColor,
-
-                                          }}
-                                          editable={false}
-
-                                          delimiter=","
-                                          separator="."
-                                          precision={2}
-
-                                          keyboardType="number-pad"
-                                          placeholderTextColor={Colors.fontColorSecondary}
-                                          value={item.ARPLU_U_PRC}
-                                          multiline={true}
-                                          textAlign={'right'}
-                                          placeholder={Language.t('main.pprice') + '..'}
-                                          onPress={() => {
-                                            set_Focus(item.GOODS_CODE, true)
-                                          }}
-
-                                        />
-                                      </TouchableOpacity>
-
-                                    </>}
-
-
-                                  </View>
-                                )
-                              })}
-
-                              <View style={styles.tableView}>
-                                <Text
-                                  style={{
-                                    color: Colors.fontColor,
-                                    fontSize: FontSize.medium,
-                                    flex: 0.5
-                                  }}
-                                >
-                                </Text>
+                                    <CurrencyInput
+                                      style={{ color: Colors.fontColor, }}
+                                      editable={false}
+                                      delimiter=","
+                                      separator="."
+                                      precision={2}
+                                      keyboardType="number-pad"
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.ARPLU_U_PRC}
+                                      multiline={true}
+                                      textAlign={'right'}
+                                      placeholder={Language.t('main.pprice') + '..'}
+                                      onPress={() => {
+                                        set_Focus(item.GOODS_CODE, true)
+                                      }}
+                                    />
+                                  </TouchableOpacity>
+                                </>}
                               </View>
-                            </>)}
-                        </TouchableNativeFeedback>
-                      </KeyboardAvoidingView>
-                    </ScrollView>
+                            )
+                          })}
+                          <TouchableOpacity style={{ width: deviceWidth / 3, }} onPress={() => Alert.alert('', Language.t('trading.addTrading'), [{ text: Language.t('selectBase.yes'), onPress: () => navigation.navigate('AddbarSKUScreen', { post: '', data: '', SKUMASTER: SKUMASTER, GOODSMASTER: GOODSMASTER }) }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
+                            <View style={{ margin: 10, padding: 10, flexDirection: "row", justifyContent: 'space-between', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
+                              <FontAwesome name="plus" style={{ color: Colors.backgroundLoginColorSecondary, }} size={FontSize.large} />
+                              <Text style={{ color: Colors.backgroundLoginColorSecondary, fontSize: FontSize.medium, }}>{Language.t('alert.add')}</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <View style={styles.tableView}>
+                            <Text
+                              style={{
+                                color: Colors.fontColor,
+                                fontSize: FontSize.medium,
+                                flex: 0.5
+                              }}
+                            >
+                            </Text>
+                          </View>
+                        </>)}
+                 
+                 
+                </ScrollView>
+               
 
-                  </View>
-                </View>
+              </View>
+            </View>
 
-              </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
 
-            </SafeAreaView>
-          </ScrollView>
-
+        
+      </ScrollView>
+        </View>
+         
+         
           <View style={styles.footer}>
             <View></View>
             <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
@@ -1167,7 +1165,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     flexDirection: "row",
-    height: 80,
+    
     left: 0,
     top: deviceHeight - 80,
     width: deviceWidth,

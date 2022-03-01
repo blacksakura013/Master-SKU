@@ -45,6 +45,7 @@ import { FontSize } from '../components/FontSizeHelper';
 
 import * as loginActions from '../src/actions/loginActions';
 import * as registerActions from '../src/actions/registerActions';
+import * as activityActions from '../src/actions/activityActions';
 import * as databaseActions from '../src/actions/databaseActions';
 
 import Colors from '../src/Colors';
@@ -81,6 +82,7 @@ const LoginScreen = () => {
 
     //backsakura013
   }, []);
+
   let ED = false
   const [GUID, setGUID] = useStateIfMounted('');
 
@@ -99,7 +101,7 @@ const LoginScreen = () => {
     secureTextEntry: true,
   });
   const image = '../images/UI/Login/4x/Asset3_4x.png';
-
+  const endpointMother = 'https://basket.businessplus.co.th:8890/read/bplusget.dll';
   useEffect(() => {
     console.log('>> isSFeatures : ', isSFeatures)
     if (registerReducer.machineNum.length == 0)
@@ -113,6 +115,7 @@ const LoginScreen = () => {
 
   }, [isSFeatures]);
   useEffect(() => {
+    console.log(`>> endpointMother : ${endpointMother}`)
     console.log(`>> databaseReducer : ${databaseReducer.Data.nameser}`)
     console.log('>> machineNum :', registerReducer.machineNum + '\n\n\n\n')
   }, [registerReducer.machineNum]);
@@ -130,15 +133,61 @@ const LoginScreen = () => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+
+
+  const fetchData = async (guidEndPoint) => {
+    console.log(guidEndPoint)
+    await fetch(endpointMother + '/LookupErp', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': guidEndPoint,
+        'BPAPUS-FUNCTION': 'Ic000301',
+        'BPAPUS-PARAM': '',
+        'BPAPUS-FILTER': '',
+        'BPAPUS-ORDERBY': '',
+        'BPAPUS-OFFSET': '0',
+        'BPAPUS-FETCH': '0'
+      }),
+    })
+      .then((response) => response.json())
+      .then(async (json) => {
+        let responseData = JSON.parse(json.ResponseData);
+        if (responseData.RECORD_COUNT > 0) {
+          console.log(responseData)
+          let temp_UTQ = [];
+          let UTQ = responseData.Ic000301
+
+          UTQ.sort((a, b) => (parseInt(a.UTQ_NAME) > parseInt(b.UTQ_NAME)) ? 1 : ((parseInt(b.UTQ_NAME) > parseInt(a.UTQ_NAME)) ? -1 : 0))
+
+          for (var i in UTQ) {
+            let temp_Obj = {
+              id: i,
+              name: UTQ[i].UTQ_NAME,
+              UTQ_QTY: UTQ[i].UTQ_QTY,
+              UTQ_KEY: UTQ[i].UTQ_KEY,
+            }
+            temp_UTQ.push(temp_Obj)
+          }
+          await dispatch(activityActions.UTQ(temp_UTQ))
+          await dispatch(loginActions.endpointMother(endpointMother))
+        } else {
+          console.log(responseData)
+        }
+        setLoading(false)
+      })
+      .catch((error) => {
+        setLoading(false)
+
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+  }
+
   const getMac = async () => {
     var lodstr = ''
     for (var i = 0; i < 100; i++) {
       lodstr += '_'
-
-
     }
-
-
     await DeviceInfo.getMacAddress().then((mac) => {
       var a = Math.floor(100000 + Math.random() * 900000);
       console.log(DeviceInfo.getDeviceName())
@@ -153,6 +202,8 @@ const LoginScreen = () => {
   }
 
   useEffect(() => {
+    console.log('databaseReducer > ',databaseReducer)
+    console.log('endpointMother > ',endpointMother)
   }, [])
 
 
@@ -166,7 +217,7 @@ const LoginScreen = () => {
   }
 
   const regisMacAdd = async () => {
-
+    console.log('databaseReducer ', databaseReducer.Data.urlser)
     await fetch(databaseReducer.Data.urlser + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
@@ -243,10 +294,11 @@ const LoginScreen = () => {
           dispatch(loginActions.userNameED(username))
           dispatch(loginActions.passwordED(password))
           dispatch(loginActions.userlogin(isSelected))
-
           navigation.dispatch(
             navigation.replace('SKUScreen', {})
           )
+
+
         } else {
           console.log('Function Parameter Required');
           let temp_error = 'error_ser.' + json.ResponseCode;
@@ -273,7 +325,7 @@ const LoginScreen = () => {
     setLoading(false)
   };
   const regisMacAddED = async () => {
-    await fetch(loginReducer.endpointMother + '/DevUsers', {
+    await fetch(endpointMother + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
@@ -293,7 +345,7 @@ const LoginScreen = () => {
         } else {
           console.log('Function Parameter Required');
           let temp_error = 'error_ser.' + json.ResponseCode;
-          console.log('>> ', temp_error)
+          console.log('>> ', json)
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
@@ -302,13 +354,13 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         console.log('ERROR at regisMacAdd ' + error);
-        console.log('http', loginReducer.endpointMother);
-        if (loginReducer.endpointMother == '') {
+        console.log('http', endpointMother);
+        if (endpointMother == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         } else {
-          let tempurl = loginReducer.endpointMother.split(':8890')
+          let tempurl = endpointMother.split(':8890')
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + tempurl[0] + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
@@ -319,8 +371,8 @@ const LoginScreen = () => {
   };
 
   const _fetchGuidLogED = async () => {
-    console.log('FETCH GUID LOGIN ', loginReducer.endpointMother);
-    await fetch(loginReducer.endpointMother + '/DevUsers', {
+    console.log('FETCH GUID LOGIN ', endpointMother);
+    await fetch(endpointMother + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
@@ -348,6 +400,7 @@ const LoginScreen = () => {
         } else if (json && json.ResponseCode == '200') {
           let responseData = JSON.parse(json.ResponseData)
           dispatch(loginActions.guidEndPoint(responseData.BPAPUS_GUID))
+          fetchData(responseData.BPAPUS_GUID)
           ED = true
         } else {
           console.log('Function Parameter Required');
@@ -361,13 +414,13 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         console.error('ERROR at _fetchGuidLogin' + error);
-        if (loginReducer.endpointMother == '') {
+        if (endpointMother == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
 
         } else {
-          let tempurl = loginReducer.endpointMother.split(':8890')
+          let tempurl = endpointMother.split(':8890')
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + tempurl[0] + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);

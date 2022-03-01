@@ -174,10 +174,13 @@ const SelectBase = ({ route }) => {
     let tempurl = baseurl.split('.dll')
     let newurl = tempurl[0] + '.dll'
     if (baseurl == databaseReducer.Data.urlser) {
-      Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+      Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
+      setLoading(false)
     } else {
       if (temp.length == 1) {
-        Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false)}]);
+        setLoading(false)
+        
       } else {
         for (let i in loginReducer.ipAddress) {
           if (loginReducer.ipAddress[i].urlser == baseurl) {
@@ -191,7 +194,7 @@ const SelectBase = ({ route }) => {
             break;
           }
         }
-
+        setLoading(false)
       }
     }
     
@@ -255,7 +258,7 @@ const SelectBase = ({ route }) => {
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
-        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false)}]);
       setLoading(false)
     }
 
@@ -318,9 +321,10 @@ const SelectBase = ({ route }) => {
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
-        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>   setLoading(false) }]);
       setLoading(false)
     }
+
 
   }
 
@@ -421,7 +425,7 @@ const SelectBase = ({ route }) => {
           console.log('>> ', temp_error)
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
             setLoading(false)
         }
      
@@ -429,7 +433,7 @@ const SelectBase = ({ route }) => {
       .catch((error) => {
         Alert.alert(
           Language.t('alert.errorTitle'),
-          Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
+          Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
         console.log('checkIPAddress');
         setLoading(false)
       });

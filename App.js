@@ -10,10 +10,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { store, persistor } from './src/store/store';
-
+import RNRestart from 'react-native-restart';
 
 import LoginScreen from './screens/LoginScreen';
 import SKUScreen from './screens/SKUScreen';
+import NewSKUScreen from './screens/NewSKUScreen';
+import AddbarSKUScreen from './screens/AddbarSKUScreen';
+
 import Scanbarcode from './screens/Scanbarcode';
 import SelectBase from './pages/SelectBase';
 import EditBase from './pages/EditBase';
@@ -27,6 +30,8 @@ import * as loginActions from './src/actions/loginActions';
 import { useSelector, connect, useDispatch } from 'react-redux';
 const App = () => {
   const loginReducer = useSelector(({ loginReducer }) => loginReducer);
+ 
+
   useEffect(() => {
     if (loginReducer.language != 'th') {
       changeLanguage(loginReducer.language);
@@ -35,12 +40,11 @@ const App = () => {
       changeLanguage('th');
     }
 
+
+
     //backsakura013
   }, []);
-  useEffect(() => {
-
-
-  }, []);
+ 
   const dispatch = useDispatch();
   const MainStack = createStackNavigator();
 
@@ -97,6 +101,16 @@ const App = () => {
                 options={{ headerShown: false }}
                 name="SKUScreen"
                 component={SKUScreen}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="NewSKUScreen"
+                component={NewSKUScreen}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="AddbarSKUScreen"
+                component={AddbarSKUScreen}
               />
 
               <MainStack.Screen

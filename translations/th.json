@@ -79,6 +79,7 @@
     "logout": "ออกจากระบบ",
     "alertsave0Message": "มีข้อมูลราคาเป็น 0 หรือค่าว่าง",
     "alertsaveMessage": "คุณต้องการบันทึกหรือไม่?",
+    "alertunsaveMessage": "คุณต้องการยกเลิกบันทึกหรือไม่?",
     "alertLogoutMessage": "คุณต้องการออกจากระบบหรือไม่?",
     "exitProgram": "ออกจากโปรแกรม",
     "DoexitProgram": "คุณต้องการออกจากโปรแกรมหรือไม่?",
@@ -185,7 +186,8 @@
     "skip": "ข้าม",
     "next": "ต่อไป",
     "ok": "ตกลง",
-    "incorrect ": "ข้อมูลไม่ถูกต้อง",
+    "add": "เพิ่ม",
+    "incorrect": "ข้อมูลไม่ถูกต้อง",
     "incompleteInformation": "โปรดระบุรหัสสินค้า",
     "savesucceed": "บันทึกข้อมูลเรียบร้อย",
     "succeed": "สำเร็จ",
@@ -193,6 +195,12 @@
     "confirm": "ยืนยัน",
     "errorDetail": "ไม่พบข้อมูลในระบบ",
     "internetError": "กรุณาตรวจสอบสัญญาณอินเตอร์เน็ต"
+  },
+  "trading": {
+    "addTrading": "ต้องการเพิ่มสินค้าซื้อขาย?",
+    "productName": "ชื่อสินค้า",
+    "productUnit": "หน่วยนับ",
+    "prodPrice": "ราคา"
   },
   "selectBase": {
     "header": "ตั้งค่าฐานข้อมูลร้านค้า",

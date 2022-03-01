@@ -7,6 +7,7 @@ import {
   ACTION_ACT_GETCON_NAME,
   ACTION_ACT_GETCON_RESULT,
   ACTION_ACT_GETCON_LASTUPDATE,
+  ACTION_ACT_UTQ
 } from '../Constants';
 export const LOguid = (payload) => ({
   type: ACTION_ACT_GETLO_GUID,
@@ -40,4 +41,7 @@ export const lastupdate = (payload) => ({
   type: ACTION_ACT_GETCON_LASTUPDATE,
   payload,
 });
-
+export const UTQ = (payload) => ({
+  type: ACTION_ACT_UTQ,
+  payload,
+});

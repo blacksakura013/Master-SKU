@@ -13,6 +13,7 @@ import interestReducer from './interestReducer';
 import signoutReducer from './signoutReducer';
 import campaignReducer from './campaignReducer';
 import databaseReducer from './databaseReducer';
+import activeReducerUTQ from './activeReducerUTQ';
 // Redux: Root Reducer
 const appReducer = combineReducers({
   activityReducer: activityReducer,
@@ -26,6 +27,7 @@ const appReducer = combineReducers({
   signoutReducer: signoutReducer,
   campaignReducer: campaignReducer,
   databaseReducer:databaseReducer,
+  activeReducerUTQ:activeReducerUTQ,
 });
 const rootReducer = (state, action) => {
   if (action.type === 'SIGNOUT_REQUEST') {

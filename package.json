@@ -58,6 +58,7 @@
     "react-native-restart": "^0.0.22",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.8.0",
+    "react-native-searchable-dropdown": "^1.1.3",
     "react-native-simple-dialogs": "^1.4.0",
     "react-native-simple-radio-button": "^2.7.4",
     "react-native-svg": "^12.1.1",
