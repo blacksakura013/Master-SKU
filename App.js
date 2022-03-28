@@ -16,6 +16,8 @@ import LoginScreen from './screens/LoginScreen';
 import SKUScreen from './screens/SKUScreen';
 import NewSKUScreen from './screens/NewSKUScreen';
 import AddbarSKUScreen from './screens/AddbarSKUScreen';
+import Mainmenu from './screens/Mainmenu';
+import ProductScreen from './screens/ProductScreen';
 
 import Scanbarcode from './screens/Scanbarcode';
 import SelectBase from './pages/SelectBase';
@@ -30,7 +32,7 @@ import * as loginActions from './src/actions/loginActions';
 import { useSelector, connect, useDispatch } from 'react-redux';
 const App = () => {
   const loginReducer = useSelector(({ loginReducer }) => loginReducer);
- 
+
 
   useEffect(() => {
     if (loginReducer.language != 'th') {
@@ -44,7 +46,7 @@ const App = () => {
 
     //backsakura013
   }, []);
- 
+
   const dispatch = useDispatch();
   const MainStack = createStackNavigator();
 
@@ -111,6 +113,16 @@ const App = () => {
                 options={{ headerShown: false }}
                 name="AddbarSKUScreen"
                 component={AddbarSKUScreen}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="Mainmenu"
+                component={Mainmenu}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="ProductScreen"
+                component={ProductScreen}
               />
 
               <MainStack.Screen

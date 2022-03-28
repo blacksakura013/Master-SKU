@@ -295,7 +295,7 @@ const LoginScreen = () => {
           dispatch(loginActions.passwordED(password))
           dispatch(loginActions.userlogin(isSelected))
           navigation.dispatch(
-            navigation.replace('SKUScreen', {})
+            navigation.replace('Mainmenu', {})
           )
 
 
@@ -507,7 +507,6 @@ const LoginScreen = () => {
 
                       placeholderTextColor={Colors.fontColorSecondary}
                       value={username}
-                      maxLength={10}
                       placeholder={Language.t('login.username')}
                       onChangeText={(val) => {
                         setUsername(val);
@@ -558,7 +557,6 @@ const LoginScreen = () => {
                       }}
                       secureTextEntry={data.secureTextEntry ? true : false}
                       keyboardType="default"
-                      maxLength={8}
                       value={password}
                       placeholderTextColor={Colors.fontColorSecondary}
                       placeholder={Language.t('login.password')}

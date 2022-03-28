@@ -90,26 +90,7 @@ const SKUScreen = ({ route }) => {
   const [countdown, setCountdown] = useState(defaultCountDown);
   const [recon, setRecon] = useState('');
   let kye_token = "";
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(Language.t('menu.exitProgram'), Language.t('menu.DoexitProgram'), [
-        {
-          text: Language.t('alert.cancel'),
-          onPress: () => null,
-          style: "cancel"
-        },
-        { text: Language.t('alert.confirm'), onPress: () => BackHandler.exitApp() }
-      ]);
-      return true;
-    };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
-
-    return () => backHandler.remove();
-  }, []);
   const updateSecureTextEntry = () => {
     setData({
       ...data,
@@ -633,6 +614,7 @@ const SKUScreen = ({ route }) => {
       }
 
       console.log(databaseReducer.Data.urlser)
+      console.log(temp_good)
       await fetch(databaseReducer.Data.urlser + '/SetupErp', {
         method: 'POST',
         body: JSON.stringify({
@@ -706,7 +688,6 @@ const SKUScreen = ({ route }) => {
     } else {
       setLoading(false)
       AddNewData()
-
     }
 
   }

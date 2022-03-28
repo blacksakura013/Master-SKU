@@ -13,6 +13,7 @@ import interestReducer from './interestReducer';
 import signoutReducer from './signoutReducer';
 import campaignReducer from './campaignReducer';
 import databaseReducer from './databaseReducer';
+import productReducer from './productReducer';
 import activeReducerUTQ from './activeReducerUTQ';
 // Redux: Root Reducer
 const appReducer = combineReducers({
@@ -27,6 +28,7 @@ const appReducer = combineReducers({
   signoutReducer: signoutReducer,
   campaignReducer: campaignReducer,
   databaseReducer:databaseReducer,
+  productReducer:productReducer,
   activeReducerUTQ:activeReducerUTQ,
 });
 const rootReducer = (state, action) => {

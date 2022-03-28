@@ -16,7 +16,9 @@ export const TERM_CONDITION =
 export const ACTION_ACT_UTQ = 'ACTION_ACT_UTQ';
 //addbase
 export const ACTION_DATA = 'ACTION_DATA';
-
+//PRODUCT
+export const PRODUCT_DATA = 'PRODUCT_DATA';
+export const PUSH_LOG = 'PUSH_LOG';
 //logout
 export const SIGNOUT_REQUEST = 'SIGNOUT_REQUEST';
 

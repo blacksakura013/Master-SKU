@@ -174,13 +174,13 @@ const SelectBase = ({ route }) => {
     let tempurl = baseurl.split('.dll')
     let newurl = tempurl[0] + '.dll'
     if (baseurl == databaseReducer.Data.urlser) {
-      Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
+      Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
       setLoading(false)
     } else {
       if (temp.length == 1) {
-        Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false)}]);
+        Alert.alert('', Language.t('selectBase.cannotDelete'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
         setLoading(false)
-        
+
       } else {
         for (let i in loginReducer.ipAddress) {
           if (loginReducer.ipAddress[i].urlser == baseurl) {
@@ -197,7 +197,7 @@ const SelectBase = ({ route }) => {
         setLoading(false)
       }
     }
-    
+
   }
 
   const _onPressAddbase = async () => {
@@ -231,7 +231,7 @@ const SelectBase = ({ route }) => {
             ) {
               Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.url'), [{
                 text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
-              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              }, { text: Language.t('selectBase.no'), onPress: () => setLoading(false) }]);
               check = true;
               break;
             } else if (
@@ -239,7 +239,7 @@ const SelectBase = ({ route }) => {
             ) {
               Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.name'), [{
                 text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
-              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              }, { text: Language.t('selectBase.no'), onPress: () => setLoading(false) }]);
               check = true;
               break;
             }
@@ -247,18 +247,18 @@ const SelectBase = ({ route }) => {
         }
         if (!check) {
           checkIPAddress('1')
-        }  
+        }
       } else {
         Alert.alert(
           Language.t('alert.errorTitle'),
           Language.t('selectBase.Alert3'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
         setLoading(false)
       }
-      
+
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
-        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false)}]);
+        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
       setLoading(false)
     }
 
@@ -294,7 +294,7 @@ const SelectBase = ({ route }) => {
             ) {
               Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.url'), [{
                 text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
-              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              }, { text: Language.t('selectBase.no'), onPress: () => setLoading(false) }]);
               check = true;
               break;
             } else if (
@@ -302,7 +302,7 @@ const SelectBase = ({ route }) => {
             ) {
               Alert.alert(Language.t('selectBase.Alert'), Language.t('selectBase.Alert2') + Language.t('selectBase.name'), [{
                 text: Language.t('selectBase.yes'), onPress: () => _onPressUpdate(basename, newurl)
-              }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel Pressed') }]);
+              }, { text: Language.t('selectBase.no'), onPress: () => setLoading(false) }]);
               check = true;
               break;
             }
@@ -321,7 +321,7 @@ const SelectBase = ({ route }) => {
     } else {
       Alert.alert(
         Language.t('alert.errorTitle'),
-        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>   setLoading(false) }]);
+        Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
       setLoading(false)
     }
 
@@ -333,8 +333,20 @@ const SelectBase = ({ route }) => {
     let tempurl = baseurl.split('.dll')
     let newurl = tempurl[0] + '.dll'
     let temp = []
-
-    await fetch(baseurl + '/DevUsers', {
+    let tempnmae = newurl.split('/')
+    let urlnmae = '';
+    for (var s in tempnmae) {
+      if (urlnmae.length > 0) urlnmae += '/'
+      if (tempnmae[s].search('.dll') > -1) urlnmae += 'BplusErpDvSvrIIS.dll'
+      else urlnmae += tempnmae[s]
+    }
+    console.log('>>-----------<<')
+    console.log(urlnmae)
+    console.log('>>-----------<<')
+    let B1tempnmae = newurl.split('/')
+    let B1tempurlnmae = null;
+    for (var s in B1tempnmae) if (B1tempnmae[s].search('.dll') > -1) B1tempurlnmae = B1tempnmae[s].split('.dll')
+    await fetch(newurl + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
         'BPAPUS-BPAPSV': loginReducer.serviceID,
@@ -345,9 +357,9 @@ const SelectBase = ({ route }) => {
       }),
     })
       .then((response) => response.json())
-      .then((json) => {
+      .then(async (json) => {
         if (json.ResponseCode == 200 && json.ReasonString == 'Completed') {
-          fetch(newurl + '/DevUsers', {
+          await fetch(newurl + '/DevUsers', {
             method: 'POST',
             body: JSON.stringify({
               'BPAPUS-BPAPSV': loginReducer.serviceID,
@@ -362,38 +374,106 @@ const SelectBase = ({ route }) => {
             }),
           })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
               if (json && json.ResponseCode == '200') {
-                let newObj = {
-                  nameser: basename,
-                  urlser: newurl,
-                  usernameser: username,
-                  passwordser: password
-                }
-                console.log(json.ResponseCode)
-                if (state == '-1') {
-                  for (let i in loginReducer.ipAddress) {
-                    if (i == updateindex) {
-                      temp.push(newObj)
-                    } else {
-                      temp.push(loginReducer.ipAddress[i])
-                    }
-                  }
-                  dispatch(loginActions.ipAddress(temp))
-                  dispatch(databaseActions.setData(newObj))
-                } else if (state == '1') {
-                  if (items.length > 0) {
-                    for (let i in items) {
-                      temp.push(items[i])
-                    }
-                  }
-                  temp.push(newObj)
-                  dispatch(loginActions.ipAddress(temp))
-                  dispatch(databaseActions.setData(newObj))
-                } else if (state == '0') {
-                  dispatch(databaseActions.setData(newObj))
-                }
+                await fetch(urlnmae + '/DevUsers', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    'BPAPUS-BPAPSV': loginReducer.serviceID,
+                    'BPAPUS-LOGIN-GUID': '',
+                    'BPAPUS-FUNCTION': 'Register',
+                    'BPAPUS-PARAM':
+                      '{ "BPAPUS-MACHINE": "11111122","BPAPUS-CNTRY-CODE": "66", "BPAPUS-MOBILE": "0828845662"}',
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then(async (json) => {
+                    if (json.ResponseCode == 200 && json.ReasonString == 'Completed') {
+                      let B2tempnmae = urlnmae.split('/')
+                      let B2tempurlnmae = null;
+                      for (var s in B2tempnmae) if (B2tempnmae[s].search('.dll') > -1) B2tempurlnmae = B2tempnmae[s].split('.dll')
+                      await fetch(urlnmae + '/DevUsers', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          'BPAPUS-BPAPSV': loginReducer.serviceID,
+                          'BPAPUS-LOGIN-GUID': '',
+                          'BPAPUS-FUNCTION': 'Login',
+                          'BPAPUS-PARAM':
+                            '{"BPAPUS-MACHINE": "11111122","BPAPUS-USERID": "' +
+                            username +
+                            '","BPAPUS-PASSWORD": "' +
+                            password +
+                            '"}',
+                        }),
+                      })
+                        .then((response) => response.json())
+                        .then((json) => {
+                          if (json && json.ResponseCode == '200') {
+                            let newObj = {
+                              nameser: basename,
+                              urlser: newurl,
+                              erpdvsvr: urlnmae,
+                              usernameser: username,
+                              passwordser: password
+                            }
+                            console.log(json.ResponseCode)
+                            if (state == '-1') {
+                              for (let i in loginReducer.ipAddress) {
+                                if (i == updateindex) {
+                                  temp.push(newObj)
+                                } else {
+                                  temp.push(loginReducer.ipAddress[i])
+                                }
+                              }
+                              dispatch(loginActions.ipAddress(temp))
+                              dispatch(databaseActions.setData(newObj))
+                            } else if (state == '1') {
+                              if (items.length > 0) {
+                                for (let i in items) {
+                                  temp.push(items[i])
+                                }
+                              }
+                              temp.push(newObj)
+                              dispatch(loginActions.ipAddress(temp))
+                              dispatch(databaseActions.setData(newObj))
+                            } else if (state == '0') {
+                              dispatch(databaseActions.setData(newObj))
+                            }
+                          } else {
+                            console.log('Function Parameter Required');
+                            let temp_error = 'error_ser.' + json.ResponseCode;
 
+                            Alert.alert(
+                              Language.t('alert.errorTitle'),
+                              Language.t(temp_error) + `' ${B2tempurlnmae} '`, [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
+                            setLoading(false)
+                          }
+
+                        })
+                        .catch((error) => {
+                          Alert.alert(
+                            Language.t('alert.errorTitle'),
+                            Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + B2tempurlnmae + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
+                          console.error('_fetchGuidLogin ' + error);
+                          setLoading(false)
+                        });
+                    } else {
+                      console.log('Function Parameter Required');
+                      let temp_error = 'error_ser.' + json.ResponseCode;
+                      console.log('>> ', temp_error)
+                      Alert.alert(
+                        Language.t('alert.errorTitle') + ' ' + `${B2tempurlnmae}`,
+                        Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
+                      setLoading(false)
+                    }
+                  })
+                  .catch((error) => {
+                    Alert.alert(
+                      Language.t('alert.errorTitle'),
+                      Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + B2tempurlnmae + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
+                    console.log('checkIPAddress');
+                    setLoading(false)
+                  });
                 Alert.alert(
                   Language.t('alert.succeed'),
                   Language.t('selectBase.connect') + ' ' + basename + ' ' + Language.t('alert.succeed'), [{
@@ -401,12 +481,13 @@ const SelectBase = ({ route }) => {
                       navigation.replace('LoginStackScreen')
                     )
                   }]);
+
               } else {
                 console.log('Function Parameter Required');
                 let temp_error = 'error_ser.' + json.ResponseCode;
-                
+
                 Alert.alert(
-                  Language.t('alert.errorTitle'),
+                  Language.t('alert.errorTitle') + `' ${B1tempurlnmae} '`,
                   Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
                 setLoading(false)
               }
@@ -415,7 +496,7 @@ const SelectBase = ({ route }) => {
             .catch((error) => {
               Alert.alert(
                 Language.t('alert.errorTitle'),
-                Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
+                Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + B1tempurlnmae + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
               console.error('_fetchGuidLogin ' + error);
               setLoading(false)
             });
@@ -425,20 +506,18 @@ const SelectBase = ({ route }) => {
           console.log('>> ', temp_error)
           Alert.alert(
             Language.t('alert.errorTitle'),
-            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
-            setLoading(false)
+            Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
+          setLoading(false)
         }
-     
+
       })
       .catch((error) => {
         Alert.alert(
           Language.t('alert.errorTitle'),
-          Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () =>  setLoading(false) }]);
+          Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + B1tempurlnmae + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
         console.log('checkIPAddress');
         setLoading(false)
       });
-
-
   };
 
   return (

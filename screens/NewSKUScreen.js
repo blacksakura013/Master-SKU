@@ -360,7 +360,7 @@ const NewSKUScreen = ({ route }) => {
                       value={Language.t('trading.productUnit') + ' : '}
                     />
                     <View style={{ marginTop: 10, padding: 10, flex: 8, backgroundColor: '#fff', borderRadius: 20, }}>
-                      <SearchableDropdow
+                      <SearchableDropdown 
                         items={serverData}
                         resetValue={false}
                         selectedItems={UTQ_NAME}

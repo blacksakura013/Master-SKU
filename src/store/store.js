@@ -25,6 +25,7 @@ const persistConfig = {
     'contactUsReducer',
     'campaignReducer',
     'databaseReducer',
+    'productReducer',
     'interestReducer',
     
   ],
