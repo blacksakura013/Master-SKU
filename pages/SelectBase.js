@@ -143,19 +143,15 @@ const SelectBase = ({ route }) => {
     setLoading(true)
     let c = true
     if (basename == '') {
-
       c = false
     }
     else if (baseurl == '') {
-
       c = false
     }
     else if (username == '') {
-
       c = false
     }
     else if (password == '') {
-
       c = false
     }
     return c
@@ -367,9 +363,9 @@ const SelectBase = ({ route }) => {
               'BPAPUS-FUNCTION': 'Login',
               'BPAPUS-PARAM':
                 '{"BPAPUS-MACHINE": "11111122","BPAPUS-USERID": "' +
-                username +
+                username.toUpperCase() +
                 '","BPAPUS-PASSWORD": "' +
-                password +
+                password.toUpperCase() +
                 '"}',
             }),
           })
@@ -400,9 +396,9 @@ const SelectBase = ({ route }) => {
                           'BPAPUS-FUNCTION': 'Login',
                           'BPAPUS-PARAM':
                             '{"BPAPUS-MACHINE": "11111122","BPAPUS-USERID": "' +
-                            username +
+                            username.toUpperCase() +
                             '","BPAPUS-PASSWORD": "' +
-                            password +
+                            password.toUpperCase() +
                             '"}',
                         }),
                       })
@@ -481,7 +477,7 @@ const SelectBase = ({ route }) => {
                       navigation.replace('LoginStackScreen')
                     )
                   }]);
-
+                  setLoading(false)
               } else {
                 console.log('Function Parameter Required');
                 let temp_error = 'error_ser.' + json.ResponseCode;
@@ -745,9 +741,7 @@ const SelectBase = ({ route }) => {
                             fontSize: FontSize.medium,
                             borderBottomWidth: 0.7,
                           }}
-
                           placeholderTextColor={Colors.fontColorSecondary}
-
                           value={username}
                           placeholder={Language.t('login.username') + '..'}
                           onChangeText={(val) => {
@@ -785,14 +779,13 @@ const SelectBase = ({ route }) => {
                             flex: 8,
                             marginLeft: 5,
                             color: Colors.fontColor,
-                            paddingVertical: 3,
+                            paddingVertical: 3, 
                             fontSize: FontSize.medium,
                             borderBottomColor: Colors.borderColor,
                             borderBottomWidth: 0.7,
                           }}
                           secureTextEntry={data.secureTextEntry ? true : false}
                           keyboardType="default"
-
                           placeholderTextColor={Colors.fontColorSecondary}
                           placeholder={Language.t('login.password') + '..'}
                           value={password}
@@ -800,7 +793,6 @@ const SelectBase = ({ route }) => {
                             setPassword(val);
                           }}
                         />
-
                         <TouchableOpacity style={{ marginLeft: 10 }} onPress={updateSecureTextEntry}>
                           {data.secureTextEntry ? (
                             <FontAwesome

@@ -81,9 +81,12 @@
     "alertsaveMessage": "Do you want to save?",
     "alertunsaveMessage": "You don't want to save?",
     "alertLogoutMessage": "Do you want to log out?",
-    "exitProgram":"exit the program",
-    "DoexitProgram":"Do you want to exit the program?",
-    "cancel": "Cancel"
+    "exitProgram": "exit the program",
+    "DoexitProgram": "Do you want to exit the program?",
+    "cancel": "Cancel",
+    "menu1": "To add products",
+    "menu2": "Receive goods",
+    "menu3": "Report"
   },
   "profile": {
     "header": "Profile",
@@ -196,7 +199,8 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "errorDetail": "Data not found",
-    "internetError": "Please check your internet connection"
+    "internetError": "Please check your internet connection",
+    "notFoundProduct":"Can't find merchandise Want to add a trading product?"
   },
   "trading": {
     "addTrading": "Want to add trading products?",

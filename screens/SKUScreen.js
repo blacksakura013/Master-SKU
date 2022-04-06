@@ -275,7 +275,7 @@ const SKUScreen = ({ route }) => {
   const AddNewData = (fetchBarcodeData) => {
     Alert.alert(
       Language.t('alert.errorDetail'),
-      Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.add'), onPress: () => navigation.navigate('NewSKUScreen', { post: fetchBarcodeData ? fetchBarcodeData : GOODS_CODE, data: GOODSMASTER }) }, { text: Language.t('alert.cancel'), onPress: () => console.log('cancel Pressed') }]);
+      Language.t('alert.notFoundProduct'), [{ text: Language.t('alert.add'), onPress: () => navigation.navigate('NewSKUScreen', { post: fetchBarcodeData ? fetchBarcodeData : GOODS_CODE, data: GOODSMASTER }) }, { text: Language.t('alert.cancel'), onPress: () => console.log('cancel Pressed') }]);
   }
 
   const logOut = async () => {
@@ -698,7 +698,7 @@ const SKUScreen = ({ route }) => {
       <StatusBar hidden={true} />
       <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
         {!loading_backG ? <>
-           
+
           <View style={tabbar} >
             <View style={{
               backgroundColor: '#fff', alignSelf: 'center',
@@ -723,7 +723,7 @@ const SKUScreen = ({ route }) => {
                   setGOODS_CODE(val)
                 }} />
 
-              <TouchableOpacity style={{ paddingTop: 10,paddingBottom: 10, }} onPress={() => fetchMotherData()}>
+              <TouchableOpacity style={{ paddingTop: 10, paddingBottom: 10, }} onPress={() => fetchMotherData()}>
                 <Image
                   source={
                     require('../images/UI/SKU/4x/Asset26_4x.png')
@@ -734,17 +734,17 @@ const SKUScreen = ({ route }) => {
                   }}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={{ padding: 5,  }} onPress={() => on_scan()}>
-              <Image
-                source={
-                  require('../images/UI/SKU/4x/Asset30_4x.png')
-                }
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity style={{ padding: 5, }} onPress={() => on_scan()}>
+                <Image
+                  source={
+                    require('../images/UI/SKU/4x/Asset30_4x.png')
+                  }
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={{ marginLeft: 10, marginRight: 10 }}>
@@ -766,33 +766,33 @@ const SKUScreen = ({ route }) => {
               </Text>
             </View>
           </View>
-        <View style={{height:deviceHeight/2.2}}>
-        <ScrollView   >
-          
-          <KeyboardAvoidingView keyboardVerticalOffset={1}>
-            <View style={styles.body}>
-              <View style={styles.table}>
-                <View style={styles.tableHeader}>
-                  <View style={{ flex: 0.5 }}  >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}> {Language.t('main.code')}</Text></View>
-                  <View style={{ flex: 0.3, }}  >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}>{Language.t('main.unit')}</Text></View>
-                  <View style={{ flex: 0.3 }} >
-                    <Text style={{
-                      fontSize: FontSize.medium,
-                      color: Colors.backgroundColorSecondary,
-                      fontWeight: 'bold'
-                    }}> {Language.t('main.price')} </Text></View>
-                </View>
-                <ScrollView>
+          <View style={{ height: deviceHeight / 2.2 }}>
+            <ScrollView   >
+
+              <KeyboardAvoidingView keyboardVerticalOffset={1}>
+                <View style={styles.body}>
+                  <View style={styles.table}>
+                    <View style={styles.tableHeader}>
+                      <View style={{ flex: 0.5 }}  >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}> {Language.t('main.code')}</Text></View>
+                      <View style={{ flex: 0.3, }}  >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}>{Language.t('main.unit')}</Text></View>
+                      <View style={{ flex: 0.3 }} >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
+                        }}> {Language.t('main.price')} </Text></View>
+                    </View>
+                    <ScrollView>
                       {GOODSMASTER.length <= 0 ? (
                         <>
                           <View style={styles.tableView}>
@@ -990,21 +990,21 @@ const SKUScreen = ({ route }) => {
                             </Text>
                           </View>
                         </>)}
-                 
-                 
-                </ScrollView>
-               
 
-              </View>
-            </View>
 
-          </KeyboardAvoidingView>
+                    </ScrollView>
 
-        
-      </ScrollView>
-        </View>
-         
-         
+
+                  </View>
+                </View>
+
+              </KeyboardAvoidingView>
+
+
+            </ScrollView>
+          </View>
+
+
           <View style={styles.footer}>
             <View></View>
             <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
@@ -1146,7 +1146,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     flexDirection: "row",
-    
+
     left: 0,
     top: deviceHeight - 80,
     width: deviceWidth,

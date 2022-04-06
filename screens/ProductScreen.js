@@ -33,7 +33,8 @@ import { useNavigation } from '@react-navigation/native';
 // import { View } from 'react-native-paper';
 
 import Dialog from 'react-native-dialog';
-import { Language } from '../translations/I18n';
+
+import { Language, changeLanguage } from '../translations/I18n';
 import DeviceInfo, { getType } from 'react-native-device-info';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -78,11 +79,12 @@ const ProductScreen = ({ route }) => {
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
   const [machineNo, setMachineNo] = useState('');
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [marker, setMarker] = useState(true);
   const [items, setItems] = useState([]);
   const [sum, setSum] = useState(0);
   const [SKUMASTER, setSKUMASTER] = useState({});
   const [GOODSMASTER, setGOODSMASTER] = useState(productReducer.Data ? productReducer.Data : []);
+  const [DI_REF, setDI_REF] = useState({ DI_REF: '<เลขถัดไป>', INFO: '<เลขเดียวกัน>' })
   const [PRODUCTMASTER, setPRODUCTMASTER] = useState({});
   const [isSFeatures, setSFeatures] = useState(loginReducer.isSFeatures == true ? '\"Y\"' : '\"N\"');
   const [data, setData] = useStateIfMounted({
@@ -102,19 +104,64 @@ const ProductScreen = ({ route }) => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+  const set_goodData = (temp_data) => {
+    dispatch(productActions.setData(temp_data))
+    setGOODSMASTER(temp_data)
+  }
+  const setapiDay = async () => {
 
-  useEffect(() => {
+    await fetch('http://worldtimeapi.org/api/timezone/Asia/Bangkok', {
+      method: 'GET'
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let datetime = json.utc_datetime
+        console.log()
+        console.log('>')
+        console.log(datetime)
+        console.log()
+        var x = new Date(datetime)
+        console.log(x)
+        let yesr = x.getFullYear().toString()
+        let month = (x.getMonth() + 1).toString().length > 1 ? (x.getMonth() + 1).toString() : '0' + (x.getMonth() + 1).toString()
+        let date = x.getDate().toString().length > 1 ? x.getDate().toString() : '0' + x.getDate().toString()
+        let fullDay = yesr + month + date
+        console.log(fullDay)
+        if (productReducer.Log_data.date) {
+          if (productReducer.Log_data.date == fullDay) {
+            on_cancel()
+            get_DI_REF(productReducer.Log_data.DI_KEY)
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(ser_die)
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+  }
+  useEffect(async () => {
     //dispatch(productActions.setData([]))
     // dispatch(productActions.setLog_Data([]))
 
-    console.log('>> productReducer : ', productReducer.Data)
-    console.log('>> LOG _ productReducer : ', productReducer.Log_data)
-    console.log('>> Address : ', loginReducer.ipAddress)
-    console.log('>> isSFeatures : ', loginReducer.isSFeatures, isSFeatures)
-    console.log(`>> databaseReducer.Data.urlser ${loginReducer.endpointMother}`)
-    console.log('>> Day : ',)
+    await setapiDay()
 
-  }, []);
+
+
+    console.log()
+    console.log('>> productReducer : ', productReducer.Data)
+    console.log()
+    console.log('>> LOG _ productReducer : ', productReducer.Log_data)
+    console.log()
+    console.log('>> Address : ', loginReducer.ipAddress)
+    console.log()
+    console.log('>> isSFeatures : ', loginReducer.isSFeatures, isSFeatures)
+    console.log()
+    console.log(`>> databaseReducer.Data.urlser ${loginReducer.endpointMother}`)
+    console.log()
+    console.log('>> Day : ',)
+    console.log()
+
+  }, [])
 
   useEffect(() => {
     console.log(`>>  PRODUCTMASTER ${GOODSMASTER}`)
@@ -128,7 +175,7 @@ const ProductScreen = ({ route }) => {
 
     console.log(`>>   productReducer.Data ${productReducer.Data}`)
 
-  }, [productReducer.Data]);
+  }, [productReducer.Data])
   useEffect(() => {
 
     if (route.params.post) {
@@ -164,7 +211,15 @@ const ProductScreen = ({ route }) => {
 
 
 
-  }, [route.params?.data]);
+  }, [route.params?.data])
+  useEffect(() => {
+    if (countdown === 0) {
+      Alert.alert(
+        Language.t('alert.errorTitle'),
+        Language.t('selectBase.UnableConnec'), [{ text: Language.t('selectBase.connectAgain'), onPress: () => connectAgain() }, { text: Language.t('main.cancel'), onPress: () => BackHandler.exitApp() }]);
+    }
+    console.log(countdown)
+  }, [countdown])
 
   const decrementClock = () => {
     if (countdown === 0) {
@@ -174,20 +229,24 @@ const ProductScreen = ({ route }) => {
     } else {
       setCountdown(countdown - 1);
     }
-  };
+  }
+
   const currencyFormat = (num) => {
     if (num == 0) return '-'
     else return Number(num).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
   }
+
   const on_scan = () => {
     on_cancel()
     navigation.navigate('Scanbarcode', { route: 'ProductScreen', data: 'go', GOODSMASTER: GOODSMASTER })
   }
+
   const on_cancel = () => {
     setGOODS_CODE('')
     setTemp_report('')
     setPRODUCTMASTER({})
   }
+
   const on_clear = () => {
     setGOODS_CODE('')
     setTemp_report('')
@@ -196,14 +255,59 @@ const ProductScreen = ({ route }) => {
     dispatch(productActions.setData([]))
   }
 
-  useEffect(() => {
-    if (countdown === 0) {
-      Alert.alert(
-        Language.t('alert.errorTitle'),
-        Language.t('selectBase.UnableConnec'), [{ text: Language.t('selectBase.connectAgain'), onPress: () => connectAgain() }, { text: Language.t('main.cancel'), onPress: () => BackHandler.exitApp() }]);
-    }
-    console.log(countdown)
-  }, [countdown])
+  const get_DI_REF = async (DI_KEY) => {
+
+    setTemp_report('')
+    console.log('hit >> ', DI_KEY)
+    await fetch(databaseReducer.Data.urlser + '/UpdateErp', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': loginReducer.guid,
+        'BPAPUS-FUNCTION': 'GetReceiveDocinfo',
+        'BPAPUS-PARAM':
+          '{"DI_KEY": "' +
+          DI_KEY + '"}',
+        'BPAPUS-FILTER': '',
+        'BPAPUS-ORDERBY': '',
+        'BPAPUS-OFFSET': '0',
+        'BPAPUS-FETCH': '0',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let responseData = JSON.parse(json.ResponseData);
+        console.log(responseData.RECORD_COUNT)
+        if (responseData.RECORD_COUNT > 0) {
+          console.log()
+          console.log('responseData ', responseData.DOCINFO.DI_REF)
+          console.log()
+          var inputyear = Number(productReducer.Log_data.date.substring(0, 4)) + 543
+          var inputmonths = productReducer.Log_data.date.substring(4, 6)
+          var inputdate = productReducer.Log_data.date.substring(6, 8)
+          var inputFullDate = inputdate + '/' + inputmonths + '/' + inputyear
+          Alert.alert(Language.t('notiAlert.header'), `เนื่องจากวันนี้มีการเพิ่มเอกสารรับสินค้าแล้ว\nเมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น.\nคุณต้องการแก้ไขเอกสารหรือไม่`, [{
+            text: Language.t('alert.confirm'), onPress: () => { set_goodData(productReducer.Log_data.GOODSMASTER) }
+          }, {
+            text: Language.t('alert.cancel'), onPress: () => { navigation.goBack() }
+          }]);
+          setCountdown(-1)
+          setLoading(false)
+          let objDI_REF = {
+            DI_REF: responseData.DOCINFO.DI_REF,
+            INFO: responseData.DOCINFO.DI_REF
+          }
+          setDI_REF(objDI_REF)
+
+        }
+        setLoading(false)
+        setCountdown(-1)
+      })
+      .catch((error) => {
+        console.log(ser_die)
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+  }
 
   const connectAgain = () => {
     if (recon == 'pushData') pushData()
@@ -241,13 +345,14 @@ const ProductScreen = ({ route }) => {
     }
   });
 
-  const set_Focus = (onFocus, index) => {
+  const set_Focus = (sta, onFocus, index) => {
 
     console.log('onFocus >>   ', onFocus)
     console.log('index > ', index)
     let temp_array = [];
+
     for (var i in GOODSMASTER) {
-      if (i == index) {
+      if (i == index && sta == 'QTY') {
         let newProduct = {
           TRD_DSC_KEYINV: GOODSMASTER[i].TRD_DSC_KEYINV,
           TRD_C_DSCV: GOODSMASTER[i].TRD_C_DSCV,
@@ -258,7 +363,32 @@ const ProductScreen = ({ route }) => {
           UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
           TRD_QTY: GOODSMASTER[i].TRD_QTY,
           onSave: false,
-          onFocus: onFocus,
+          onFocusQTY: onFocus,
+          onFocusTRD_K_U_PRC: GOODSMASTER[i].onFocusTRD_K_U_PRC,
+          date_in: GOODSMASTER[i].date_in,
+          Temp_TRD_K_U_PRC: GOODSMASTER[i].Temp_TRD_K_U_PRC,
+          TRD_K_U_PRC: GOODSMASTER[i].TRD_K_U_PRC,
+          Temp_ARPLU_U_PRC: GOODSMASTER[i].Temp_ARPLU_U_PRC,
+          TRD_DSC_KEYIN: GOODSMASTER[i].TRD_DSC_KEYIN,
+          TRD_Q_FREE: GOODSMASTER[i].TRD_Q_FREE,
+          TRD_WL: GOODSMASTER[i].TRD_WL,
+          TRD_TO_WL: GOODSMASTER[i].TRD_TO_WL,
+          TRD_U_VATIO: GOODSMASTER[i].TRD_U_VATIO,
+        }
+        temp_array.push(newProduct)
+      } else if (i == index && sta != 'QTY') {
+        let newProduct = {
+          TRD_DSC_KEYINV: GOODSMASTER[i].TRD_DSC_KEYINV,
+          TRD_C_DSCV: GOODSMASTER[i].TRD_C_DSCV,
+          TRD_OPTION: GOODSMASTER[i].TRD_OPTION,
+          TRD_KEYIN: GOODSMASTER[i].TRD_KEYIN,
+          SKU_KEY: GOODSMASTER[i].SKU_KEY,
+          SKU_NAME: GOODSMASTER[i].SKU_NAME,
+          UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
+          TRD_QTY: GOODSMASTER[i].TRD_QTY,
+          onSave: false,
+          onFocusQTY: GOODSMASTER[i].onFocusQTY,
+          onFocusTRD_K_U_PRC: onFocus,
           date_in: GOODSMASTER[i].date_in,
           Temp_TRD_K_U_PRC: GOODSMASTER[i].Temp_TRD_K_U_PRC,
           TRD_K_U_PRC: GOODSMASTER[i].TRD_K_U_PRC,
@@ -274,6 +404,9 @@ const ProductScreen = ({ route }) => {
         temp_array.push(GOODSMASTER[i])
       }
     }
+
+
+
     let tempSum = 0
     for (var i in temp_array)
       tempSum += temp_array[i].TRD_QTY * temp_array[i].TRD_K_U_PRC
@@ -299,7 +432,8 @@ const ProductScreen = ({ route }) => {
           UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
           TRD_QTY: GOODSMASTER[i].TRD_QTY,
           onSave: false,
-          onFocus: GOODSMASTER[i].onFocus,
+          onFocusQTY: GOODSMASTER[i].onFocusQTY,
+          onFocusTRD_K_U_PRC: GOODSMASTER[i].onFocusTRD_K_U_PRC,
           date_in: GOODSMASTER[i].date_in,
           Temp_TRD_K_U_PRC: GOODSMASTER[i].Temp_TRD_K_U_PRC,
           TRD_K_U_PRC: TRD_K_U_PRC,
@@ -340,7 +474,8 @@ const ProductScreen = ({ route }) => {
           UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
           TRD_QTY: TRD_QTY,
           onSave: false,
-          onFocus: GOODSMASTER[i].onFocus,
+          onFocusQTY: GOODSMASTER[i].onFocusQTY,
+          onFocusTRD_K_U_PRC: GOODSMASTER[i].onFocusTRD_K_U_PRC,
           date_in: GOODSMASTER[i].date_in,
           Temp_TRD_K_U_PRC: GOODSMASTER[i].Temp_TRD_K_U_PRC,
           TRD_K_U_PRC: GOODSMASTER[i].TRD_K_U_PRC,
@@ -388,7 +523,8 @@ const ProductScreen = ({ route }) => {
             UTQ_NAME: tempData.UTQ_NAME,
             TRD_QTY: tempData.TRD_QTY,
             onSave: false,
-            onFocus: tempData.onFocus,
+            onFocusQTY: false,
+            onFocusTRD_K_U_PRC: false,
             date_in: tempData.date_in,
             Temp_TRD_K_U_PRC: tempData.Temp_TRD_K_U_PRC,
             TRD_K_U_PRC: tempData.TRD_K_U_PRC,
@@ -437,10 +573,14 @@ const ProductScreen = ({ route }) => {
     let c = true;
 
     if (tempData) {
-      if (tempData.TRD_QTY == 0) {
+      console.log()
+      console.log('tempData > ', tempData.TRD_QTY)
+      if (tempData.TRD_QTY == 0 || tempData.TRD_QTY == '') {
         for (var i in GOODSMASTER) {
-          if (i != parseInt(index)) tempReducer.push(GOODSMASTER[i])
+          console.log(index, i, GOODSMASTER)
+          if (i != index) tempReducer.push(GOODSMASTER[i])
         }
+        setGOODSMASTER(tempReducer)
       } else {
         if (productReducer.Data) {
           for (var i in productReducer.Data) {
@@ -460,7 +600,8 @@ const ProductScreen = ({ route }) => {
                 UTQ_NAME: productReducer.Data[i].UTQ_NAME,
                 TRD_QTY: sumTRD_QTY(productReducer.Data[i].TRD_QTY, tempData.TRD_QTY).toString(),
                 onSave: true,
-                onFocus: productReducer.Data[i].onFocus,
+                onFocusQTY: false,
+                onFocusTRD_K_U_PRC: false,
                 date_in: productReducer.Data[i].date_in,
                 Temp_TRD_K_U_PRC: productReducer.Data[i].Temp_TRD_K_U_PRC,
                 TRD_K_U_PRC: productReducer.Data[i].TRD_K_U_PRC,
@@ -492,7 +633,8 @@ const ProductScreen = ({ route }) => {
             UTQ_NAME: tempData.UTQ_NAME,
             TRD_QTY: tempData.TRD_QTY,
             onSave: true,
-            onFocus: tempData.onFocus,
+            onFocusQTY: tempData.onFocusQTY,
+            onFocusTRD_K_U_PRC: tempData.onFocusTRD_K_U_PRC,
             date_in: tempData.date_in,
             Temp_TRD_K_U_PRC: tempData.Temp_TRD_K_U_PRC,
             TRD_K_U_PRC: tempData.TRD_K_U_PRC,
@@ -519,18 +661,19 @@ const ProductScreen = ({ route }) => {
             unique.push({ ...obj })
           }
         })
+        unique.sort((a, b) => {
+          if (a.date_in > b.date_in) {
+            return 1;
+          }
+          if (a.date_in < b.date_in) {
+            return -1;
+          }
+          return 0;
+        });
+        dispatch(productActions.setData(uniqueArray))
+        setGOODSMASTER(unique)
       }
-      unique.sort((a, b) => {
-        if (a.date_in > b.date_in) {
-          return 1;
-        }
-        if (a.date_in < b.date_in) {
-          return -1;
-        }
-        return 0;
-      });
-      dispatch(productActions.setData(uniqueArray))
-      setGOODSMASTER(unique)
+
     }
   }
   const set_SkuG = async () => {
@@ -545,7 +688,8 @@ const ProductScreen = ({ route }) => {
       SKU_NAME: SKUMASTER.SKU_NAME,
       UTQ_NAME: PRODUCTMASTER.UTQ_NAME,
       onSave: false, TRD_QTY: PRODUCTMASTER.UTQ_QTY,
-      onFocus: PRODUCTMASTER.onFocus,
+      onFocusQTY: PRODUCTMASTER.onFocusQTY,
+      onFocusTRD_K_U_PRC: PRODUCTMASTER.onFocusTRD_K_U_PRC,
       date_in: PRODUCTMASTER.date_in,
       Temp_TRD_K_U_PRC: PRODUCTMASTER.ARPLU_U_PRC,
       TRD_K_U_PRC: 0,
@@ -576,8 +720,6 @@ const ProductScreen = ({ route }) => {
     await dispatch(loginActions.guid(tempGuid))
     fetchMotherData(tempGuid)
   };
-
-
 
   const logOut = async () => {
     setLoading(true)
@@ -649,7 +791,7 @@ const ProductScreen = ({ route }) => {
       }),
     })
       .then((response) => response.json())
-      .then((json) => {
+      .then(async (json) => {
         let responseData = JSON.parse(json.ResponseData);
 
         if (responseData.RECORD_COUNT > 0) {
@@ -706,25 +848,46 @@ const ProductScreen = ({ route }) => {
 
 
           responseData.GOODSMASTER = responseData.GOODSMASTER.filter((item) => { return (item.GOODS_CODE == fetchBarcodeData) })[0]
-          let newGoodobj = {
-            GOODS_KEY: responseData.GOODSMASTER.GOODS_KEY ? responseData.GOODSMASTER.GOODS_KEY : '',
-            GOODS_CODE: responseData.GOODSMASTER.GOODS_CODE ? responseData.GOODSMASTER.GOODS_CODE : '',
-            GOODS_SKU: responseData.GOODSMASTER.GOODS_SKU ? responseData.GOODSMASTER.GOODS_SKU : '',
-            GOODS_PRICE: responseData.GOODSMASTER.GOODS_PRICE ? responseData.GOODSMASTER.GOODS_PRICE : '',
-            GOODS_ALIAS: responseData.GOODSMASTER.GOODS_ALIAS ? responseData.GOODSMASTER.GOODS_ALIAS : '',
-            GOODS_E_ALIAS: responseData.GOODSMASTER.GOODS_E_ALIAS ? responseData.GOODSMASTER.GOODS_E_ALIAS : '',
-            GOODS_BARTYPE: responseData.GOODSMASTER.GOODS_BARTYPE ? responseData.GOODSMASTER.GOODS_BARTYPE : '',
-            UTQ_NAME: responseData.GOODSMASTER.UTQ_NAME ? responseData.GOODSMASTER.UTQ_NAME : '',
-            UTQ_QTY: '1',
-            onSave: false, Temp_ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
-            onFocus: true,
-            date_in: new Date(),
-            ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
-            ARPLU_U_DSC: responseData.GOODSMASTER.ARPLU_U_DSC ? responseData.GOODSMASTER.ARPLU_U_DSC : '',
-            TAG_CODE: responseData.GOODSMASTER.TAG_CODE ? responseData.GOODSMASTER.TAG_CODE : '01',
-            TAG_NAME: responseData.GOODSMASTER.TAG_NAME ? responseData.GOODSMASTER.TAG_NAME : ''
-          }
-          setPRODUCTMASTER(newGoodobj)
+          await fetch('http://worldtimeapi.org/api/timezone/Asia/Bangkok', {
+            method: 'GET'
+          })
+            .then((response) => response.json())
+            .then((json) => {
+              let datetime = json.utc_datetime
+              console.log()
+              console.log('>')
+              console.log(datetime)
+              console.log()
+
+              let newGoodobj = {
+                GOODS_KEY: responseData.GOODSMASTER.GOODS_KEY ? responseData.GOODSMASTER.GOODS_KEY : '',
+                GOODS_CODE: responseData.GOODSMASTER.GOODS_CODE ? responseData.GOODSMASTER.GOODS_CODE : '',
+                GOODS_SKU: responseData.GOODSMASTER.GOODS_SKU ? responseData.GOODSMASTER.GOODS_SKU : '',
+                GOODS_PRICE: responseData.GOODSMASTER.GOODS_PRICE ? responseData.GOODSMASTER.GOODS_PRICE : '',
+                GOODS_ALIAS: responseData.GOODSMASTER.GOODS_ALIAS ? responseData.GOODSMASTER.GOODS_ALIAS : '',
+                GOODS_E_ALIAS: responseData.GOODSMASTER.GOODS_E_ALIAS ? responseData.GOODSMASTER.GOODS_E_ALIAS : '',
+                GOODS_BARTYPE: responseData.GOODSMASTER.GOODS_BARTYPE ? responseData.GOODSMASTER.GOODS_BARTYPE : '',
+                UTQ_NAME: responseData.GOODSMASTER.UTQ_NAME ? responseData.GOODSMASTER.UTQ_NAME : '',
+                UTQ_QTY: '1',
+                onSave: false, Temp_ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
+                onFocusQTY: false,
+                onFocusTRD_K_U_PRC: false,
+                date_in: new Date(datetime),
+                ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
+                ARPLU_U_DSC: responseData.GOODSMASTER.ARPLU_U_DSC ? responseData.GOODSMASTER.ARPLU_U_DSC : '',
+                TAG_CODE: responseData.GOODSMASTER.TAG_CODE ? responseData.GOODSMASTER.TAG_CODE : '01',
+                TAG_NAME: responseData.GOODSMASTER.TAG_NAME ? responseData.GOODSMASTER.TAG_NAME : ''
+              }
+              setPRODUCTMASTER(newGoodobj)
+            })
+            .catch((error) => {
+              console.log(ser_die)
+              console.error('ERROR at fetchContent >> ' + error)
+            })
+
+
+
+
           setSKUMASTER(newSkuobj)
         } else {
           setPRODUCTMASTER({})
@@ -765,7 +928,7 @@ const ProductScreen = ({ route }) => {
         }),
       })
         .then((response) => response.json())
-        .then((json) => {
+        .then(async (json) => {
           let responseData = JSON.parse(json.ResponseData);
 
           if (responseData.RECORD_COUNT > 0) {
@@ -822,27 +985,45 @@ const ProductScreen = ({ route }) => {
             console.log()
             console.log()
             responseData.GOODSMASTER = responseData.GOODSMASTER.filter((item) => { return (item.GOODS_CODE == GOODS_CODE) })[0]
-            let newGoodobj = {
-              GOODS_KEY: responseData.GOODSMASTER.GOODS_KEY ? responseData.GOODSMASTER.GOODS_KEY : '',
-              GOODS_CODE: responseData.GOODSMASTER.GOODS_CODE ? responseData.GOODSMASTER.GOODS_CODE : '',
-              GOODS_SKU: responseData.GOODSMASTER.GOODS_SKU ? responseData.GOODSMASTER.GOODS_SKU : '',
-              GOODS_PRICE: responseData.GOODSMASTER.GOODS_PRICE ? responseData.GOODSMASTER.GOODS_PRICE : '',
-              GOODS_ALIAS: responseData.GOODSMASTER.GOODS_ALIAS ? responseData.GOODSMASTER.GOODS_ALIAS : '',
-              GOODS_E_ALIAS: responseData.GOODSMASTER.GOODS_E_ALIAS ? responseData.GOODSMASTER.GOODS_E_ALIAS : '',
-              GOODS_BARTYPE: responseData.GOODSMASTER.GOODS_BARTYPE ? responseData.GOODSMASTER.GOODS_BARTYPE : '',
-              UTQ_NAME: responseData.GOODSMASTER.UTQ_NAME ? responseData.GOODSMASTER.UTQ_NAME : '',
-              UTQ_QTY: '1',
-              onSave: false, Temp_ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
-              onFocus: true,
-              date_in: new Date(),
-              ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
-              ARPLU_U_DSC: responseData.GOODSMASTER.ARPLU_U_DSC ? responseData.GOODSMASTER.ARPLU_U_DSC : '',
-              TAG_CODE: responseData.GOODSMASTER.TAG_CODE ? responseData.GOODSMASTER.TAG_CODE : '01',
-              TAG_NAME: responseData.GOODSMASTER.TAG_NAME ? responseData.GOODSMASTER.TAG_NAME : ''
-            }
-            console.log('newGoodobj>> ', newGoodobj.GOODS_KEY)
+            await fetch('http://worldtimeapi.org/api/timezone/Asia/Bangkok', {
+              method: 'GET'
+            })
+              .then((response) => response.json())
+              .then((json) => {
+                let datetime = json.utc_datetime
+                console.log()
+                console.log('>')
+                console.log(datetime)
+                console.log()
+                let newGoodobj = {
+                  GOODS_KEY: responseData.GOODSMASTER.GOODS_KEY ? responseData.GOODSMASTER.GOODS_KEY : '',
+                  GOODS_CODE: responseData.GOODSMASTER.GOODS_CODE ? responseData.GOODSMASTER.GOODS_CODE : '',
+                  GOODS_SKU: responseData.GOODSMASTER.GOODS_SKU ? responseData.GOODSMASTER.GOODS_SKU : '',
+                  GOODS_PRICE: responseData.GOODSMASTER.GOODS_PRICE ? responseData.GOODSMASTER.GOODS_PRICE : '',
+                  GOODS_ALIAS: responseData.GOODSMASTER.GOODS_ALIAS ? responseData.GOODSMASTER.GOODS_ALIAS : '',
+                  GOODS_E_ALIAS: responseData.GOODSMASTER.GOODS_E_ALIAS ? responseData.GOODSMASTER.GOODS_E_ALIAS : '',
+                  GOODS_BARTYPE: responseData.GOODSMASTER.GOODS_BARTYPE ? responseData.GOODSMASTER.GOODS_BARTYPE : '',
+                  UTQ_NAME: responseData.GOODSMASTER.UTQ_NAME ? responseData.GOODSMASTER.UTQ_NAME : '',
+                  UTQ_QTY: '1',
+                  onSave: false, Temp_ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
+                  onFocusQTY: false,
+                  onFocusTRD_K_U_PRC: false,
+                  date_in: new Date(datetime),
+                  ARPLU_U_PRC: responseData.GOODSMASTER.ARPLU_U_PRC ? responseData.GOODSMASTER.ARPLU_U_PRC : '',
+                  ARPLU_U_DSC: responseData.GOODSMASTER.ARPLU_U_DSC ? responseData.GOODSMASTER.ARPLU_U_DSC : '',
+                  TAG_CODE: responseData.GOODSMASTER.TAG_CODE ? responseData.GOODSMASTER.TAG_CODE : '01',
+                  TAG_NAME: responseData.GOODSMASTER.TAG_NAME ? responseData.GOODSMASTER.TAG_NAME : ''
+                }
+                console.log('newGoodobj>> ', newGoodobj.GOODS_KEY)
+                setPRODUCTMASTER(newGoodobj)
+              })
+              .catch((error) => {
+                console.log(ser_die)
+                console.error('ERROR at fetchContent >> ' + error)
+              })
+
+
             setSKUMASTER(newSkuobj)
-            setPRODUCTMASTER(newGoodobj)
             setLoading(false)
           } else {
             setSKUMASTER([])
@@ -871,24 +1052,69 @@ const ProductScreen = ({ route }) => {
 
   }
   const CpushData = async () => {
-    let C = false
-    for (var i in GOODSMASTER) {
-      if (GOODSMASTER[i].ARPLU_U_PRC == 0 || GOODSMASTER[i].ARPLU_U_PRC == '') {
-        C = true
-        break
-      }
-      console.log(GOODSMASTER[i].ARPLU_U_PRC)
-    }
-    console.log(C)
-    if (C)
-      Alert.alert(Language.t('menu.alertsave0Message'),Language.t('menu.alertsaveMessage') , [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])
-    else pushData()
+
+    await fetch('http://worldtimeapi.org/api/timezone/Asia/Bangkok', {
+      method: 'GET'
+    })
+      .then((response) => response.json())
+      .then(async (json) => {
+        let datetime = json.utc_datetime
+        console.log()
+        console.log('> datetime')
+        console.log(datetime)
+        console.log()
+        let C = false
+        for (var i in GOODSMASTER) {
+          if (GOODSMASTER[i].TRD_K_U_PRC == 0 || GOODSMASTER[i].TRD_K_U_PRC == '') {
+            C = true
+            break
+          }
+          console.log(GOODSMASTER[i].TRD_K_U_PRC)
+        }
+        if (productReducer.Log_data.date) {
+          var inputyear = Number(productReducer.Log_data.date.substring(0, 4)) + 543
+          var inputmonths = productReducer.Log_data.date.substring(4, 6)
+          var inputdate = productReducer.Log_data.date.substring(6, 8)
+          var inputFullDate = inputdate + '/' + inputmonths + '/' + inputyear
+          console.log(C)
+          if (C) {
+            console.log(DI_REF.DI_REF)
+            Alert.alert(Language.t('menu.alertsave0Message'), Language.t('menu.alertsaveMessage'), [{
+              text: Language.t('alert.ok'), onPress: () => DI_REF.DI_REF != '<เลขถัดไป>' ? Alert.alert(Language.t('notiAlert.header'), `เมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น. มีการบันทึกเอกสารไปแล้ว\nคุณต้องการแก้ไขหรือไม่`,
+                [
+                  { text: Language.t('alert.ok'), onPress: () => { pushData(datetime) } },
+                  { text: Language.t('alert.cancel'), onPress: () => { on_cancel() } }
+
+                ]) : pushData(datetime)
+            }, { text: Language.t('alert.cancel'), onPress: () => { } }])
+          } else {
+            if (DI_REF.DI_REF != '<เลขถัดไป>') {
+              Alert.alert(Language.t('notiAlert.header'), `เมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น. มีการบันทึกเอกสารไปแล้ว\nคุณต้องการแก้ไขหรือไม่`,
+                [
+                  { text: Language.t('alert.ok'), onPress: () => { pushData(datetime) } },
+                  { text: Language.t('alert.cancel'), onPress: () => { on_cancel() } }
+
+                ])
+
+            } else
+              pushData(datetime)
+          }
+        } else
+          pushData(datetime)
+      })
+      .catch((error) => {
+        console.log(ser_die)
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+
+
   }
-  const pushData = async () => {
+  const pushData = async (datetime) => {
     dieSer('pushData')
     setLoading(true)
     console.log(databaseReducer.Data.urlser)
-    var x = new Date()
+
+    var x = new Date(datetime)
     let yesr = x.getFullYear().toString()
     let month = (x.getMonth() + 1).toString().length > 1 ? (x.getMonth() + 1).toString() : '0' + (x.getMonth() + 1).toString()
     let date = x.getDate().toString().length > 1 ? x.getDate().toString() : '0' + x.getDate().toString()
@@ -903,105 +1129,130 @@ const ProductScreen = ({ route }) => {
     let TempProduct = []
     let temp_good = '';
     let temp_GOODSMASTER = []
-    let c = productReducer.Log_data.filter((filterItem) => { return (filterItem.date == fullDay) })
+
     console.log()
-    console.log('C ---> ', c)
+
     console.log()
-    if ( c.length>0 ) {
-      Alert.alert(Language.t('alert.errorTitle'), `เพิ่มเอกสารรับสินค้า ไม่สำเร็จ\nเนื่องจากวันนี้มีการ เพิ่มเอกสารรับสินค้าแล้ว\nเมื่อเวลา ${c[0].time}น. โปรดบันทึกการเพิ่มเอกสารรับสินค้าในวันถัดไป`, [{
-        text: Language.t('alert.ok'), onPress: () => { on_cancel() }
-      }]);
-      setCountdown(-1)
-      setLoading(false)
-    } else {
-
-
-      for (var i in GOODSMASTER)
-        if (GOODSMASTER[i].TRD_QTY > 0) temp_GOODSMASTER.push(GOODSMASTER[i])
-      for (var i in temp_GOODSMASTER) {
-        if (i > 0) temp_good += ','
-        temp_good += '{' +
-          '\"TRD_DSC_KEYINV\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYINV +
-          '\",\" TRD_C_DSCV\":\"' + temp_GOODSMASTER[i].TRD_C_DSCV +
-          '\",\"TRD_OPTION\":\"' + temp_GOODSMASTER[i].TRD_OPTION +
-          '\",\"TRD_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_KEYIN +
-          '\",\"SKU_KEY\":\"' + temp_GOODSMASTER[i].SKU_KEY +
-          '\",\"SKU_NAME\":\"' + temp_GOODSMASTER[i].SKU_NAME +
-          '\",\"UTQ_NAME\":\"' + temp_GOODSMASTER[i].UTQ_NAME +
-          '\",\"TRD_QTY\":\"' + temp_GOODSMASTER[i].TRD_QTY +
-          '\",\"TRD_K_U_PRC\":\"' + temp_GOODSMASTER[i].TRD_K_U_PRC +
-          '\",\"TRD_DSC_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYIN +
-          '\",\"TRD_Q_FREE\":\"' + temp_GOODSMASTER[i].TRD_Q_FREE +
-          '\",\"TRD_WL\":\"' + temp_GOODSMASTER[i].TRD_WL +
-          '\",\"TRD_TO_WL\":\"' + temp_GOODSMASTER[i].TRD_TO_WL +
-          '\",\"TRD_U_VATIO\":\"' + temp_GOODSMASTER[i].TRD_U_VATIO +
-          '\"}'
-      }
-
-      console.log(temp_good)
-      await fetch(databaseReducer.Data.urlser + '/UpdateErp', {
-        method: 'POST',
-        body: JSON.stringify({
-          'BPAPUS-BPAPSV': loginReducer.serviceID,
-          'BPAPUS-LOGIN-GUID': loginReducer.guid,
-          'BPAPUS-FUNCTION': 'SaveReceiveDocinfo',
-          'BPAPUS-PARAM': '{\"ErpUpdFunc\":[{\"ImpTrhHeader\":{' +
-            '\"DI_DATE\":\"' + TRH_SHIP_DATE +
-            '\",\"DI_REF\":\"<เลขถัดไป>' +
-            '\",\"DT_DOCCODE\":\"IB' +
-            '\",\"DT_PROPERTIES\":\"303' +
-            '\",\"VAT_DATE\":\"' + TRH_SHIP_DATE +
-            '\",\"VAT_REF\":\"<เลขเดียวกัน>' +
-            '\",\"VAT_RATE\":\"7' +
-            '\",\"VAT_RFR_REF\":\"<เลขเดียวกัน>' +
-            '\",\"TRH_SHIP_DATE\":\"' + TRH_SHIP_DATE +
-            '\",\"TRH_CANCEL_DATE\":\"' + TRH_CANCEL_DATE +
-            '\",\"DEPT_CODE\":\"03' +
-            '\",\"PRJ_CODE\":\"' +
-            '\",\"AP_CODE\":\"001' +
-            '\",\"APD_APCD\":\"101' +
-            '\",\"APPRB_CODE\":\"1' +
-            '\",\"APD_TDSC_KEYIN\":\"0' +
-            '\",\"APD_DUE_DA\":\"' + TRH_SHIP_DATE +
-            '\"},\"ImpTrhDetail\":[' +
-            temp_good +
-            ']}]}',
-          "BPAPUS-FILTER": "",
-          "BPAPUS-ORDERBY": "",
-          "BPAPUS-OFFSET": "0",
-          "BPAPUS-FETCH": "0"
-        })
-      })
-        .then((response) => response.json())
-        .then((json) => {
-          if (json.ResponseCode == '200') {
-
-
-            Alert.alert(Language.t('alert.succeed'), `เพิ่มเอกสารรับสินค้า สำเร็จ `, [{
-              text: Language.t('alert.ok'), onPress: () => { on_cancel() }
-            }]);
-            let Log_data = productReducer.Log_data
-            let logObj = {
-              date: fullDay,
-              time: fullTime
-            }
-            Log_data.push(logObj)
-            dispatch(productActions.setLog_Data(Log_data))
-          }
-          else Alert.alert(
-            Language.t('alert.errorTitle'),
-            Language.t('alert.incorrect'), [{
-              text: Language.t('alert.ok'), onPress: () => { }
-            }]);
-          console.log(json)
-          setLoading(false)
-          on_clear()
-          setCountdown(-1)
-        })
-        .catch((error) => {
-          console.log('Function Parameter Required');
-        })
+    for (var i in GOODSMASTER)
+      if (GOODSMASTER[i].TRD_QTY > 0) temp_GOODSMASTER.push(GOODSMASTER[i])
+    for (var i in temp_GOODSMASTER) {
+      if (i > 0) temp_good += ','
+      temp_good += '{' +
+        '\"TRD_DSC_KEYINV\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYINV +
+        '\",\" TRD_C_DSCV\":\"' + temp_GOODSMASTER[i].TRD_C_DSCV +
+        '\",\"TRD_OPTION\":\"' + temp_GOODSMASTER[i].TRD_OPTION +
+        '\",\"TRD_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_KEYIN +
+        '\",\"SKU_KEY\":\"' + temp_GOODSMASTER[i].SKU_KEY +
+        '\",\"SKU_NAME\":\"' + temp_GOODSMASTER[i].SKU_NAME +
+        '\",\"UTQ_NAME\":\"' + temp_GOODSMASTER[i].UTQ_NAME +
+        '\",\"TRD_QTY\":\"' + temp_GOODSMASTER[i].TRD_QTY +
+        '\",\"TRD_K_U_PRC\":\"' + temp_GOODSMASTER[i].TRD_K_U_PRC +
+        '\",\"TRD_DSC_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYIN +
+        '\",\"TRD_Q_FREE\":\"' + temp_GOODSMASTER[i].TRD_Q_FREE +
+        '\",\"TRD_WL\":\"' + temp_GOODSMASTER[i].TRD_WL +
+        '\",\"TRD_TO_WL\":\"' + temp_GOODSMASTER[i].TRD_TO_WL +
+        '\",\"TRD_U_VATIO\":\"' + temp_GOODSMASTER[i].TRD_U_VATIO +
+        '\"}'
     }
+    console.log(temp_good)
+    await fetch(databaseReducer.Data.urlser + '/UpdateErp', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': loginReducer.guid,
+        'BPAPUS-FUNCTION': 'SaveReceiveDocinfo',
+        'BPAPUS-PARAM': '{\"ErpUpdFunc\":[{\"ImpTrhHeader\":{' +
+          '\"DI_DATE\":\"' + TRH_SHIP_DATE +
+          '\",\"DI_REF\":\"' + DI_REF.DI_REF +
+          '\",\"DT_DOCCODE\":\"IB' +
+          '\",\"DT_PROPERTIES\":\"303' +
+          '\",\"VAT_DATE\":\"' + TRH_SHIP_DATE +
+          '\",\"VAT_REF\":\"' + DI_REF.INFO +
+          '\",\"VAT_RATE\":\"7' +
+          '\",\"VAT_RFR_REF\":\"' + DI_REF.INFO +
+          '\",\"TRH_SHIP_DATE\":\"' + TRH_SHIP_DATE +
+          '\",\"TRH_CANCEL_DATE\":\"' + TRH_CANCEL_DATE +
+          '\",\"DEPT_CODE\":\"03' +
+          '\",\"PRJ_CODE\":\"' +
+          '\",\"AP_CODE\":\"001' +
+          '\",\"APD_APCD\":\"101' +
+          '\",\"APPRB_CODE\":\"1' +
+          '\",\"APD_TDSC_KEYIN\":\"0' +
+          '\",\"APD_DUE_DA\":\"' + TRH_SHIP_DATE +
+          '\"},\"ImpTrhDetail\":[' +
+          temp_good +
+          ']}]}',
+        "BPAPUS-FILTER": "",
+        "BPAPUS-ORDERBY": "",
+        "BPAPUS-OFFSET": "0",
+        "BPAPUS-FETCH": "0"
+      })
+    })
+      .then((response) => response.json())
+      .then(async (json) => {
+        if (json.ResponseCode == '200') {
+          let temp_array = []
+          for (var i in GOODSMASTER) {
+
+            let newProduct = {
+              TRD_DSC_KEYINV: GOODSMASTER[i].TRD_DSC_KEYINV,
+              TRD_C_DSCV: GOODSMASTER[i].TRD_C_DSCV,
+              TRD_OPTION: GOODSMASTER[i].TRD_OPTION,
+              TRD_KEYIN: GOODSMASTER[i].TRD_KEYIN,
+              SKU_KEY: GOODSMASTER[i].SKU_KEY,
+              SKU_NAME: GOODSMASTER[i].SKU_NAME,
+              UTQ_NAME: GOODSMASTER[i].UTQ_NAME,
+              TRD_QTY: GOODSMASTER[i].TRD_QTY,
+              onSave: true,
+              onFocusQTY: false,
+              onFocusTRD_K_U_PRC: false,
+              date_in: GOODSMASTER[i].date_in,
+              Temp_TRD_K_U_PRC: GOODSMASTER[i].Temp_TRD_K_U_PRC,
+              TRD_K_U_PRC: GOODSMASTER[i].TRD_K_U_PRC,
+              Temp_ARPLU_U_PRC: GOODSMASTER[i].Temp_ARPLU_U_PRC,
+              TRD_DSC_KEYIN: GOODSMASTER[i].TRD_DSC_KEYIN,
+              TRD_Q_FREE: GOODSMASTER[i].TRD_Q_FREE,
+              TRD_WL: GOODSMASTER[i].TRD_WL,
+              TRD_TO_WL: GOODSMASTER[i].TRD_TO_WL,
+              TRD_U_VATIO: GOODSMASTER[i].TRD_U_VATIO,
+            }
+            temp_array.push(newProduct)
+
+          }
+          let responseData = JSON.parse(json.ResponseData);
+          console.log()
+          console.log('responseData > ', responseData)
+          console.log()
+          let Log_data = {
+            DI_KEY: responseData.DI_KEY,
+            GOODSMASTER: temp_array,
+            date: fullDay,
+            time: fullTime
+          }
+
+          console.log('Log_data >> ', Log_data)
+          console.log()
+          await dispatch(productActions.setLog_Data(Log_data))
+          Alert.alert(Language.t('alert.succeed'), `เพิ่มเอกสารรับสินค้า สำเร็จ `, [{
+            text: Language.t('alert.ok'), onPress: () => { navigation.goBack() }
+          }]);
+        }
+        else Alert.alert(
+          Language.t('alert.errorTitle'),
+          Language.t('alert.incorrect'), [{
+            text: Language.t('alert.ok'), onPress: () => { }
+          }]);
+        console.log(json)
+        setLoading(false)
+        on_clear()
+        setCountdown(-1)
+      })
+      .catch((error) => {
+        console.log('Function Parameter Required');
+      })
+
+
+
   }
   return (
     <View style={container1}>
@@ -1091,7 +1342,6 @@ const ProductScreen = ({ route }) => {
 
                 <View style={styles.body}>
                   <View style={styles.table}>
-
                     <View style={styles.tableHeader}>
                       <View style={{ flex: 0.5, padding: 10, justifyContent: 'center' }}  >
                         <Text style={{
@@ -1233,7 +1483,7 @@ const ProductScreen = ({ route }) => {
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
                                   justifyContent: 'center',
-                                  flex: 0.5
+                                  flex: 0.5,
                                 }}><Text
                                   style={{
                                     color: Colors.fontColor,
@@ -1241,103 +1491,119 @@ const ProductScreen = ({ route }) => {
                                   }}
                                 >{item.TRD_KEYIN + ' ' + item.SKU_NAME}</Text>
                                 </View>
+
                                 <View style={{
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
                                   justifyContent: 'center',
-                                  flex: 0.3
+                                  flex: 0.3, padding: 10
                                 }}>
                                   <Text
                                     style={{
                                       color: Colors.fontColor,
                                     }}
-                                  >{item.onFocus == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_TRD_K_U_PRC > 0 ? item.Temp_TRD_K_U_PRC : 0} )`}</Text>
+                                  >{item.onFocusQTY == false || item.onFocusTRD_K_U_PRC == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_TRD_K_U_PRC > 0 ? item.Temp_TRD_K_U_PRC : 0} )`}</Text>
                                 </View>
-                                {item.onSave == true ?
-                                  <View style={{
-                                    paddingLeft: 10,
-                                    paddingRight: 10,
-                                    backgroundColor: Colors.backgroundColorSecondary,
-                                    flex: 0.3,
-                                  }}>
-                                    <TextInput
-                                      style={{
-                                        color: '#4c57ff',
-                                        fontSize: FontSize.medium,
-                                      }}
-                                      keyboardType="number-pad"
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.TRD_QTY}
-                                      multiline={true}
-                                      textAlign={'right'}
-                                      placeholder={'จำนวน ..'}
-                                      editable={false}
-                                      onChangeText={(val) => {
-                                        set_SkuTRD_QTY(val, index)
-                                      }}
-                                    />
-
-                                  </View>
-                                  : <View style={{
-                                    paddingLeft: 10,
-                                    paddingRight: 10,
-                                    backgroundColor: Colors.backgroundColorSecondary,
-                                    flex: 0.3,
-                                  }}>
-                                    <TextInput
-                                      style={{
-                                        color: Colors.fontColor,
-                                        fontSize: FontSize.medium,
-                                        borderBottomColor: '#4c57ff',
-                                        borderBottomWidth: 1,
-                                      }}
-
-                                      keyboardType="number-pad"
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.TRD_QTY}
-                                      multiline={true}
-                                      textAlign={'right'}
-                                      placeholder={'จำนวน ..'}
-
-                                      onChangeText={(val) => {
-                                        set_SkuTRD_QTY(val, index)
-                                      }}
-                                    />
-
-
-                                  </View>}
-
                                 <View style={{
-                                  paddingLeft: 10,
-                                  paddingRight: 10,
+
                                   backgroundColor: Colors.backgroundColorSecondary,
-                                  flex: 0.3,
+                                  flex: 0.3, padding: 10
                                 }}>
                                   {item.onSave == true ?
-                                    <View style={{
-                                      paddingLeft: 10,
-                                      paddingRight: 10,
-                                      backgroundColor: Colors.backgroundColorSecondary,
-                                      flex: 0.3,
-                                    }}>
-                                      <CurrencyInput
-                                        style={{ color: '#4c57ff' }}
-                                        editable={false}
-                                        delimiter=","
-                                        separator="."
-                                        precision={2}
+                                    <CurrencyInput
+                                      style={{ color: '#4c57ff' }}
+                                      editable={false}
+                                      delimiter=","
+                                      separator="."
+                                      precision={0}
+                                      keyboardType="number-pad"
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.TRD_QTY}
+                                      multiline={true}
+                                      textAlign={'right'}
+                                      placeholder={Language.t('main.pprice') + '..'}
+                                      onPress={() => {
+                                        set_Focus('QTY', true, index)
+                                      }}
+                                    />
+                                    : item.onFocusQTY == true ? <>
+                                      <TextInput
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderBottomColor: '#4c57ff',
+                                          borderBottomWidth: 1,
+                                        }}
                                         keyboardType="number-pad"
                                         placeholderTextColor={Colors.fontColorSecondary}
-                                        value={item.TRD_K_U_PRC}
-                                        multiline={true}
+                                        value={0}
                                         textAlign={'right'}
-                                        placeholder={Language.t('main.pprice') + '..'}
-                                        onPress={() => {
-                                          set_Focus(true, index)
+                                        placeholder={'จำนวน ..'}
+                                        onBlur={() => set_Focus('QTY', false, index)}
+                                        onChangeText={(val) => {
+                                          set_SkuTRD_QTY(val, index)
                                         }}
                                       />
-                                    </View>
-                                    : item.onFocus == true ? <>
+                                    </> : <>
+                                      <TextInput
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderBottomColor: '#4c57ff',
+                                          borderBottomWidth: 1,
+                                        }}
+                                        keyboardType="number-pad"
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={item.TRD_QTY}
+                                        textAlign={'right'}
+                                        placeholder={'จำนวน ..'}
+                                        onFocus={() => set_Focus('QTY', true, index)}
+                                        onChangeText={(val) => {
+                                          set_SkuTRD_QTY(val, index)
+                                        }}
+                                      />
+                                    </>}
+                                </View>
+                                <View style={{
+                                  backgroundColor: Colors.backgroundColorSecondary,
+                                  flex: 0.3, padding: 10
+                                }}>
+                                  {item.onSave == true ?
+                                    <CurrencyInput
+                                      style={{ color: '#4c57ff' }}
+                                      editable={false}
+                                      delimiter=","
+                                      separator="."
+                                      precision={2}
+                                      keyboardType="number-pad"
+                                      placeholderTextColor={Colors.fontColorSecondary}
+                                      value={item.TRD_K_U_PRC}
+                                      multiline={true}
+                                      textAlign={'right'}
+                                      placeholder={Language.t('main.pprice') + '..'}
+                                      onFocus={() => {
+                                        set_Focus('TRD', true, index)
+                                      }}
+                                    />
+                                    : item.onFocusTRD_K_U_PRC == true ? <>
+                                      <TextInput
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderBottomColor: '#4c57ff',
+                                          borderBottomWidth: 1,
+                                        }}
+                                        keyboardType="number-pad"
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={0}
+                                        textAlign={'right'}
+                                        placeholder={Language.t('main.pprice') + '..'}
+                                        onBlur={() => set_Focus('TRD', false, index)}
+                                        onChangeText={(val) => {
+                                          set_SkuP(val, index)
+                                        }}
+                                      />
+                                    </> : <>
                                       <TextInput
                                         style={{
                                           color: Colors.fontColor,
@@ -1348,50 +1614,18 @@ const ProductScreen = ({ route }) => {
                                         keyboardType="number-pad"
                                         placeholderTextColor={Colors.fontColorSecondary}
                                         value={item.TRD_K_U_PRC}
-                                        multiline={true}
                                         textAlign={'right'}
                                         placeholder={Language.t('main.pprice') + '..'}
-                                        onBlur={() => set_Focus(false, index)}
+                                        onFocus={() => set_Focus('TRD', true, index)}
                                         onChangeText={(val) => {
-                                          set_SkuP(val, index)
+                                          console.log(val)
                                         }}
                                       />
-                                    </> : <>
-                                      < TouchableOpacity
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
-                                        onPress={() => {
-                                          set_Focus(true, index)
-                                        }}>
-                                        <CurrencyInput
-                                          style={{ color: Colors.fontColor, }}
-                                          editable={false}
-                                          delimiter=","
-                                          separator="."
-                                          precision={2}
-                                          keyboardType="number-pad"
-                                          placeholderTextColor={Colors.fontColorSecondary}
-                                          value={item.TRD_K_U_PRC}
-                                          multiline={true}
-                                          textAlign={'right'}
-                                          placeholder={Language.t('main.pprice') + '..'}
-                                          onPress={() => {
-                                            set_Focus(true, index)
-                                          }}
-                                        />
-                                      </TouchableOpacity>
                                     </>}
                                 </View>
-
                                 <View style={{
-                                  paddingLeft: 10,
-                                  paddingRight: 10,
                                   backgroundColor: Colors.backgroundColorSecondary,
-                                  flex: 0.3,
+                                  flex: 0.3, padding: 10
                                 }}>
                                   <CurrencyInput
                                     style={{ color: '#4c57ff' }}
@@ -1406,17 +1640,18 @@ const ProductScreen = ({ route }) => {
                                     textAlign={'right'}
                                     placeholder={Language.t('main.pprice') + '..'}
                                     onPress={() => {
-                                      set_Focus(true, index)
+                                      set_Focus('TRD', true, index)
                                     }}
                                   />
                                 </View>
+
                                 {item.onSave == true ?
                                   <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => pop_saveSku(item, index)}>
-                                    <View style={{ margin: 10, padding: 10, justifyContent: 'center', borderRadius: 10, }}>
+                                    <View style={{ padding: 10, justifyContent: 'center', borderRadius: 10, }}>
                                       <FontAwesome name="edit" style={{ color: Colors.fontColor, }} size={FontSize.large} />
                                     </View>
                                   </TouchableOpacity> : <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => set_saveSku(item, index)}>
-                                    <View style={{ margin: 10, padding: 10, justifyContent: 'center', borderRadius: 10, }}>
+                                    <View style={{ padding: 10, justifyContent: 'center', borderRadius: 10, }}>
                                       <FontAwesome name="check" style={{ color: Colors.fontColor, }} size={FontSize.large} />
                                     </View>
                                   </TouchableOpacity>}
@@ -1477,7 +1712,7 @@ const ProductScreen = ({ route }) => {
                     color: Colors.fontColor2,
                     fontSize: FontSize.medium,
                   }}>
-                    {`รวมเงิน ${currencyFormat(sum)} บาท`}
+                    {`รวมเงิน ${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} บาท`}
                   </Text>
                 </View>
               </View>)}

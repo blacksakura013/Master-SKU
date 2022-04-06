@@ -33,7 +33,7 @@ import { useNavigation } from '@react-navigation/native';
 // import { View } from 'react-native-paper';
 
 import Dialog from 'react-native-dialog';
-import { Language } from '../translations/I18n';
+import { Language, changeLanguage } from '../translations/I18n';
 import DeviceInfo from 'react-native-device-info';
 
 const deviceWidth = Dimensions.get('window').width;
@@ -75,20 +75,11 @@ const Mainmenu = ({ route }) => {
     const [loading_backG, setLoading_backG] = useStateIfMounted(true);
 
 
-
     const image = '../images/UI/SKU/4x/Asset22_4x.png';
 
 
-
-
-
-
-
-
-
-
-
     useEffect(() => {
+     
         console.log()
         console.log()
         console.log('index >> ', navigation.getState().index)
@@ -190,17 +181,17 @@ const Mainmenu = ({ route }) => {
                                 <View style={styles.body}>
                                     <TouchableOpacity style={{ padding: 10, width: deviceWidth / 1.5, }} onPress={() => navigation.navigate('SKUScreen', {})}>
                                         <View style={{ padding: 10, flexDirection: "row", justifyContent: 'center', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
-                                            <Text style={{ color: Colors.fontColor, fontSize: FontSize.large, }}>สแกนเพิ่มรหัสสินค้า</Text>
+                                            <Text style={{ color: Colors.fontColor2, fontSize: FontSize.large, }}>{Language.t('menu.menu1')}</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{ padding: 10, width: deviceWidth / 1.5, }} onPress={() => navigation.navigate('ProductScreen', {})}>
                                         <View style={{ padding: 10, flexDirection: "row", justifyContent: 'center', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
-                                            <Text style={{ color: Colors.fontColor, fontSize: FontSize.large, }}>รับสินค้าเข้า</Text>
+                                            <Text style={{ color: Colors.fontColor2, fontSize: FontSize.large, }}>{Language.t('menu.menu2')}</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{ padding: 10, width: deviceWidth / 1.5, }} onPress={() => console.log('report')}>
                                         <View style={{ padding: 10, flexDirection: "row", justifyContent: 'center', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
-                                            <Text style={{ color: Colors.fontColor, fontSize: FontSize.large, }}>รายงาน</Text>
+                                            <Text style={{ color: Colors.fontColor2, fontSize: FontSize.large, }}>{Language.t('menu.menu3')}</Text>
                                         </View>
                                     </TouchableOpacity>
                                     <TouchableOpacity style={{ padding: 10, width: deviceWidth / 1.5, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
@@ -215,8 +206,6 @@ const Mainmenu = ({ route }) => {
 
                         </SafeAreaView>
                     </View>
-
-
                 </> : <View
                     style={{
                         width: deviceWidth,

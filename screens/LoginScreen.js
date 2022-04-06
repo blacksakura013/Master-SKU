@@ -93,7 +93,7 @@ const LoginScreen = () => {
   const [loading_backG, setLoading_backG] = useStateIfMounted(true);
 
   const [resultJson, setResultJson] = useState([]);
-  const [marker, setMarker] = useState(false);
+  const [marker, setMarker] = useState(true);
   const [username, setUsername] = useState(loginReducer.userloggedIn == true ? loginReducer.userNameED : '');
   const [password, setPassword] = useState(loginReducer.userloggedIn == true ? loginReducer.passwordED : '');
 
@@ -271,9 +271,9 @@ const LoginScreen = () => {
           '{"BPAPUS-MACHINE": "' +
           registerReducer.machineNum +
           '","BPAPUS-USERID": "' +
-          username +
+          username.toUpperCase() +
           '","BPAPUS-PASSWORD": "' +
-          password +
+          password.toUpperCase() +
           '"}',
       }),
     })
@@ -418,13 +418,11 @@ const LoginScreen = () => {
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('selectBase.error'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
-
         } else {
           let tempurl = endpointMother.split(':8890')
           Alert.alert(
             Language.t('alert.errorTitle'),
             Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + tempurl[0] + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
-
         }
         ED = false
       });
