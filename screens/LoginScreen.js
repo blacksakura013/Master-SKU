@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 
 import CheckBox from '@react-native-community/checkbox';
+
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from "react-native-network-info";
 

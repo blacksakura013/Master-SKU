@@ -44,6 +44,7 @@ import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 import safe_Format from '../src/safe_Format';
 import { fontWeight, height, margin } from 'styled-system';
+import { Input } from 'antd';
 const SKUScreen = ({ route }) => {
   let arrayResult = [];
 
@@ -80,9 +81,7 @@ const SKUScreen = ({ route }) => {
   const [SKUMASTER, setSKUMASTER] = useState({});
   const [GOODSMASTER, setGOODSMASTER] = useState([]);
   const [isSFeatures, setSFeatures] = useState(loginReducer.isSFeatures == true ? '\"Y\"' : '\"N\"');
-  const [data, setData] = useStateIfMounted({
-    secureTextEntry: true,
-  });
+
   const image = '../images/UI/SKU/4x/Asset22_4x.png';
   let clockCall = null;
   const defaultCountDown = -1;
@@ -91,12 +90,7 @@ const SKUScreen = ({ route }) => {
   const [recon, setRecon] = useState('');
   let kye_token = "";
 
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
+
 
   useEffect(() => {
     console.log('>> Address : ', loginReducer.ipAddress)
@@ -167,6 +161,8 @@ const SKUScreen = ({ route }) => {
   const connectAgain = () => {
     if (recon == 'pushData') pushData()
     else if (recon == 'fetchBarcodeData') fetchBarcodeData()
+    else if (recon == 'fetchData') fetchData()
+    else if (recon == 'fetchBarcodeMotherData') fetchBarcodeMotherData()
     else if (recon == 'fetchMotherData') fetchMotherData()
     else if (recon == 'logOut') logOut()
     else setLoading(false)
@@ -180,15 +176,7 @@ const SKUScreen = ({ route }) => {
     // }, 1000);
 
   }
-  // const _PressResend = () => {
 
-  //   setCountdown(defaultCountDown);
-
-  //   clearInterval(clockCall);
-  //   clockCall = setInterval(() => {
-  //     decrementClock();
-  //   }, 1000);
-  // }
   useEffect(() => {
     if (countdown != -1) {
       clockCall = setInterval(() => {
@@ -217,7 +205,7 @@ const SKUScreen = ({ route }) => {
           UTQ_QTY: GOODSMASTER[i].UTQ_QTY,
           Temp_ARPLU_U_PRC: GOODSMASTER[i].Temp_ARPLU_U_PRC,
           onFocus: onFocus,
-          ARPLU_U_PRC: GOODSMASTER[i].ARPLU_U_PRC,
+          ARPLU_U_PRC: onFocus ? '' : GOODSMASTER[i].ARPLU_U_PRC == '' ? GOODSMASTER[i].Temp_ARPLU_U_PRC : GOODSMASTER[i].ARPLU_U_PRC,
           ARPLU_U_DSC: GOODSMASTER[i].ARPLU_U_DSC,
           TAG_CODE: GOODSMASTER[i].TAG_CODE,
           TAG_NAME: GOODSMASTER[i].TAG_NAME
@@ -269,7 +257,7 @@ const SKUScreen = ({ route }) => {
     console.log(serviceID)
     let tempGuid = await safe_Format._fetchGuidLog(urlser, serviceID, machineNum, userNameED, passwordED)
     await dispatch(loginActions.guid(tempGuid))
-    fetchMotherData(tempGuid)
+    fetchData(tempGuid)
   };
 
   const AddNewData = (fetchBarcodeData) => {
@@ -329,6 +317,245 @@ const SKUScreen = ({ route }) => {
 
   const fetchBarcodeData = async (fetchBarcodeData) => {
     dieSer('fetchBarcodeData')
+    setLoading(true)
+    setTemp_report('')
+    console.log('hit >> ', fetchBarcodeData, databaseReducer.Data.urlser)
+    await fetch(databaseReducer.Data.urlser + '/SetupErp', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': loginReducer.guid,
+        'BPAPUS-FUNCTION': 'GETSKUINFOBYGOODSCODE',
+        'BPAPUS-PARAM':
+          '{"GOODS_CODE": "' +
+          fetchBarcodeData + '"}',
+        'BPAPUS-FILTER': '',
+        'BPAPUS-ORDERBY': '',
+        'BPAPUS-OFFSET': '0',
+        'BPAPUS-FETCH': '0',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let responseData = JSON.parse(json.ResponseData);
+
+        if (responseData.RECORD_COUNT > 0) {
+          console.log(responseData.DOCINFO)
+          setTemp_report(responseData.DOCINFO.SKU_NAME);
+          let newSkuobj = {
+            SKU_KEY: responseData.DOCINFO.SKU_KEY ? responseData.DOCINFO.SKU_KEY : '',
+            SKU_CODE: responseData.DOCINFO.SKU_CODE ? responseData.DOCINFO.SKU_CODE : '',
+            SKU_NAME: responseData.DOCINFO.SKU_NAME ? responseData.DOCINFO.SKU_NAME : '',
+            SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
+            SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
+
+            SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 3,
+            SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
+            SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 2,
+            SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 1,
+            SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
+
+            UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
+            UTQ_K_QTY: responseData.DOCINFO.UTQ_K_QTY ? responseData.DOCINFO.UTQ_K_QTY : '',
+            UTQ_T_NAME: responseData.DOCINFO.UTQ_T_NAME ? responseData.DOCINFO.UTQ_T_NAME : '',
+            UTQ_T_QTY: responseData.DOCINFO.UTQ_T_QTY ? responseData.DOCINFO.UTQ_T_QTY : '',
+            UTQ_S_NAME: responseData.DOCINFO.UTQ_S_NAME ? responseData.DOCINFO.UTQ_S_NAME : '',
+            UTQ_S_QTY: responseData.DOCINFO.UTQ_S_QTY ? responseData.DOCINFO.UTQ_S_QTY : '',
+
+            BRN_CODE: responseData.DOCINFO.BRN_CODE ? responseData.DOCINFO.BRN_CODE : '',
+            BRN_NAME: responseData.DOCINFO.BRN_NAME ? responseData.DOCINFO.BRN_NAME : '',
+
+            ICCAT_CODE: responseData.DOCINFO.ICCAT_CODE ? responseData.DOCINFO.ICCAT_CODE : '',
+            ICCAT_NAME: responseData.DOCINFO.ICCAT_NAME ? responseData.DOCINFO.ICCAT_NAME : '',
+            ICDEPT_CODE: responseData.DOCINFO.ICDEPT_CODE ? responseData.DOCINFO.ICDEPT_CODE : '',
+            ICDEPT_THAIDESC: responseData.DOCINFO.ICDEPT_THAIDESC ? responseData.DOCINFO.ICDEPT_THAIDESC : '',
+            ICDEPT_ENGDESC: responseData.DOCINFO.ICDEPT_ENGDESC ? responseData.DOCINFO.ICDEPT_ENGDESC : '',
+
+            SKUALT_CODE: responseData.DOCINFO.SKUALT_CODE ? responseData.DOCINFO.SKUALT_CODE : '',
+            SKUALT_NAME: responseData.DOCINFO.SKUALT_NAME ? responseData.DOCINFO.SKUALT_NAME : '',
+
+            ICCOLOR_CODE: responseData.DOCINFO.ICCOLOR_CODE ? responseData.DOCINFO.ICCOLOR_CODE : '',
+            ICCOLOR_NAME: responseData.DOCINFO.ICCOLOR_NAME ? responseData.DOCINFO.ICCOLOR_NAME : '',
+            ICSIZE_CODE: responseData.DOCINFO.ICSIZE_CODE ? responseData.DOCINFO.ICSIZE_CODE : '',
+            ICSIZE_NAME: responseData.DOCINFO.ICSIZE_NAME ? responseData.DOCINFO.ICSIZE_NAME : '',
+            ICGL_CODE: responseData.DOCINFO.ICGL_CODE ? responseData.DOCINFO.ICGL_CODE : '',
+            ICGL_NAME: responseData.DOCINFO.ICGL_NAME ? responseData.DOCINFO.ICGL_NAME : '',
+            ICPRT_CODE: responseData.DOCINFO.ICPRT_CODE ? responseData.DOCINFO.ICPRT_CODE : '',
+            ICPRT_NAME: responseData.DOCINFO.ICPRT_NAME ? responseData.DOCINFO.ICPRT_NAME : '',
+
+            WL_CODE: responseData.DOCINFO.WL_CODE ? responseData.DOCINFO.WL_CODE : '',
+            WL_NAME: responseData.DOCINFO.WL_NAME ? responseData.DOCINFO.WL_NAME : '',
+
+            SKU_PROPERTIES: isSFeatures
+          }
+          console.log(newSkuobj)
+
+          let temp_GoodData = [];
+          for (var i in responseData.GOODSMASTER) {
+            let newGoodobj = {
+              GOODS_KEY: responseData.GOODSMASTER[i].GOODS_KEY ? responseData.GOODSMASTER[i].GOODS_KEY : '',
+              GOODS_CODE: responseData.GOODSMASTER[i].GOODS_CODE ? responseData.GOODSMASTER[i].GOODS_CODE : '',
+              GOODS_SKU: responseData.GOODSMASTER[i].GOODS_SKU ? responseData.GOODSMASTER[i].GOODS_SKU : '',
+              GOODS_PRICE: responseData.GOODSMASTER[i].GOODS_PRICE ? responseData.GOODSMASTER[i].GOODS_PRICE : '',
+              GOODS_ALIAS: responseData.GOODSMASTER[i].GOODS_ALIAS ? responseData.GOODSMASTER[i].GOODS_ALIAS : '',
+              GOODS_E_ALIAS: responseData.GOODSMASTER[i].GOODS_E_ALIAS ? responseData.GOODSMASTER[i].GOODS_E_ALIAS : '',
+              GOODS_BARTYPE: responseData.GOODSMASTER[i].GOODS_BARTYPE ? responseData.GOODSMASTER[i].GOODS_BARTYPE : '',
+              UTQ_NAME: responseData.GOODSMASTER[i].UTQ_NAME ? responseData.GOODSMASTER[i].UTQ_NAME : '',
+              UTQ_QTY: responseData.GOODSMASTER[i].UTQ_QTY ? responseData.GOODSMASTER[i].UTQ_QTY : '',
+              Temp_ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+              onFocus: false,
+              ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+              ARPLU_U_DSC: responseData.GOODSMASTER[i].ARPLU_U_DSC ? responseData.GOODSMASTER[i].ARPLU_U_DSC : '',
+              TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '01',
+              TAG_NAME: responseData.GOODSMASTER[i].TAG_NAME ? responseData.GOODSMASTER[i].TAG_NAME : ''
+            }
+            temp_GoodData.push(newGoodobj)
+          }
+          temp_GoodData.sort((a, b) => (parseInt(a.UTQ_QTY) > parseInt(b.UTQ_QTY)) ? 1 : ((parseInt(b.UTQ_QTY) > parseInt(a.UTQ_QTY)) ? -1 : 0))
+          setGOODSMASTER(temp_GoodData)
+          setSKUMASTER(newSkuobj)
+          setLoading(false)
+          setCountdown(-1)
+        } else {
+          setCountdown(15)
+          fetchBarcodeMotherData(fetchBarcodeData)
+        }
+
+      })
+      .catch((error) => {
+        console.log(ser_die)
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+  }
+
+  const fetchData = async (tempGuid) => {
+    dieSer('fetchData')
+    console.log(GOODS_CODE)
+    setLoading(true)
+    setTemp_report('')
+    if (GOODS_CODE) {
+      console.log('hit >> ', GOODS_CODE)
+      await fetch(databaseReducer.Data.urlser + '/SetupErp', {
+        method: 'POST',
+        body: JSON.stringify({
+          'BPAPUS-BPAPSV': loginReducer.serviceID,
+          'BPAPUS-LOGIN-GUID': tempGuid ? tempGuid : loginReducer.guid,
+          'BPAPUS-FUNCTION': 'GETSKUINFOBYGOODSCODE',
+          'BPAPUS-PARAM':
+            '{"GOODS_CODE": "' +
+            GOODS_CODE + '"}',
+          'BPAPUS-FILTER': '',
+          'BPAPUS-ORDERBY': '',
+          'BPAPUS-OFFSET': '0',
+          'BPAPUS-FETCH': '0',
+        }),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          let responseData = JSON.parse(json.ResponseData);
+
+          if (responseData.RECORD_COUNT > 0) {
+            console.log(responseData.DOCINFO)
+            setTemp_report(responseData.DOCINFO.SKU_NAME);
+            let newSkuobj = {
+              SKU_KEY: responseData.DOCINFO.SKU_KEY ? responseData.DOCINFO.SKU_KEY : '',
+              SKU_CODE: responseData.DOCINFO.SKU_CODE ? responseData.DOCINFO.SKU_CODE : '',
+              SKU_NAME: responseData.DOCINFO.SKU_NAME ? responseData.DOCINFO.SKU_NAME : '',
+              SKU_E_NAME: responseData.DOCINFO.SKU_E_NAME ? responseData.DOCINFO.SKU_E_NAME : '',
+              SKU_BARCODE: responseData.DOCINFO.SKU_BARCODE ? responseData.DOCINFO.SKU_BARCODE : '',
+
+              SKU_VAT_TY: responseData.DOCINFO.SKU_VAT_TY ? responseData.DOCINFO.SKU_VAT_TY : 3,
+              SKU_VAT: responseData.DOCINFO.SKU_VAT ? responseData.DOCINFO.SKU_VAT : '',
+              SKU_COST_TY: responseData.DOCINFO.SKU_COST_TY ? responseData.DOCINFO.SKU_COST_TY : 2,
+              SKU_STOCK: responseData.DOCINFO.SKU_STOCK ? responseData.DOCINFO.SKU_STOCK : 1,
+              SKU_SENSITIVITY: responseData.DOCINFO.SKU_SENSITIVITY ? responseData.DOCINFO.SKU_SENSITIVITY : 0,
+
+              UTQ_K_NAME: responseData.DOCINFO.UTQ_K_NAME ? responseData.DOCINFO.UTQ_K_NAME : '',
+              UTQ_K_QTY: responseData.DOCINFO.UTQ_K_QTY ? responseData.DOCINFO.UTQ_K_QTY : '',
+              UTQ_T_NAME: responseData.DOCINFO.UTQ_T_NAME ? responseData.DOCINFO.UTQ_T_NAME : '',
+              UTQ_T_QTY: responseData.DOCINFO.UTQ_T_QTY ? responseData.DOCINFO.UTQ_T_QTY : '',
+              UTQ_S_NAME: responseData.DOCINFO.UTQ_S_NAME ? responseData.DOCINFO.UTQ_S_NAME : '',
+              UTQ_S_QTY: responseData.DOCINFO.UTQ_S_QTY ? responseData.DOCINFO.UTQ_S_QTY : '',
+
+              BRN_CODE: responseData.DOCINFO.BRN_CODE ? responseData.DOCINFO.BRN_CODE : '',
+              BRN_NAME: responseData.DOCINFO.BRN_NAME ? responseData.DOCINFO.BRN_NAME : '',
+
+              ICCAT_CODE: responseData.DOCINFO.ICCAT_CODE ? responseData.DOCINFO.ICCAT_CODE : '',
+              ICCAT_NAME: responseData.DOCINFO.ICCAT_NAME ? responseData.DOCINFO.ICCAT_NAME : '',
+              ICDEPT_CODE: responseData.DOCINFO.ICDEPT_CODE ? responseData.DOCINFO.ICDEPT_CODE : '',
+              ICDEPT_THAIDESC: responseData.DOCINFO.ICDEPT_THAIDESC ? responseData.DOCINFO.ICDEPT_THAIDESC : '',
+              ICDEPT_ENGDESC: responseData.DOCINFO.ICDEPT_ENGDESC ? responseData.DOCINFO.ICDEPT_ENGDESC : '',
+
+              SKUALT_CODE: responseData.DOCINFO.SKUALT_CODE ? responseData.DOCINFO.SKUALT_CODE : '',
+              SKUALT_NAME: responseData.DOCINFO.SKUALT_NAME ? responseData.DOCINFO.SKUALT_NAME : '',
+
+              ICCOLOR_CODE: responseData.DOCINFO.ICCOLOR_CODE ? responseData.DOCINFO.ICCOLOR_CODE : '',
+              ICCOLOR_NAME: responseData.DOCINFO.ICCOLOR_NAME ? responseData.DOCINFO.ICCOLOR_NAME : '',
+              ICSIZE_CODE: responseData.DOCINFO.ICSIZE_CODE ? responseData.DOCINFO.ICSIZE_CODE : '',
+              ICSIZE_NAME: responseData.DOCINFO.ICSIZE_NAME ? responseData.DOCINFO.ICSIZE_NAME : '',
+              ICGL_CODE: responseData.DOCINFO.ICGL_CODE ? responseData.DOCINFO.ICGL_CODE : '',
+              ICGL_NAME: responseData.DOCINFO.ICGL_NAME ? responseData.DOCINFO.ICGL_NAME : '',
+              ICPRT_CODE: responseData.DOCINFO.ICPRT_CODE ? responseData.DOCINFO.ICPRT_CODE : '',
+              ICPRT_NAME: responseData.DOCINFO.ICPRT_NAME ? responseData.DOCINFO.ICPRT_NAME : '',
+
+              WL_CODE: responseData.DOCINFO.WL_CODE ? responseData.DOCINFO.WL_CODE : '',
+              WL_NAME: responseData.DOCINFO.WL_NAME ? responseData.DOCINFO.WL_NAME : '',
+
+              SKU_PROPERTIES: isSFeatures
+            }
+            console.log('newSkuobj>>', newSkuobj)
+            let temp_GoodData = [];
+            for (var i in responseData.GOODSMASTER) {
+
+              let newGoodobj = {
+                GOODS_KEY: responseData.GOODSMASTER[i].GOODS_KEY ? responseData.GOODSMASTER[i].GOODS_KEY : '',
+                GOODS_CODE: responseData.GOODSMASTER[i].GOODS_CODE ? responseData.GOODSMASTER[i].GOODS_CODE : '',
+                GOODS_SKU: responseData.GOODSMASTER[i].GOODS_SKU ? responseData.GOODSMASTER[i].GOODS_SKU : '',
+                GOODS_PRICE: responseData.GOODSMASTER[i].GOODS_PRICE ? responseData.GOODSMASTER[i].GOODS_PRICE : '',
+                GOODS_ALIAS: responseData.GOODSMASTER[i].GOODS_ALIAS ? responseData.GOODSMASTER[i].GOODS_ALIAS : '',
+                GOODS_E_ALIAS: responseData.GOODSMASTER[i].GOODS_E_ALIAS ? responseData.GOODSMASTER[i].GOODS_E_ALIAS : '',
+                GOODS_BARTYPE: responseData.GOODSMASTER[i].GOODS_BARTYPE ? responseData.GOODSMASTER[i].GOODS_BARTYPE : '',
+                UTQ_NAME: responseData.GOODSMASTER[i].UTQ_NAME ? responseData.GOODSMASTER[i].UTQ_NAME : '',
+                UTQ_QTY: responseData.GOODSMASTER[i].UTQ_QTY ? responseData.GOODSMASTER[i].UTQ_QTY : '',
+                Temp_ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+                onFocus: false,
+                ARPLU_U_PRC: responseData.GOODSMASTER[i].ARPLU_U_PRC ? responseData.GOODSMASTER[i].ARPLU_U_PRC : '',
+                ARPLU_U_DSC: responseData.GOODSMASTER[i].ARPLU_U_DSC ? responseData.GOODSMASTER[i].ARPLU_U_DSC : '',
+                TAG_CODE: responseData.GOODSMASTER[i].TAG_CODE ? responseData.GOODSMASTER[i].TAG_CODE : '01',
+                TAG_NAME: responseData.GOODSMASTER[i].TAG_NAME ? responseData.GOODSMASTER[i].TAG_NAME : ''
+              }
+              temp_GoodData.push(newGoodobj)
+            }
+            temp_GoodData.sort((a, b) => (parseInt(a.UTQ_QTY) > parseInt(b.UTQ_QTY)) ? 1 : ((parseInt(b.UTQ_QTY) > parseInt(a.UTQ_QTY)) ? -1 : 0))
+            console.log(temp_GoodData)
+            setSKUMASTER(newSkuobj)
+            setGOODSMASTER(temp_GoodData)
+            setLoading(false)
+            setCountdown(-1)
+          } else {
+            setCountdown(15)
+            fetchMotherData()
+          }
+
+
+        })
+        .catch((error) => {
+          console.log(ser_die)
+          console.error('ERROR at fetchContent >> ' + error)
+        })
+    } else {
+      setSKUMASTER([])
+      setGOODSMASTER([])
+      Alert.alert(Language.t('alert.errorTitle'), Language.t('alert.incompleteInformation'), [{
+        text: Language.t('alert.ok'), onPress: () => { }
+      }]);
+      setLoading(false)
+      setCountdown(-1)
+    }
+  }
+
+  const fetchBarcodeMotherData = async (fetchBarcodeData) => {
+    dieSer('fetchBarcodeMotherData')
     setLoading(true)
     setTemp_report('')
     console.log('hit >> ', fetchBarcodeData)
@@ -448,8 +675,6 @@ const SKUScreen = ({ route }) => {
     setLoading(true)
     setTemp_report('')
     if (GOODS_CODE) {
-
-
       console.log('hit >> ', GOODS_CODE)
       await fetch(loginReducer.endpointMother + '/SetupErp', {
         method: 'POST',
@@ -547,7 +772,7 @@ const SKUScreen = ({ route }) => {
             setSKUMASTER(newSkuobj)
             setGOODSMASTER(temp_GoodData)
 
-            setLoading(false)
+
 
           } else {
             setSKUMASTER([])
@@ -555,9 +780,10 @@ const SKUScreen = ({ route }) => {
             setTemp_report(Language.t('alert.errorDetail'));
             AddNewData()
 
-            setLoading(false)
+
           }
           setCountdown(-1)
+          setLoading(false)
 
         })
         .catch((error) => {
@@ -574,6 +800,7 @@ const SKUScreen = ({ route }) => {
       setCountdown(-1)
     }
   }
+
   const CpushData = async () => {
     let C = false
     for (var i in GOODSMASTER) {
@@ -588,6 +815,7 @@ const SKUScreen = ({ route }) => {
       Alert.alert(Language.t('menu.alertsave0Message'), Language.t('menu.alertsaveMessage'), [{ text: Language.t('alert.ok'), onPress: () => pushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])
     else pushData()
   }
+
   const pushData = async () => {
     dieSer('pushData')
     setLoading(true)
@@ -718,12 +946,12 @@ const SKUScreen = ({ route }) => {
                 value={GOODS_CODE}
 
                 placeholder={Language.t('main.goodscode') + '..'}
-                onSubmitEditing={() => fetchMotherData()}
+                onSubmitEditing={() => fetchData()}
                 onChangeText={(val) => {
                   setGOODS_CODE(val)
                 }} />
 
-              <TouchableOpacity style={{ paddingTop: 10, paddingBottom: 10, }} onPress={() => fetchMotherData()}>
+              <TouchableOpacity style={{ paddingTop: 10, paddingBottom: 10, }} onPress={() => fetchData()}>
                 <Image
                   source={
                     require('../images/UI/SKU/4x/Asset26_4x.png')
@@ -934,12 +1162,13 @@ const SKUScreen = ({ route }) => {
                                     textAlign={'right'}
                                     placeholder={Language.t('main.pprice') + '..'}
                                     onBlur={() => set_Focus(item.GOODS_CODE, false)}
+                                    onSubmitEditing={() => set_Focus(item.GOODS_CODE, false)}
                                     onChangeText={(val) => {
                                       set_SkuP(item.GOODS_CODE, val)
                                     }}
                                   />
                                 </> : <>
-                                  < TouchableOpacity
+                                  <TouchableOpacity
                                     style={{
                                       color: Colors.fontColor,
                                       fontSize: FontSize.medium,
@@ -951,24 +1180,26 @@ const SKUScreen = ({ route }) => {
                                     }}
                                     onPress={() => {
                                       set_Focus(item.GOODS_CODE, true)
-                                    }}>
+                                    }}
+                                  >
                                     <CurrencyInput
-                                      style={{ color: Colors.fontColor, }}
                                       editable={false}
+
                                       delimiter=","
                                       separator="."
                                       precision={2}
                                       keyboardType="number-pad"
+                                      style={{ color: Colors.fontColor }}
                                       placeholderTextColor={Colors.fontColorSecondary}
                                       value={item.ARPLU_U_PRC}
                                       multiline={true}
                                       textAlign={'right'}
                                       placeholder={Language.t('main.pprice') + '..'}
-                                      onPress={() => {
-                                        set_Focus(item.GOODS_CODE, true)
-                                      }}
+
                                     />
                                   </TouchableOpacity>
+
+
                                 </>}
                               </View>
                             )

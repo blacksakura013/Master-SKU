@@ -1585,25 +1585,8 @@ const ProductScreen = ({ route }) => {
                                         set_Focus('TRD', true, index)
                                       }}
                                     />
-                                    : item.onFocusTRD_K_U_PRC == true ? <>
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
-                                        keyboardType="number-pad"
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={0}
-                                        textAlign={'right'}
-                                        placeholder={Language.t('main.pprice') + '..'}
-                                        onBlur={() => set_Focus('TRD', false, index)}
-                                        onChangeText={(val) => {
-                                          set_SkuP(val, index)
-                                        }}
-                                      />
-                                    </> : <>
+                                    : item.onFocusTRD_K_U_PRC == false ? <>
+
                                       <TextInput
                                         style={{
                                           color: Colors.fontColor,
@@ -1619,6 +1602,24 @@ const ProductScreen = ({ route }) => {
                                         onFocus={() => set_Focus('TRD', true, index)}
                                         onChangeText={(val) => {
                                           console.log(val)
+                                        }}
+                                      />
+                                    </> : <>
+                                      <TextInput
+                                        style={{
+                                          color: Colors.fontColor,
+                                          fontSize: FontSize.medium,
+                                          borderBottomColor: '#4c57ff',
+                                          borderBottomWidth: 1,
+                                        }}
+                                        keyboardType="number-pad"
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={0}
+                                        textAlign={'right'}
+                                        placeholder={Language.t('main.pprice') + '..'}
+                                        onBlur={() => set_Focus('TRD', false, index)}
+                                        onChangeText={(val) => {
+                                          set_SkuP(val, index)
                                         }}
                                       />
                                     </>}
