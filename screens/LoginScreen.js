@@ -63,6 +63,7 @@ const LoginScreen = () => {
   const registerReducer = useSelector(({ registerReducer }) => registerReducer);
   const loginReducer = useSelector(({ loginReducer }) => loginReducer);
   const databaseReducer = useSelector(({ databaseReducer }) => databaseReducer);
+  const activityReducer = useSelector(({ activityReducer }) => activityReducer);
   const {
     container2,
     container1,
@@ -74,6 +75,7 @@ const LoginScreen = () => {
   } = styles;
 
   useEffect(() => {
+    const RPTSVR_GRANT = '{E72B8A49-6A7E-48EC-BA4C-5B699D1376D1}'
     if (loginReducer.language.length > 0) {
       changeLanguage(loginReducer.language);
     } else {
@@ -81,6 +83,10 @@ const LoginScreen = () => {
       changeLanguage('th');
     }
 
+    if (RPTSVR_GRANT != activityReducer.RPTSVR_GRANT)
+      dispatch(activityActions.RPTSVR_GRANT(RPTSVR_GRANT))
+    // if (!databaseReducer.Data.urlser)
+    //   navigation.navigate('SelectScreen', {})
     //backsakura013
   }, []);
 
@@ -118,7 +124,9 @@ const LoginScreen = () => {
   useEffect(() => {
     console.log(`>> endpointMother : ${endpointMother}`)
     console.log(`>> databaseReducer : ${databaseReducer.Data.nameser}`)
-    console.log('>> machineNum :', registerReducer.machineNum + '\n\n\n\n')
+    console.log('>> machineNum :', registerReducer.machineNum)
+    console.log('>> RPTSVR_GRANT :', activityReducer.RPTSVR_GRANT + '\n\n\n\n')
+
   }, [registerReducer.machineNum]);
 
   const closeLoading = () => {
@@ -203,8 +211,8 @@ const LoginScreen = () => {
   }
 
   useEffect(() => {
-    console.log('databaseReducer > ',databaseReducer)
-    console.log('endpointMother > ',endpointMother)
+    console.log('databaseReducer > ', databaseReducer)
+    console.log('endpointMother > ', endpointMother)
   }, [])
 
 
@@ -295,6 +303,7 @@ const LoginScreen = () => {
           dispatch(loginActions.userNameED(username))
           dispatch(loginActions.passwordED(password))
           dispatch(loginActions.userlogin(isSelected))
+
           navigation.dispatch(
             navigation.replace('Mainmenu', {})
           )
@@ -543,7 +552,6 @@ const LoginScreen = () => {
                       resizeMode={'contain'}
                       source={require('../images/UI/Login/4x/Asset8_4x.png')}
                     />
-
                     <TextInput
                       style={{
                         flex: 8,
@@ -617,11 +625,8 @@ const LoginScreen = () => {
                       </Text>
                     </View>
                   </TouchableNativeFeedback>
-
-
                 </View>
               </View>
-
             </KeyboardAvoidingView>
             <View style={{ marginTop: 10, alignItems: 'center' }} >
               <View style={styles.checkboxContainer}>
@@ -648,18 +653,7 @@ const LoginScreen = () => {
               alignContent: 'center',
               position: 'absolute',
             }}>
-            {/* <ActivityIndicator
-              style={{
-                borderRadius: 15,
-                backgroundColor: null,
-                width: 100,
-                height: 100,
-                alignSelf: 'center',
-              }}
-              animating={loading}
-              size="large"
-              color={Colors.lightPrimiryColor}
-            /> */}
+           
           </View>}
         {loading && (
           <View

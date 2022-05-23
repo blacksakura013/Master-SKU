@@ -25,30 +25,28 @@ import RNRestart from 'react-native-restart';
 
 import { connect } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Colors from '../src/Colors';
+import Colors from '../../src/Colors';
 import { useSelector, useDispatch } from 'react-redux';
-import { FontSize } from '../components/FontSizeHelper';
+import { FontSize } from '../../components/FontSizeHelper';
 import { useNavigation } from '@react-navigation/native';
 
 // import { View } from 'react-native-paper';
 
 import Dialog from 'react-native-dialog';
-import { Language, changeLanguage } from '../translations/I18n';
+import { Language, changeLanguage } from '../../translations/I18n';
 import DeviceInfo from 'react-native-device-info';
 
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 var ser_die = true
-import * as loginActions from '../src/actions/loginActions';
-import * as registerActions from '../src/actions/registerActions';
-import * as databaseActions from '../src/actions/databaseActions';
-import safe_Format from '../src/safe_Format';
-import { fontWeight } from 'styled-system';
+import * as loginActions from '../../src/actions/loginActions';
+import * as registerActions from '../../src/actions/registerActions';
+import * as databaseActions from '../../src/actions/databaseActions';
+import * as safe_Format from '../../src/safe_Format';
+import { fontWeight, style } from 'styled-system';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-
-const Mainmenu = ({ route }) => {
+const ReportScreen = ({ route }) => {
     let arrayResult = [];
-
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const {
@@ -60,24 +58,17 @@ const Mainmenu = ({ route }) => {
         tabbar,
         buttonContainer,
     } = styles;
-
     const loginReducer = useSelector(({ loginReducer }) => loginReducer);
     const registerReducer = useSelector(({ registerReducer }) => registerReducer);
     const databaseReducer = useSelector(({ databaseReducer }) => databaseReducer);
     const activeReducerUTQ = useSelector(({ activeReducerUTQ }) => activeReducerUTQ);
-
     const [selectedValue, setSelectedValue] = useState('');
     const [SKUScreenValue, setSKUScreenValue] = useState(databaseReducer.Data.nameser ? databaseReducer.Data.nameser : "-1");
     const [selectlanguage, setlanguage] = useState('thai');
     const [GOODS_CODE, setGOODS_CODE] = useState('');
-
     const [loading, setLoading] = useStateIfMounted(false);
     const [loading_backG, setLoading_backG] = useStateIfMounted(true);
-
-
     const image = '../images/UI/Menu/BG+mas.png';
-
-
     useEffect(() => {
 
         console.log()
@@ -178,35 +169,42 @@ const Mainmenu = ({ route }) => {
                     <View style={{ marginTop: deviceHeight * 0.1 }}>
                         <SafeAreaView >
                             <KeyboardAvoidingView >
-                                <View style={styles.body}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('SKUScreen', {})}>
-                                        <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
-                                            resizeMode={'contain'}
-                                            source={require('../images/UI/Menu/SKUScreen.png')}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ProductScreen', {})}>
-                                        <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
-                                            resizeMode={'contain'}
-                                            source={require('../images/UI/Menu/ProductScreen.png')}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ReportScreen', {})}>
-                                        <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
-                                            resizeMode={'contain'}
-                                            source={require('../images/UI/Menu/ReportScreen.png')}
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
-                                        <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.5, }}
-                                            resizeMode={'contain'}
-                                            source={require('../images/UI/Menu/close.png')}
-                                        />
-                                    </TouchableOpacity>
+                                <View style={styles.body} >
+                                    <View style={{ padding: 5 }}>
+                                        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Report_prints', {})}>
+                                            <Text style={styles.textButton}>
+                                                สั่งพิมพ์รายงาน
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{ padding: 5 }}>
+                                        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Report_status', {})}>
+                                            <Text style={styles.textButton}>
+                                                ตรวจสอบผลการพิมพ์
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {/* <View style={{ padding: 5 }}>
+                                        <TouchableOpacity style={styles.button}>
+                                            <Text style={styles.textButton}>
+                                                เอกสารที่ดาวน์โหลด
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View> */}
+                                    <View style={{ padding: 5 }}>
+                                        <TouchableOpacity
+                                            style={{
+                                                height: deviceHeight * 0.1,
+                                                width: deviceHeight * 0.1,
+                                                borderRadius: deviceHeight * 0.1,
+                                                backgroundColor: 'red',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}
+                                            onPress={() => { navigation.goBack() }} >
+                                            <FontAwesome name="arrow-left" size={30} color={Colors.backgroundLoginColorSecondary} />
+                                        </TouchableOpacity>
+                                    </View>
 
                                 </View>
 
@@ -344,7 +342,6 @@ const styles = StyleSheet.create({
     topImage: {
         height: deviceHeight / 3,
         width: deviceWidth,
-
     },
     imageIcon: {
         width: 30,
@@ -354,12 +351,18 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        marginTop: 10,
-        marginBottom: 25,
-        padding: 5,
+        height: deviceHeight * 0.1, width: deviceWidth * 0.9,
+        backgroundColor: Colors.borderColor,
+        shadowColor: Colors.backgroundLoginColorSecondary,
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 1.0,
+        borderRadius: deviceHeight * 0.03,
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: Colors.buttonColorPrimary,
-        borderRadius: 10,
     },
     textButton: {
         fontSize: FontSize.large,
@@ -397,4 +400,4 @@ const mapDispatchToProps = (dispatch) => {
 
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Mainmenu);
+export default connect(mapStateToProps, mapDispatchToProps)(ReportScreen);

@@ -18,6 +18,10 @@ import NewSKUScreen from './screens/NewSKUScreen';
 import AddbarSKUScreen from './screens/AddbarSKUScreen';
 import Mainmenu from './screens/Mainmenu';
 import ProductScreen from './screens/ProductScreen';
+import ReportScreen from './screens/ReportScreen';
+// import Report_prints from './screens/Report_prints';
+// import Report_status from './screens/Report_status';
+import Calendars from './screens/CalendarScreen/CalendarScreen';
 
 import Scanbarcode from './screens/Scanbarcode';
 import SelectBase from './pages/SelectBase';
@@ -27,6 +31,7 @@ import ScanScreen from './pages/ScanScreen';
 
 import { Language, changeLanguage } from './translations/I18n';
 import { FontSize } from './components/FontSizeHelper';
+
 import Colors from './src/Colors';
 import * as loginActions from './src/actions/loginActions';
 import { useSelector, connect, useDispatch } from 'react-redux';
@@ -56,16 +61,13 @@ const App = () => {
 
 
   const LoginStackScreen = () => {
-
     return (
       <LoginStack.Navigator>
-
         <LoginStack.Screen
           options={{ headerShown: false }}
           name="Login"
           component={LoginScreen}
         />
-
         <LoginStack.Screen
           options={{ headerShown: false }}
           name="SelectScreen"
@@ -86,7 +88,6 @@ const App = () => {
   }
 
   return (
-
     <Provider store={store} >
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
@@ -98,7 +99,6 @@ const App = () => {
                 name="LoginStackScreen"
                 component={LoginStackScreen}
               />
-
               <MainStack.Screen
                 options={{ headerShown: false }}
                 name="SKUScreen"
@@ -124,20 +124,37 @@ const App = () => {
                 name="ProductScreen"
                 component={ProductScreen}
               />
-
               <MainStack.Screen
                 options={{ headerShown: false }}
                 name="Scanbarcode"
                 component={Scanbarcode}
               />
-
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="ReportScreen"
+                component={ReportScreen}
+              />
+              {/* <MainStack.Screen
+                options={{ headerShown: false }}
+                name="Report_prints"
+                component={Report_prints}
+              />
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="Report_status"
+                component={Report_status}
+              /> */}
+              <MainStack.Screen
+                options={{ headerShown: false }}
+                name="Calendars"
+                component={Calendars}
+              />
             </MainStack.Navigator>
           </SafeAreaView>
         </NavigationContainer>
       </PersistGate>
     </Provider>
-
-  );
+  )
 }
 const styles = StyleSheet.create({
   container1: {

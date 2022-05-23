@@ -46,6 +46,7 @@ import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 import safe_Format from '../src/safe_Format';
 import { fontWeight, height, margin } from 'styled-system';
+
 const ProductScreen = ({ route }) => {
   let arrayResult = [];
 
@@ -104,6 +105,7 @@ const ProductScreen = ({ route }) => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+
   const set_goodData = (temp_data) => {
     dispatch(productActions.setData(temp_data))
     setGOODSMASTER(temp_data)
@@ -1257,12 +1259,16 @@ const ProductScreen = ({ route }) => {
   return (
     <View style={container1}>
       <StatusBar hidden={true} />
-      <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={{
+        flex: 1,
+        paddingTop: PRODUCTMASTER.GOODS_KEY ? deviceHeight * 0.07 : deviceHeight * 0.2,
+      }}>
+
         {!loading_backG ? <>
           <View style={tabbar} >
             <View style={{
               backgroundColor: '#fff', alignSelf: 'center',
-              justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10
+              justifyContent: 'center', borderRadius: 20, flexDirection: 'row', marginBottom: 10,
             }}>
               <TextInput
                 style={{
@@ -1326,58 +1332,67 @@ const ProductScreen = ({ route }) => {
             </View>
           </View>
           {PRODUCTMASTER.GOODS_KEY && (
-            <View style={{ flexDirection: 'row-reverse' }}>
-              <TouchableOpacity style={{ width: deviceWidth / 3, }} onPress={() => Alert.alert('', 'ต้องการเพิ่มรายการรับสินค้า ?', [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
-                <View style={{ margin: 10, padding: 10, flexDirection: "row", justifyContent: 'space-between', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
-                  <FontAwesome name="plus" style={{ color: Colors.backgroundLoginColorSecondary, }} size={FontSize.large} />
-                  <Text style={{ color: Colors.backgroundLoginColorSecondary, fontSize: FontSize.medium, }}>{Language.t('alert.add')}</Text>
-                </View>
+            <View style={{ alignItems: 'flex-end', marginTop: 5 }}>
+              <TouchableOpacity onPress={() => Alert.alert('', 'ต้องการเพิ่มรายการรับสินค้า ?', [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
+                <Image
+                  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3 }}
+                  resizeMode={'contain'}
+                  source={require('../images/UI/Menu/add.png')}
+                />
               </TouchableOpacity>
             </View>
           )}
-          <View style={{ height: deviceHeight / 2.2 }}>
 
+          <View style={{ height: deviceHeight - deviceHeight * 0.6 }}>
             <KeyboardAvoidingView keyboardVerticalOffset={1}>
               <ScrollView horizontal={true} >
 
                 <View style={styles.body}>
                   <View style={styles.table}>
                     <View style={styles.tableHeader}>
-                      <View style={{ flex: 0.5, padding: 10, justifyContent: 'center' }}  >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> {Language.t('main.code')}</Text></View>
                       <View style={{ flex: 0.3, padding: 10, justifyContent: 'center' }}  >
                         <Text style={{
                           fontSize: FontSize.medium,
                           color: Colors.backgroundColorSecondary,
                           fontWeight: 'bold'
+                        }}> {Language.t('main.code')}</Text></View>
+                      <View style={{ flex: 0.1, padding: 10, justifyContent: 'center' }}  >
+                        <Text style={{
+                          fontSize: FontSize.medium,
+                          color: Colors.backgroundColorSecondary,
+                          fontWeight: 'bold'
                         }}>{Language.t('main.unit')}</Text></View>
-                      <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', backgroundColor: '#4c57ff', }} >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> จำนวน </Text></View>
-                      <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', backgroundColor: '#4c57ff', }} >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> ราคาซื้อ </Text></View>
-                      <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', backgroundColor: '#4c57ff', borderTopEndRadius: 15, }} >
-                        <Text style={{
-                          fontSize: FontSize.medium,
-                          color: Colors.backgroundColorSecondary,
-                          fontWeight: 'bold'
-                        }}> ราคาขาย </Text></View>
-                      <TouchableOpacity  >
-                        <View style={{ margin: 10, padding: 10, flexDirection: "row", justifyContent: 'space-between', backgroundColor: Colors.loadingColor, borderRadius: 10, }}>
-                          <FontAwesome name="plus" style={{ color: Colors.loadingColor, }} size={FontSize.large} />
+                      <View style={{ flex: 0.6, backgroundColor: Colors.tableProD, flexDirection: 'row', borderTopEndRadius: 15, }}>
+                        <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', }} >
+                          <Text style={{
+                            fontSize: FontSize.medium,
+                            color: Colors.backgroundColorSecondary,
+                            alignSelf: 'flex-end',
+                            fontWeight: 'bold'
+                          }}> จำนวน </Text></View>
+                        <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', }} >
+                          <Text style={{
+                            fontSize: FontSize.medium,
+                            alignSelf: 'flex-end',
+                            color: Colors.backgroundColorSecondary,
+                            fontWeight: 'bold'
+                          }}> ราคาซื้อ </Text></View>
+                        <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', }} >
+                          <Text style={{
+                            fontSize: FontSize.medium,
+                            alignSelf: 'flex-end',
+                            color: Colors.backgroundColorSecondary,
+                            fontWeight: 'bold'
+                          }}> ราคาขาย </Text></View>
+
+                        <View style={{ padding: 10, flex: 0.1, }}>
+                          <View
+                            style={{ height: FontSize.large * 1.5, width: FontSize.large * 1.5, }}
+                          ></View>
                         </View>
-                      </TouchableOpacity>
+                      </View>
+
+
                     </View>
                     <ScrollView
                       ref={scrollViewRef}
@@ -1483,20 +1498,25 @@ const ProductScreen = ({ route }) => {
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
                                   justifyContent: 'center',
-                                  flex: 0.5,
+                                  flex: 0.3,
                                 }}><Text
                                   style={{
                                     color: Colors.fontColor,
                                     fontSize: FontSize.medium,
                                   }}
-                                >{item.TRD_KEYIN + ' ' + item.SKU_NAME}</Text>
+                                >{item.TRD_KEYIN}</Text>
+                                  <Text
+                                    style={{
+                                      color: Colors.fontColor,
+                                      fontSize: FontSize.medium,
+                                    }}
+                                  >{item.SKU_NAME}</Text>
                                 </View>
-
                                 <View style={{
                                   color: Colors.fontColor,
                                   fontSize: FontSize.medium,
                                   justifyContent: 'center',
-                                  flex: 0.3, padding: 10
+                                  flex: 0.1, padding: 10
                                 }}>
                                   <Text
                                     style={{
@@ -1504,158 +1524,167 @@ const ProductScreen = ({ route }) => {
                                     }}
                                   >{item.onFocusQTY == false || item.onFocusTRD_K_U_PRC == false ? item.UTQ_NAME : `${item.UTQ_NAME} ( ${item.Temp_TRD_K_U_PRC > 0 ? item.Temp_TRD_K_U_PRC : 0} )`}</Text>
                                 </View>
-                                <View style={{
-
-                                  backgroundColor: Colors.backgroundColorSecondary,
-                                  flex: 0.3, padding: 10
-                                }}>
-                                  {item.onSave == true ?
-                                    <CurrencyInput
-                                      style={{ color: '#4c57ff' }}
-                                      editable={false}
-                                      delimiter=","
-                                      separator="."
-                                      precision={0}
-                                      keyboardType="number-pad"
-                                      placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.TRD_QTY}
-                                      multiline={true}
-                                      textAlign={'right'}
-                                      placeholder={Language.t('main.pprice') + '..'}
-                                      onPress={() => {
-                                        set_Focus('QTY', true, index)
-                                      }}
-                                    />
-                                    : item.onFocusQTY == true ? <>
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
-                                        keyboardType="number-pad"
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={0}
-                                        textAlign={'right'}
-                                        placeholder={'จำนวน ..'}
-                                        onBlur={() => set_Focus('QTY', false, index)}
-                                        onChangeText={(val) => {
-                                          set_SkuTRD_QTY(val, index)
-                                        }}
-                                      />
-                                    </> : <>
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
+                                <View style={{ flex: 0.6, flexDirection: 'row' }}>
+                                  <View style={{
+                                    backgroundColor: Colors.backgroundColorSecondary,
+                                    flex: 0.3, padding: 10
+                                  }}>
+                                    {item.onSave == true ?
+                                      <CurrencyInput
+                                        style={{ color: Colors.tableProD }}
+                                        editable={false}
+                                        delimiter=","
+                                        separator="."
+                                        precision={0}
                                         keyboardType="number-pad"
                                         placeholderTextColor={Colors.fontColorSecondary}
                                         value={item.TRD_QTY}
+                                        multiline={true}
                                         textAlign={'right'}
-                                        placeholder={'จำนวน ..'}
-                                        onFocus={() => set_Focus('QTY', true, index)}
-                                        onChangeText={(val) => {
-                                          set_SkuTRD_QTY(val, index)
+                                        placeholder={Language.t('main.pprice') + '..'}
+                                        onPress={() => {
+                                          set_Focus('QTY', true, index)
                                         }}
                                       />
-                                    </>}
-                                </View>
-                                <View style={{
-                                  backgroundColor: Colors.backgroundColorSecondary,
-                                  flex: 0.3, padding: 10
-                                }}>
-                                  {item.onSave == true ?
+                                      : item.onFocusQTY == true ? <>
+                                        <TextInput
+                                          style={{
+                                            color: Colors.fontColor,
+                                            fontSize: FontSize.medium,
+                                            borderBottomColor: Colors.tableProD,
+                                            borderBottomWidth: 1,
+                                          }}
+                                          keyboardType="number-pad"
+                                          placeholderTextColor={Colors.fontColorSecondary}
+                                          value={0}
+                                          textAlign={'right'}
+                                          placeholder={'จำนวน ..'}
+                                          onBlur={() => set_Focus('QTY', false, index)}
+                                          onChangeText={(val) => {
+                                            set_SkuTRD_QTY(val, index)
+                                          }}
+                                        />
+                                      </> : <>
+                                        <TextInput
+                                          style={{
+                                            color: Colors.fontColor,
+                                            fontSize: FontSize.medium,
+                                            borderBottomColor: Colors.tableProD,
+                                            borderBottomWidth: 1,
+                                          }}
+                                          keyboardType="number-pad"
+                                          placeholderTextColor={Colors.fontColorSecondary}
+                                          value={item.TRD_QTY}
+                                          textAlign={'right'}
+                                          placeholder={'จำนวน ..'}
+                                          onFocus={() => set_Focus('QTY', true, index)}
+                                          onChangeText={(val) => {
+                                            set_SkuTRD_QTY(val, index)
+                                          }}
+                                        />
+                                      </>}
+                                  </View>
+                                  <View style={{
+                                    backgroundColor: Colors.backgroundColorSecondary,
+                                    flex: 0.3, padding: 10
+                                  }}>
+                                    {item.onSave == true ?
+                                      <CurrencyInput
+                                        style={{ color: Colors.tableProD }}
+                                        editable={false}
+                                        delimiter=","
+                                        separator="."
+                                        precision={2}
+                                        keyboardType="number-pad"
+                                        placeholderTextColor={Colors.fontColorSecondary}
+                                        value={item.TRD_K_U_PRC}
+                                        multiline={true}
+                                        textAlign={'right'}
+                                        placeholder={Language.t('main.pprice') + '..'}
+                                        onFocus={() => {
+                                          set_Focus('TRD', true, index)
+                                        }}
+                                      />
+                                      : item.onFocusTRD_K_U_PRC == false ? <>
+                                        <TextInput
+                                          style={{
+                                            color: Colors.fontColor,
+                                            fontSize: FontSize.medium,
+                                            borderBottomColor: Colors.tableProD,
+                                            borderBottomWidth: 1,
+                                          }}
+                                          keyboardType="number-pad"
+                                          placeholderTextColor={Colors.fontColorSecondary}
+                                          value={item.TRD_K_U_PRC}
+                                          textAlign={'right'}
+                                          placeholder={Language.t('main.pprice') + '..'}
+                                          onFocus={() => set_Focus('TRD', true, index)}
+                                          onChangeText={(val) => {
+                                            console.log(val)
+                                          }}
+                                        />
+                                      </> : <>
+                                        <TextInput
+                                          style={{
+                                            color: Colors.fontColor,
+                                            fontSize: FontSize.medium,
+                                            borderBottomColor: Colors.tableProD,
+                                            borderBottomWidth: 1,
+                                          }}
+                                          keyboardType="number-pad"
+                                          placeholderTextColor={Colors.fontColorSecondary}
+                                          value={0}
+                                          textAlign={'right'}
+                                          placeholder={Language.t('main.pprice') + '..'}
+                                          onBlur={() => set_Focus('TRD', false, index)}
+                                          onChangeText={(val) => {
+                                            set_SkuP(val, index)
+                                          }}
+                                        />
+                                      </>}
+                                  </View>
+                                  <View style={{
+                                    backgroundColor: Colors.backgroundColorSecondary,
+                                    flex: 0.3, padding: 10
+                                  }}>
                                     <CurrencyInput
-                                      style={{ color: '#4c57ff' }}
+                                      style={{ color: Colors.tableProD }}
                                       editable={false}
                                       delimiter=","
                                       separator="."
                                       precision={2}
                                       keyboardType="number-pad"
                                       placeholderTextColor={Colors.fontColorSecondary}
-                                      value={item.TRD_K_U_PRC}
+                                      value={item.Temp_TRD_K_U_PRC}
                                       multiline={true}
                                       textAlign={'right'}
                                       placeholder={Language.t('main.pprice') + '..'}
-                                      onFocus={() => {
+                                      onPress={() => {
                                         set_Focus('TRD', true, index)
                                       }}
                                     />
-                                    : item.onFocusTRD_K_U_PRC == false ? <>
+                                  </View>
 
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
-                                        keyboardType="number-pad"
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={item.TRD_K_U_PRC}
-                                        textAlign={'right'}
-                                        placeholder={Language.t('main.pprice') + '..'}
-                                        onFocus={() => set_Focus('TRD', true, index)}
-                                        onChangeText={(val) => {
-                                          console.log(val)
-                                        }}
+                                  {item.onSave == true ?
+                                    <TouchableOpacity style={{ flex: 0.1, padding: 10, }} onPress={() => pop_saveSku(item, index)}>
+
+                                      <Image
+                                        style={{ height: FontSize.large * 1.5, width: FontSize.large * 1.5, }}
+                                        resizeMode={'contain'}
+                                        source={require('../images/UI/Menu/edit.png')}
                                       />
-                                    </> : <>
-                                      <TextInput
-                                        style={{
-                                          color: Colors.fontColor,
-                                          fontSize: FontSize.medium,
-                                          borderBottomColor: '#4c57ff',
-                                          borderBottomWidth: 1,
-                                        }}
-                                        keyboardType="number-pad"
-                                        placeholderTextColor={Colors.fontColorSecondary}
-                                        value={0}
-                                        textAlign={'right'}
-                                        placeholder={Language.t('main.pprice') + '..'}
-                                        onBlur={() => set_Focus('TRD', false, index)}
-                                        onChangeText={(val) => {
-                                          set_SkuP(val, index)
-                                        }}
+
+                                    </TouchableOpacity> : <TouchableOpacity style={{ flex: 0.1, padding: 10, }} onPress={() => set_saveSku(item, index)}>
+
+                                      <Image
+                                        style={{ height: FontSize.large * 1.5, width: FontSize.large * 1.5, }}
+                                        resizeMode={'contain'}
+                                        source={require('../images/UI/Menu/save.png')}
                                       />
-                                    </>}
-                                </View>
-                                <View style={{
-                                  backgroundColor: Colors.backgroundColorSecondary,
-                                  flex: 0.3, padding: 10
-                                }}>
-                                  <CurrencyInput
-                                    style={{ color: '#4c57ff' }}
-                                    editable={false}
-                                    delimiter=","
-                                    separator="."
-                                    precision={2}
-                                    keyboardType="number-pad"
-                                    placeholderTextColor={Colors.fontColorSecondary}
-                                    value={item.Temp_TRD_K_U_PRC}
-                                    multiline={true}
-                                    textAlign={'right'}
-                                    placeholder={Language.t('main.pprice') + '..'}
-                                    onPress={() => {
-                                      set_Focus('TRD', true, index)
-                                    }}
-                                  />
+
+                                    </TouchableOpacity>}
                                 </View>
 
-                                {item.onSave == true ?
-                                  <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => pop_saveSku(item, index)}>
-                                    <View style={{ padding: 10, justifyContent: 'center', borderRadius: 10, }}>
-                                      <FontAwesome name="edit" style={{ color: Colors.fontColor, }} size={FontSize.large} />
-                                    </View>
-                                  </TouchableOpacity> : <TouchableOpacity style={{ alignSelf: 'center' }} onPress={() => set_saveSku(item, index)}>
-                                    <View style={{ padding: 10, justifyContent: 'center', borderRadius: 10, }}>
-                                      <FontAwesome name="check" style={{ color: Colors.fontColor, }} size={FontSize.large} />
-                                    </View>
-                                  </TouchableOpacity>}
                               </View>
                             )
                           })}
@@ -1692,33 +1721,82 @@ const ProductScreen = ({ route }) => {
                 </View>
               </ScrollView>
             </KeyboardAvoidingView>
+
+          </View>
+
+          <View style={{
+            position: 'absolute',
+
+            justifyContent: 'center',
+            flexDirection: "row",
+
+            left: 0,
+            top: deviceHeight - deviceHeight * 0.2,
+            width: deviceWidth,
+
+          }}>
+
             {GOODSMASTER.length > 0 && (
               <View style={{
                 justifyContent: 'center',
                 flexDirection: "row",
               }}>
-                <View style={{ width: deviceWidth / 2.2, backgroundColor: '#4c57ff', padding: 10, margin: 5 }}>
-                  <Text style={{
-                    alignSelf: 'center',
+                <View style={{ width: deviceWidth / 2.2, backgroundColor: Colors.borderColor, padding: 10, margin: 5, borderRadius: 20, }}>
+                  <View style={{
+                    alignSelf: 'flex-start',
                     color: Colors.fontColor2,
                     fontSize: FontSize.medium,
 
                   }}>
-                    {`รวมชนิดสินค้า ${GOODSMASTER.length} รายการ`}
-                  </Text>
+
+                    <Text style={{
+                      color: Colors.fontColor2,
+                      fontSize: FontSize.medium,
+
+                    }}>
+                      {`รวมชนิดสินค้า `}
+
+                    </Text>
+                    <Text style={{
+                      color: Colors.fontColor2,
+                      fontSize: FontSize.medium,
+
+                    }}>
+                      {`${GOODSMASTER.length} รายการ`}
+
+                    </Text>
+                  </View>
+
                 </View>
-                <View style={{ width: deviceWidth / 2.2, backgroundColor: '#4c57ff', padding: 10, margin: 5 }}>
-                  <Text style={{
-                    alignSelf: 'center',
+                <View style={{ width: deviceWidth / 2.2, backgroundColor: Colors.buttonColorPrimary, padding: 10, margin: 5, borderRadius: 20, }}>
+                  <View style={{
+                    alignSelf: 'flex-start',
                     color: Colors.fontColor2,
                     fontSize: FontSize.medium,
+
                   }}>
-                    {`รวมเงิน ${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} บาท`}
-                  </Text>
+
+                    <Text style={{
+                      color: Colors.fontColor2,
+                      fontSize: FontSize.medium,
+
+                    }}>
+                      {`รวมเงิน`}
+
+                    </Text>
+                    <Text style={{
+                      color: Colors.fontColor2,
+                      fontSize: FontSize.medium,
+
+                    }}>
+                      {`${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} บาท`}
+
+                    </Text>
+                  </View>
+
                 </View>
               </View>)}
           </View>
-
           <View style={styles.footer}>
 
             <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
@@ -1778,18 +1856,7 @@ const ProductScreen = ({ route }) => {
             alignContent: 'center',
             position: 'absolute',
           }}>
-          {/* <ActivityIndicator
-              style={{
-                borderRadius: 15,
-                backgroundColor: null,
-                width: 100,
-                height: 100,
-                alignSelf: 'center',
-              }}
-              animating={loading}
-              size="large"
-              color={Colors.lightPrimiryColor}
-            /> */}
+
         </View>}
         {loading && (
           <View
@@ -1827,13 +1894,13 @@ const styles = StyleSheet.create({
   container1: {
 
     flex: 1,
-    flexDirection: 'column',
+
   },
   body: {
     marginTop: 10,
     marginLeft: 10,
     marginRight: 10,
-    width: deviceWidth * 1.5,
+    width: deviceWidth * 2,
     borderRadius: 15,
     backgroundColor: Colors.backgroundColorSecondary
   },
@@ -1863,7 +1930,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
 
     left: 0,
-    top: deviceHeight - 80,
+    top: deviceHeight - deviceHeight * 0.1,
     width: deviceWidth,
   },
   table: {
@@ -1901,7 +1968,8 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    justifyContent: "center"
+    paddingTop: deviceHeight * 0.2
+
   },
   topImage: {
     height: deviceHeight / 3,
