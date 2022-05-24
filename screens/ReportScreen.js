@@ -40,6 +40,7 @@ import * as registerActions from '../src/actions/registerActions';
 import * as databaseActions from '../src/actions/databaseActions';
 import * as activityActions from '../src/actions/activityActions';
 import * as safe_Format from '../src/safe_Format';
+import { fontSize } from 'styled-system';
 
 
 const deviceWidth = Dimensions.get('window').width;
@@ -209,7 +210,7 @@ const Report_prints = ({ route }) => {
         console.log(parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))))
         console.log(parseInt(fulldate))
         setLoading(true)
-        if ((parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))) > parseInt(fulldate) || parseInt(safe_Format.setnewdateF(safe_Format.checkDate(end_date))) > parseInt(fulldate) || parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))) > parseInt(safe_Format.setnewdateF(safe_Format.checkDate(end_date))))) {
+        if ((parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))) > parseInt(safe_Format.setnewdateF(safe_Format.checkDate(end_date))))) {
             Alert.alert('สร้างเอกสารไม่สำเร็จ', `โปรดระบุวันที่สร้างเอกสารให้ถูกต้อง`, [{
                 text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
             }]);
@@ -430,7 +431,6 @@ const Report_prints = ({ route }) => {
                                                 onValueChange={(itemValue, itemIndex) => setPrintItem(itemValue)}
                                                 enabled={false}
                                                 mode="dropdown"
-
                                             >
                                                 {
                                                     <Picker.Item
@@ -456,7 +456,10 @@ const Report_prints = ({ route }) => {
                                             justifyContent: 'space-between',
                                             borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
                                         }}>
-                                        <Text size={FontSize.large} color={'black'}>
+                                        <Text style={{
+                                            size: fontSize.length,
+                                            color: Colors.fontColor
+                                        }}>
                                             {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
                                         </Text>
                                         <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
@@ -473,7 +476,10 @@ const Report_prints = ({ route }) => {
                                             justifyContent: 'space-between',
                                             borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
                                         }}>
-                                        <Text size={FontSize.large} color={'black'}>
+                                        <Text style={{
+                                            size: fontSize.length,
+                                            color: Colors.fontColor
+                                        }}>
                                             {`${end_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
                                         </Text>
                                         <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />

@@ -421,8 +421,10 @@ const SelectBase = ({ route }) => {
                                   temp.push(loginReducer.ipAddress[i])
                                 }
                               }
+
                               dispatch(loginActions.ipAddress(temp))
                               dispatch(databaseActions.setData(newObj))
+                              logOut(urlnmae, '11111122', username, password, '0828845662')
                             } else if (state == '1') {
                               if (items.length > 0) {
                                 for (let i in items) {
@@ -432,8 +434,10 @@ const SelectBase = ({ route }) => {
                               temp.push(newObj)
                               dispatch(loginActions.ipAddress(temp))
                               dispatch(databaseActions.setData(newObj))
+                              logOut(urlnmae, '11111122', username, password, '0828845662')
                             } else if (state == '0') {
                               dispatch(databaseActions.setData(newObj))
+                              logOut(urlnmae, '11111122', username, password, '0828845662')
                             }
                           } else {
                             console.log('Function Parameter Required');
@@ -477,7 +481,7 @@ const SelectBase = ({ route }) => {
                       navigation.replace('LoginStackScreen')
                     )
                   }]);
-                  setLoading(false)
+                setLoading(false)
               } else {
                 console.log('Function Parameter Required');
                 let temp_error = 'error_ser.' + json.ResponseCode;
@@ -513,6 +517,39 @@ const SelectBase = ({ route }) => {
           Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + B1tempurlnmae + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => setLoading(false) }]);
         console.log('checkIPAddress');
         setLoading(false)
+      });
+  };
+  const logOut = async (urlser, machineNum, usernameser, passwordser, userName) => {
+    
+
+    await fetch(urlser + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'UnRegister',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE": "' +
+          machineNum +
+          '","BPAPUS-USERID": "' +
+          usernameser +
+          '","BPAPUS-PASSWORD": "' +
+          passwordser +
+          '","BPAPUS-CNTRY-CODE": "66","BPAPUS-MOBILE": "' +
+          userName +
+          '"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        setLoading(false)
+          
+         console.log(json)
+       
+      }
+      )
+      .catch((error) => {
+        console.error('ERROR at _fetchGuidLogin' + error);
       });
   };
 
@@ -779,7 +816,7 @@ const SelectBase = ({ route }) => {
                             flex: 8,
                             marginLeft: 5,
                             color: Colors.fontColor,
-                            paddingVertical: 3, 
+                            paddingVertical: 3,
                             fontSize: FontSize.medium,
                             borderBottomColor: Colors.borderColor,
                             borderBottomWidth: 0.7,

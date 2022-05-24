@@ -47,18 +47,19 @@ const deviceHeight = Dimensions.get('window').height;
 
 const CalendarScreen = ({ route }) => {
 
-
     const navigation = useNavigation();
 
-
     var daily = new Date()
+    var toDate = `${(parseInt(daily.getFullYear()) + 543)}${parseInt(daily.getMonth()) + 1 > 10 ? parseInt(daily.getMonth()) + 1 : '0' + (parseInt(daily.getMonth()) + 1)}${parseInt(daily.getDate()) > 10 ? daily.getDate() : '0' + daily.getDate()}`
     const [loading_backG, setLoading_backG] = useStateIfMounted(false);
     const [dateIndex, set_DateIndex] = useState(daily.getDate())
     const [monthIndex, set_MonthIndex] = useState(daily.getMonth())
-    const [yearIndex, set_yearIndex] = useState(daily.getFullYear() + 453)
+    const [yearIndex, set_yearIndex] = useState(daily.getFullYear() + 543)
     useEffect(() => {
         let Arrdata = []
 
+
+        console.log(`toDate ${toDate}`)
         if (route.params?.key && route.params.key == 'start_date')
             Arrdata = route.params.data.start_date.split('-')
         else
@@ -256,98 +257,109 @@ const CalendarScreen = ({ route }) => {
                                 </View>
                                 {Calendars.Day_Calendar(yearIndex, monthIndex).map((item, index) => {
                                     return (
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[0] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[0])}
-                                            >
-                                                <Text style={{ color: item[0] == dateIndex ? Colors.backgroundColor : 'red' }}>
-                                                    {item[0]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[1] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[1])}
-                                            >
-                                                <Text style={{ color: item[1] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[1]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[2] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[2])}
-                                            >
-                                                <Text style={{ color: item[2] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[2]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[3] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[3])}
-                                            >
-                                                <Text style={{ color: item[3] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[3]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[4] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[4])}
-                                            >
-                                                <Text style={{ color: item[4] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[4]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[5] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[5])}
-                                            >
-                                                <Text style={{ color: item[5] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[5]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    width: 30, height: 30,
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: 15, backgroundColor: item[6] == dateIndex ? Colors.itemColor : null
-                                                }}
-                                                onPress={() => set_DateIndex(item[6])}>
-                                                <Text style={{ color: item[6] == dateIndex ? Colors.backgroundColor : 'black' }}>
-                                                    {item[6]}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                        (parseInt(item[0]) > 0 || parseInt(item[1]) > 0 || parseInt(item[0]) > 0 || parseInt(item[2]) > 0 || parseInt(item[3]) > 0 || parseInt(item[4]) > 0 || parseInt(item[5]) > 0 || parseInt(item[6]) > 0) && (
+
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[0]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[0] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[0] > 10 ? item[0] : '0' + item[0]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[0])}
+                                                >
+                                                    <Text style={{ color: item[0] == dateIndex ? Colors.backgroundColor : 'red' }}>
+                                                        {item[0]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[1]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[1] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[1] > 10 ? item[1] : '0' + item[1]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[1])}
+                                                >
+                                                    <Text style={{ color: item[1] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[1]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[2]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[2] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[2] > 10 ? item[2] : '0' + item[2]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[2])}
+                                                >
+                                                    <Text style={{ color: item[2] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[2]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[3]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[3] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[3] > 10 ? item[3] : '0' + item[3]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[3])}
+                                                >
+                                                    <Text style={{ color: item[3] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[3]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[4]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[4] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[4] > 10 ? item[4] : '0' + item[4]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[4])}
+                                                >
+                                                    <Text style={{ color: item[4] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[4]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[5]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[5] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[5] > 10 ? item[5] : '0' + item[5]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[5])}
+                                                >
+                                                    <Text style={{ color: item[5] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[5]}
+                                                    </Text>
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity
+                                                    disabled={parseInt(item[6]) > 0 ? false : true}
+                                                    style={{
+                                                        width: 30, height: 30,
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        borderRadius: 15, backgroundColor: item[6] == dateIndex ? Colors.itemColor : parseInt(toDate) == parseInt(`${yearIndex}${(monthIndex + 1) > 10 ? (monthIndex + 1) : '0' + (monthIndex + 1)}${item[6] > 10 ? item[6] : '0' + item[6]}`) ? '#cbf0de' : null
+                                                    }}
+                                                    onPress={() => set_DateIndex(item[6])}>
+                                                    <Text style={{ color: item[6] == dateIndex ? Colors.backgroundColor : 'black' }}>
+                                                        {item[6]}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )
                                     )
                                 })}
                             </View>
