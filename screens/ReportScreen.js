@@ -171,13 +171,12 @@ const Report_prints = ({ route }) => {
             }),
         })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
                 let responseData = JSON.parse(json.ResponseData);
-
                 if (responseData.RECORD_COUNT > 0) {
-
-                    setREPORTNAME(responseData.GETREPORTNAME)
-                    setPrintItem(responseData.GETREPORTNAME[0])
+                    console.log(printItem)
+                    await setREPORTNAME(responseData.GETREPORTNAME)
+                    await setPrintItem(printItem.RPTSVR_RPF_DD_FIELD ? printItem : responseData.GETREPORTNAME[0])
                     setLoading(false)
                     setCountdown(-1)
                 } else {
@@ -191,40 +190,56 @@ const Report_prints = ({ route }) => {
             })
     }
 
+
     const PushPRINTREPORT = async (tempGuid) => {
         dieSer('PushPRINTREPORT')
         let tempprintItem = {}
 
-        var x = new Date();
-        var day = x.getDate()
-        if (day < 10)
-            day = '0' + day.toString()
 
-        var month = x.getMonth() + 1
-        if (month < 10)
-            month = '0' + month.toString()
-
-        var year = x.getFullYear() + 543
-
-        let fulldate = year + '' + month + '' + day
-        console.log(parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))))
-        console.log(parseInt(fulldate))
         setLoading(true)
-        if ((parseInt(safe_Format.setnewdateF(safe_Format.checkDate(start_date))) > parseInt(safe_Format.setnewdateF(safe_Format.checkDate(end_date))))) {
+
+        if (printItem.RPTSVR_GUID)
+            tempprintItem
+                = printItem
+        else
+            tempprintItem
+                = REPORTNAME[0]
+        let sDate = safe_Format.setnewdateF(safe_Format.checkDate(start_date))
+        sDate = parseInt(sDate) - 5430000
+
+        let eDate = safe_Format.setnewdateF(safe_Format.checkDate(end_date))
+        if (printItem.RPTSVR_RPF_DD_FIELD == 'ANYDATE')
+            eDate = sDate
+        else
+            eDate = parseInt(eDate) - 5430000
+
+        if (sDate > eDate) {
             Alert.alert('สร้างเอกสารไม่สำเร็จ', `โปรดระบุวันที่สร้างเอกสารให้ถูกต้อง`, [{
                 text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
             }]);
         } else {
-            if (printItem.RPTSVR_GUID)
-                tempprintItem
-                    = printItem
-            else
-                tempprintItem
-                    = REPORTNAME[0]
-            let sDate = safe_Format.setnewdateF(safe_Format.checkDate(start_date))
-            sDate = parseInt(sDate) - 5430000
-            let eDate = safe_Format.setnewdateF(safe_Format.checkDate(end_date))
-            eDate = parseInt(eDate) - 5430000
+            console.log(`\n _push JSON>>`)
+            console.log(JSON.stringify({
+                'BPAPUS-BPAPSV': loginReducer.serviceID,
+                'BPAPUS-LOGIN-GUID': tempGuid ? tempGuid : loginReducer.guid,
+                'BPAPUS-FUNCTION': 'PRINTREPORT',
+                'BPAPUS-PARAM':
+                    '{"RPTSVR_GRANT": "' +
+                    activityReducer.RPTSVR_GRANT +
+                    '","RPTSVR_GUID": "' +
+                    tempprintItem.RPTSVR_GUID +
+                    '","RPTQUE_RQST_FROMDATE": "' +
+                    sDate +
+                    '","RPTQUE_RQST_TODATE": "' +
+                    eDate +
+                    '","RPTQUE_RQST_OPTN": "","RPTQUE_RQST_PARAM": ""}',
+                'BPAPUS-FILTER': '',
+                'BPAPUS-ORDERBY': '',
+                'BPAPUS-OFFSET': '0',
+                'BPAPUS-FETCH': '0',
+            }))
+            console.log('\n')
+
             await fetch(databaseReducer.Data.urlser + '/RptServer', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -253,7 +268,7 @@ const Report_prints = ({ route }) => {
                     let tempRPTSVR_DATA = activityReducer.RPTSVR_DATA
                     if (json.ResponseCode == 200) {
                         console.log(responseData)
-                        setPrintItem({})
+                        setPrintItem(printItem)
                         tempRPTSVR_DATA.push(responseData)
                         dispatch(activityActions.RPTSVR_DATA(tempRPTSVR_DATA))
                         setGETPRINTSTATUS([])
@@ -393,8 +408,8 @@ const Report_prints = ({ route }) => {
         <View style={styles.container1}>
             <StatusBar hidden={true} />
             <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(false) }} resizeMode="cover" style={styles.image}>
-                {!loading_backG ? <>
-                    <View style={{ marginTop: 100 }} >
+                {!loading_backG && REPORTNAME.length > 0 ? <>
+                    <View style={{ marginTop: deviceHeight * 0.2 }} >
                         <ScrollView   >
                             <KeyboardAvoidingView keyboardVerticalOffset={1}>
                                 <View style={styles.body}>
@@ -442,63 +457,91 @@ const Report_prints = ({ route }) => {
                                             </Picker>
                                         )}
                                     </View>
+                                    {printItem.RPTSVR_RPF_DD_FIELD == 'ANYDATE' ? (
+                                        <>
+                                            <View style={styles.body1}>
+                                                <Text style={styles.textTitleInfo}>
+                                                    ณ วันที่ :
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity
+                                                onPress={() => navigation.navigate('Calendars', { key: 'start_date', data: { start_date: start_date, end_date: end_date } })}
+                                                style={{
+                                                    marginTop: 10, flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
+                                                }}>
+                                                <Text style={{
+                                                    size: fontSize.length,
+                                                    color: Colors.fontColor
+                                                }}>
+                                                    {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
+                                                </Text>
+                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
+                                            </TouchableOpacity>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <View style={styles.body1}>
+                                                <Text style={styles.textTitleInfo}>
+                                                    ตั้งแต่ :
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity
+                                                onPress={() => navigation.navigate('Calendars', { key: 'start_date', data: { start_date: start_date, end_date: end_date } })}
+                                                style={{
+                                                    marginTop: 10, flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
+                                                }}>
+                                                <Text style={{
+                                                    size: fontSize.length,
+                                                    color: Colors.fontColor
+                                                }}>
+                                                    {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
+                                                </Text>
+                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
+                                            </TouchableOpacity>
+                                            <View style={styles.body1}>
+                                                <Text style={styles.textTitleInfo}>
+                                                    ถึง :
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity
+                                                onPress={() => navigation.navigate('Calendars', { key: 'end_date', data: { start_date: start_date, end_date: end_date } })}
+                                                style={{
+                                                    marginTop: 10, flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
+                                                }}>
+                                                <Text style={{
+                                                    size: fontSize.length,
+                                                    color: Colors.fontColor
+                                                }}>
+                                                    {`${end_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
+                                                </Text>
+                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
+                                            </TouchableOpacity>
+                                        </>
+                                    )}
 
-                                    <View style={styles.body1}>
-                                        <Text style={styles.textTitleInfo}>
-                                            ตั้งแต่ :
-                                        </Text>
-                                    </View>
 
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('Calendars', { key: 'start_date', data: { start_date: start_date, end_date: end_date } })}
-                                        style={{
-                                            marginTop: 10, flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
-                                        }}>
-                                        <Text style={{
-                                            size: fontSize.length,
-                                            color: Colors.fontColor
-                                        }}>
-                                            {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
-                                        </Text>
-                                        <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
-                                    </TouchableOpacity>
-                                    <View style={styles.body1}>
-                                        <Text style={styles.textTitleInfo}>
-                                            ถึง :
-                                        </Text>
-                                    </View>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('Calendars', { key: 'end_date', data: { start_date: start_date, end_date: end_date } })}
-                                        style={{
-                                            marginTop: 10, flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
-                                        }}>
-                                        <Text style={{
-                                            size: fontSize.length,
-                                            color: Colors.fontColor
-                                        }}>
-                                            {`${end_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
-                                        </Text>
-                                        <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
-                                    </TouchableOpacity>
-
-                                    <View style={{ marginTop: 20 }}>
-                                        <TouchableOpacity
-                                            style={[styles.button, styles.buttonClose]}
-                                            onPress={() => {
-                                                Alert.alert(Language.t('notiAlert.header'), `คุณต้องการสั่งพิมพ์เอกสาร ${printItem.RPTSVR_NAME ? printItem.RPTSVR_NAME : REPORTNAME[0].RPTSVR_NAME} ใช่ หรือไม่?`, [{
-                                                    text: Language.t('selectBase.yes'), onPress: () => PushPRINTREPORT()
-                                                }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel') }])
-                                            }}>
-                                            <Text style={styles.textTitle}>สั่งพิมพ์รายงาน</Text>
-                                        </TouchableOpacity>
-                                    </View>
                                 </View>
                             </KeyboardAvoidingView>
                         </ScrollView>
+
+
+                    </View>
+                    <View style={styles.footer}>
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => {
+                                Alert.alert(Language.t('notiAlert.header'), `คุณต้องการสั่งพิมพ์เอกสาร ${printItem.RPTSVR_NAME ? printItem.RPTSVR_NAME : REPORTNAME[0].RPTSVR_NAME} ใช่ หรือไม่?`, [{
+                                    text: Language.t('selectBase.yes'), onPress: () => PushPRINTREPORT()
+                                }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel') }])
+                            }}>
+                            <Text style={styles.textTitle}>สั่งพิมพ์รายงาน</Text>
+                        </TouchableOpacity>
                     </View>
                 </> : <View
                     style={{
@@ -604,9 +647,7 @@ const styles = StyleSheet.create({
     body: {
         margin: 10,
         marginBottom: 60,
-
         borderRadius: 15,
-
     },
     body1e: {
         marginTop: 20,
@@ -623,18 +664,15 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         alignItems: 'center',
-
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
     footer: {
         position: 'absolute',
-
         justifyContent: 'center',
-        flexDirection: "row",
-
+        padding: 10,
         left: 0,
-        top: deviceHeight - 80,
+        top: deviceHeight * 0.8,
         width: deviceWidth,
     },
     table: {
@@ -690,7 +728,7 @@ const styles = StyleSheet.create({
     },
     image: {
         flex: 1,
-        justifyContent: "center"
+
     },
     topImage: {
         height: deviceHeight / 3,
