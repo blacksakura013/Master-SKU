@@ -183,10 +183,10 @@ const LoginScreen = () => {
         } else {
           console.log(responseData)
         }
-        
+
       })
       .catch((error) => {
-        
+
 
         console.error('ERROR at fetchContent >> ' + error)
       })
@@ -332,7 +332,7 @@ const LoginScreen = () => {
             Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + databaseReducer.Data.nameser + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
       });
-  
+
   };
   const regisMacAddED = async () => {
     await fetch(endpointMother + '/DevUsers', {
@@ -640,6 +640,7 @@ const LoginScreen = () => {
                 />
                 <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
               </View>
+              <Text style={Colors.headerColor2}>version 2.2.16</Text>
 
             </View>
           </ScrollView> : <View
@@ -653,7 +654,7 @@ const LoginScreen = () => {
               alignContent: 'center',
               position: 'absolute',
             }}>
-           
+
           </View>}
         {loading && (
           <View

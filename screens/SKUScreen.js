@@ -843,23 +843,73 @@ const SKUScreen = ({ route }) => {
         .then(async (json) => {
           let responseData = JSON.parse(json.ResponseData);
           if (responseData.RECORD_COUNT > 0) {
-            let ResponseCode
-            for (var i in GOODSMASTER) {
+            {
+              let temp_good = '';
+              for (var i in GOODSMASTER) {
+                if (i > 0) temp_good += ','
+                temp_good += '{' +
+                  '\"GOODS_KEY\": \"' + GOODSMASTER[i].GOODS_KEY +
+                  '\",\"GOODS_SKU\": \"' + GOODSMASTER[i].GOODS_SKU +
+                  '\",\"GOODS_CODE\": \"' + GOODSMASTER[i].GOODS_CODE +
+                  '\",\"GOODS_PRICE\": \"' + GOODSMASTER[i].GOODS_PRICE +
+                  '\",\"GOODS_ALIAS\": \"' + GOODSMASTER[i].GOODS_ALIAS +
+                  '\",\"GOODS_E_ALIAS\": \"' + GOODSMASTER[i].GOODS_E_ALIAS +
+                  '\",\"GOODS_BARTYPE\": \"' + GOODSMASTER[i].GOODS_BARTYPE +
+                  '\",\"UTQ_NAME\": \"' + GOODSMASTER[i].UTQ_NAME +
+                  '\",\"UTQ_QTY\": \"' + GOODSMASTER[i].UTQ_QTY +
+                  '\",\"ARPLU_U_PRC\": \"' + GOODSMASTER[i].ARPLU_U_PRC +
+                  '\",\"ARPLU_U_DSC\": \"' + GOODSMASTER[i].ARPLU_U_DSC +
+                  '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
+                  '\",\"TAG_NAME\": \"' + GOODSMASTER[i].TAG_NAME +
+                  '\"}'
+              }
+              console.log(databaseReducer.Data.urlser)
+              console.log(temp_good)
               await fetch(databaseReducer.Data.urlser + '/SetupErp', {
                 method: 'POST',
                 body: JSON.stringify({
                   'BPAPUS-BPAPSV': loginReducer.serviceID,
                   'BPAPUS-LOGIN-GUID': loginReducer.guid,
-                  'BPAPUS-FUNCTION': 'UPDATEARPLU',
+                  'BPAPUS-FUNCTION': 'UPDATESKUINFOBYGOODSCODE',
                   'BPAPUS-PARAM':
-                    '{\"PRCHNG_COMPUTER\": \"' + registerReducer.machineNum +
-                      '\",\"PRCHNG_LOGIN\": \"' + '0828845662' +
-                      '\",\"PRCHNG_BY\": \"' + 'BUSINESS' +
-                      '\",\"GOODS_CODE\": \"' + GOODSMASTER[i].GOODS_CODE +
-                      '\",\"ARPRB_CODE\": \"' +   0 +
-                      '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
-                      '\",\"ARPLU_U_PRC\": \"' + GOODSMASTER[i].ARPLU_U_PRC +
-                      '\",\"ARPLU_U_DSC\": \"' + GOODSMASTER[i].ARPLU_U_DSC + '\"}',
+                    '{\"UpdateSkuInfoByGoodsCode\":' + '[{\"SKUMASTER\": {' +
+                    '\"SKU_KEY\": \"' + SKUMASTER.SKU_KEY +
+                    '\",\"SKU_CODE\": \"' + SKUMASTER.SKU_CODE +
+                    '\",\"SKU_NAME\": \"' + SKUMASTER.SKU_NAME +
+                    '\",\"SKU_E_NAME\": \"' + SKUMASTER.SKU_E_NAME +
+                    '\",\"SKU_BARCODE\": \"' + SKUMASTER.SKU_BARCODE +
+                    '\",\"SKU_VAT_TY\": \"' + SKUMASTER.SKU_VAT_TY +
+                    '\",\"SKU_VAT\": \"' + SKUMASTER.SKU_VAT +
+                    '\",\"SKU_COST_TY\": \"' + SKUMASTER.SKU_COST_TY +
+                    '\",\"SKU_STOCK\": \"' + SKUMASTER.SKU_STOCK +
+                    '\",\"SKU_SENSITIVITY\": \"' + SKUMASTER.SKU_SENSITIVITY +
+                    '\",\"UTQ_K_NAME\": \"' + SKUMASTER.UTQ_K_NAME +
+                    '\",\"UTQ_K_QTY\": \"' + SKUMASTER.UTQ_K_QTY +
+                    '\",\"UTQ_T_NAME\": \"' + SKUMASTER.UTQ_T_NAME +
+                    '\",\"UTQ_T_QTY\": \"' + SKUMASTER.UTQ_T_QTY +
+                    '\",\"UTQ_S_NAME\": \"' + SKUMASTER.UTQ_S_NAME +
+                    '\",\"UTQ_S_QTY\": \"' + SKUMASTER.UTQ_S_QTY +
+                    '\",\"BRN_CODE\": \"' + SKUMASTER.BRN_CODE +
+                    '\",\"BRN_NAME\": \"' + SKUMASTER.BRN_NAME +
+                    '\",\"ICCAT_CODE\": \"' + SKUMASTER.ICCAT_CODE +
+                    '\",\"ICCAT_NAME\": \"' + SKUMASTER.ICCAT_NAME +
+                    '\",\"ICDEPT_CODE\": \"' + SKUMASTER.ICDEPT_CODE +
+                    '\",\"ICDEPT_THAIDESC\": \"' + SKUMASTER.ICDEPT_THAIDESC +
+                    '\",\"ICDEPT_ENGDESC\": \"' + SKUMASTER.ICDEPT_ENGDESC +
+                    '\",\"SKUALT_CODE\": \"' + SKUMASTER.SKUALT_CODE +
+                    '\",\"SKUALT_NAME\": \"' + SKUMASTER.SKUALT_NAME +
+                    '\",\"ICCOLOR_CODE\": \"' + SKUMASTER.ICCOLOR_CODE +
+                    '\",\"ICCOLOR_NAME\": \"' + SKUMASTER.ICCOLOR_NAME +
+                    '\",\"ICSIZE_CODE\": \"' + SKUMASTER.ICSIZE_CODE +
+                    '\",\"ICSIZE_NAME\": \"' + SKUMASTER.ICSIZE_NAME +
+                    '\",\"ICGL_CODE\": \"' + SKUMASTER.ICGL_CODE +
+                    '\",\"ICGL_NAME\": \"' + SKUMASTER.ICGL_NAME +
+                    '\",\"ICPRT_CODE\": \"' + SKUMASTER.ICPRT_CODE +
+                    '\",\"ICPRT_NAME\": \"' + SKUMASTER.ICPRT_NAME +
+                    '\",\"WL_CODE\": \"' + SKUMASTER.WL_CODE +
+                    '\",\"WL_NAME\" : \"' + SKUMASTER.WL_NAME +
+                    '\",\"SKU_PROPERTIES\" : ' + isSFeatures +
+                    '},\"GOODSMASTER\":[' + temp_good + ']}]' + '}',
                   'BPAPUS-FILTER': '',
                   'BPAPUS-ORDERBY': '',
                   'BPAPUS-OFFSET': '0',
@@ -867,24 +917,63 @@ const SKUScreen = ({ route }) => {
                 })
               })
                 .then((response) => response.json())
-                .then((json) => {
-                  ResponseCode = json.ResponseCode
-                  console.log(`UPDATE ${GOODSMASTER[i].GOODS_CODE} +>> ${GOODSMASTER[i].ARPLU_U_PRC} **>${GOODSMASTER[i].TAG_CODE} ${GOODSMASTER[i].ARPLU_U_DSC} ?>> ${GOODSMASTER[i].ARPRB_CODE ? GOODSMASTER[i].ARPRB_CODE : 0}`)
+                .then(async (json) => {
+                  if (json.ResponseCode == '200') {
+                    let ResponseCode
+                    for (var i in GOODSMASTER) {
+                      await fetch(databaseReducer.Data.urlser + '/SetupErp', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          'BPAPUS-BPAPSV': loginReducer.serviceID,
+                          'BPAPUS-LOGIN-GUID': loginReducer.guid,
+                          'BPAPUS-FUNCTION': 'UPDATEARPLU',
+                          'BPAPUS-PARAM':
+                            '{\"PRCHNG_COMPUTER\": \"' + registerReducer.machineNum +
+                            '\",\"PRCHNG_LOGIN\": \"' + '0828845662' +
+                            '\",\"PRCHNG_BY\": \"' + 'BUSINESS' +
+                            '\",\"GOODS_CODE\": \"' + GOODSMASTER[i].GOODS_CODE +
+                            '\",\"ARPRB_CODE\": \"' + 0 +
+                            '\",\"TAG_CODE\": \"' + GOODSMASTER[i].TAG_CODE +
+                            '\",\"ARPLU_U_PRC\": \"' + GOODSMASTER[i].ARPLU_U_PRC +
+                            '\",\"ARPLU_U_DSC\": \"' + GOODSMASTER[i].ARPLU_U_DSC + '\"}',
+                          'BPAPUS-FILTER': '',
+                          'BPAPUS-ORDERBY': '',
+                          'BPAPUS-OFFSET': '0',
+                          'BPAPUS-FETCH': '0',
+                        })
+                      })
+                        .then((response) => response.json())
+                        .then((json) => {
+                          ResponseCode = json.ResponseCode
+                          console.log(`UPDATE ${GOODSMASTER[i].GOODS_CODE} +>> ${GOODSMASTER[i].ARPLU_U_PRC} **>${GOODSMASTER[i].TAG_CODE} ${GOODSMASTER[i].ARPLU_U_DSC} ?>> ${GOODSMASTER[i].ARPRB_CODE ? GOODSMASTER[i].ARPRB_CODE : 0}`)
+                          console.log(json)
+                        })
+                        .catch((error) => {
+                          ResponseCode = error
+                          console.log('Function Parameter Required');
+                        })
+                    }
+                    if (ResponseCode == '200') Alert.alert(Language.t('alert.succeed'), Language.t('alert.savesucceed'), [{
+                      text: Language.t('alert.ok'), onPress: () => { on_cancel() }
+                    }]);
+                    else Alert.alert(
+                      Language.t('alert.errorTitle'),
+                      Language.t('alert.incorrect'), [{
+                        text: Language.t('alert.ok'), onPress: () => { }
+                      }]);
+                  }
+                  else Alert.alert(
+                    Language.t('alert.errorTitle'),
+                    Language.t('alert.incorrect'), [{
+                      text: Language.t('alert.ok'), onPress: () => { }
+                    }]);
                   console.log(json)
                 })
                 .catch((error) => {
-                  ResponseCode = error
                   console.log('Function Parameter Required');
                 })
             }
-            if (ResponseCode == '200') Alert.alert(Language.t('alert.succeed'), Language.t('alert.savesucceed'), [{
-              text: Language.t('alert.ok'), onPress: () => { on_cancel() }
-            }]);
-            else Alert.alert(
-              Language.t('alert.errorTitle'),
-              Language.t('alert.incorrect'), [{
-                text: Language.t('alert.ok'), onPress: () => { }
-              }]);
+
           }
           else {
             let temp_good = '';
