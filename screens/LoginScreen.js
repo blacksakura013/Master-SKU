@@ -183,10 +183,10 @@ const LoginScreen = () => {
         } else {
           console.log(responseData)
         }
-        setLoading(false)
+        
       })
       .catch((error) => {
-        setLoading(false)
+        
 
         console.error('ERROR at fetchContent >> ' + error)
       })
@@ -332,7 +332,7 @@ const LoginScreen = () => {
             Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + databaseReducer.Data.nameser + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
         }
       });
-    setLoading(false)
+  
   };
   const regisMacAddED = async () => {
     await fetch(endpointMother + '/DevUsers', {
