@@ -3,6 +3,8 @@ var daily = new Date()
 let yearIndex = daily.getFullYear() + 543
 export const months_th = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",];
 export const months_th_mini = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.",];
+export const months_en = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",];
+export const months_en_mini = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",];
 
 for (var i = yearIndex - 100; i <= yearIndex + 100; i++) {
     years.push(i)

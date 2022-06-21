@@ -114,6 +114,7 @@ const AddbarSKUScreen = ({ route }) => {
   useEffect(() => {
     if (route.params?.post) {
       setGOODS_CODE(route.params.post)
+      fetchData(route.params.post)
     }
     if (route.params?.GOODSMASTER) {
       console.log(route.params.GOODSMASTER)
@@ -122,6 +123,40 @@ const AddbarSKUScreen = ({ route }) => {
     }
 
   }, [route.params?.data]);
+
+  const fetchData = async (GOODS_CODE) => {
+
+    console.log(GOODS_CODE)
+    await fetch(databaseReducer.Data.urlser + '/SetupErp', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': loginReducer.guid,
+        'BPAPUS-FUNCTION': 'GETSKUINFOBYGOODSCODE',
+        'BPAPUS-PARAM':
+          '{"GOODS_CODE": "' +
+          GOODS_CODE + '"}',
+        'BPAPUS-FILTER': '',
+        'BPAPUS-ORDERBY': '',
+        'BPAPUS-OFFSET': '0',
+        'BPAPUS-FETCH': '0',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        let responseData = JSON.parse(json.ResponseData);
+
+        if (responseData.RECORD_COUNT > 0) {
+          Alert.alert(Language.t('alert.errorTitle'), `รหัสสินค้า [${GOODS_CODE}] ซ้ำกับรหัสสินค้า ${responseData.DOCINFO.SKU_NAME}`, [{ text: Language.t('alert.ok'), onPress: () => setGOODS_CODE('') }])
+        }
+
+      })
+      .catch((error) => {
+        console.log(ser_die)
+        console.error('ERROR at fetchContent >> ' + error)
+      })
+
+  }
 
   const set_Focus = (onFocus) => {
     setonFocus(onFocus)
@@ -205,7 +240,8 @@ const AddbarSKUScreen = ({ route }) => {
                 value={GOODS_CODE}
 
                 placeholder={Language.t('main.goodscode') + '..'}
-
+                onSubmitEditing={(val) => { fetchData(GOODS_CODE) }}
+                onBlur={(val) => { fetchData(GOODS_CODE) }}
                 onChangeText={(val) => {
                   setGOODS_CODE(val)
                 }} />

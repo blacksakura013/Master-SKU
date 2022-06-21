@@ -179,26 +179,37 @@ const Mainmenu = ({ route }) => {
                         <SafeAreaView >
                             <KeyboardAvoidingView >
                                 <View style={styles.body}>
-                                    <TouchableOpacity onPress={() => navigation.navigate('SKUScreen', {})}>
+                                    <TouchableOpacity style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('SKUScreen', {})}>
                                         <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
+                                            style={{
+                                                height: deviceHeight * 0.1, width: deviceWidth * 0.9, position: 'absolute',
+                                            }}
                                             resizeMode={'contain'}
                                             source={require('../images/UI/Menu/SKUScreen.png')}
                                         />
+                                        <Text style={styles.textTitle}>
+                                            {Language.t('menu.menu1')}
+                                        </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ProductScreen', {})}>
+                                    <TouchableOpacity  style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, alignItems: 'center', justifyContent: 'center' }}  onPress={() => navigation.navigate('ProductScreen', {})}>
                                         <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
+                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, position: 'absolute',}}
                                             resizeMode={'contain'}
                                             source={require('../images/UI/Menu/ProductScreen.png')}
                                         />
+                                         <Text style={styles.textTitle}>
+                                            {Language.t('menu.menu2')}
+                                        </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => navigation.navigate('ReportScreen', {})}>
+                                    <TouchableOpacity  style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, alignItems: 'center', justifyContent: 'center' }}  onPress={() => navigation.navigate('ReportScreen', {})}>
                                         <Image
-                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, }}
+                                            style={{ height: deviceHeight * 0.1, width: deviceWidth * 0.9, position: 'absolute',}}
                                             resizeMode={'contain'}
                                             source={require('../images/UI/Menu/ReportScreen.png')}
                                         />
+                                         <Text style={styles.textTitle}>
+                                            {Language.t('menu.menu3')}
+                                        </Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => Alert.alert('', Language.t('menu.alertLogoutMessage'), [{ text: Language.t('alert.ok'), onPress: () => logOut() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
                                         <Image

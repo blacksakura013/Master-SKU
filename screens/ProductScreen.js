@@ -288,7 +288,7 @@ const ProductScreen = ({ route }) => {
           var inputmonths = productReducer.Log_data.date.substring(4, 6)
           var inputdate = productReducer.Log_data.date.substring(6, 8)
           var inputFullDate = inputdate + '/' + inputmonths + '/' + inputyear
-          Alert.alert(Language.t('notiAlert.header'), `เนื่องจากวันนี้มีการเพิ่มเอกสารรับสินค้าแล้ว\nเมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น.\nคุณต้องการแก้ไขเอกสารหรือไม่`, [{
+          Alert.alert(Language.t('notiAlert.header'), `${Language.t('notiAlert.GetReceiveDocinfo01')} ${inputFullDate} ${Language.t('notiAlert.GetReceiveDocinfo02')} ${productReducer.Log_data.time} ${Language.t('notiAlert.GetReceiveDocinfo03')} `, [{
             text: Language.t('alert.confirm'), onPress: () => { set_goodData(productReducer.Log_data.GOODSMASTER) }
           }, {
             text: Language.t('alert.cancel'), onPress: () => { navigation.goBack() }
@@ -1082,7 +1082,7 @@ const ProductScreen = ({ route }) => {
           if (C) {
             console.log(DI_REF.DI_REF)
             Alert.alert(Language.t('menu.alertsave0Message'), Language.t('menu.alertsaveMessage'), [{
-              text: Language.t('alert.ok'), onPress: () => DI_REF.DI_REF != '<เลขถัดไป>' ? Alert.alert(Language.t('notiAlert.header'), `เมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น. มีการบันทึกเอกสารไปแล้ว\nคุณต้องการแก้ไขหรือไม่`,
+              text: Language.t('alert.ok'), onPress: () => DI_REF.DI_REF != '<เลขถัดไป>' ? Alert.alert(Language.t('notiAlert.header'), `${Language.t('notiAlert.on')} ${inputFullDate} ${Language.t('notiAlert.at')} ${productReducer.Log_data.time} ${Language.t('notiAlert.saved')}`,
                 [
                   { text: Language.t('alert.ok'), onPress: () => { pushData(datetime) } },
                   { text: Language.t('alert.cancel'), onPress: () => { on_cancel() } }
@@ -1091,11 +1091,10 @@ const ProductScreen = ({ route }) => {
             }, { text: Language.t('alert.cancel'), onPress: () => { } }])
           } else {
             if (DI_REF.DI_REF != '<เลขถัดไป>') {
-              Alert.alert(Language.t('notiAlert.header'), `เมื่อวันที่ ${inputFullDate} เวลา ${productReducer.Log_data.time}น. มีการบันทึกเอกสารไปแล้ว\nคุณต้องการแก้ไขหรือไม่`,
+              Alert.alert(Language.t('notiAlert.header'), `${Language.t('notiAlert.on')} ${inputFullDate} ${Language.t('notiAlert.at')} ${productReducer.Log_data.time} ${Language.t('notiAlert.saved')}`,
                 [
                   { text: Language.t('alert.ok'), onPress: () => { pushData(datetime) } },
                   { text: Language.t('alert.cancel'), onPress: () => { on_cancel() } }
-
                 ])
 
             } else
@@ -1108,8 +1107,6 @@ const ProductScreen = ({ route }) => {
         console.log(ser_die)
         console.error('ERROR at fetchContent >> ' + error)
       })
-
-
   }
   const pushData = async (datetime) => {
     dieSer('pushData')
@@ -1235,7 +1232,7 @@ const ProductScreen = ({ route }) => {
           console.log('Log_data >> ', Log_data)
           console.log()
           await dispatch(productActions.setLog_Data(Log_data))
-          Alert.alert(Language.t('alert.succeed'), `เพิ่มเอกสารรับสินค้า สำเร็จ `, [{
+          Alert.alert(Language.t('alert.succeed'), Language.t('notiAlert.succeed'), [{
             text: Language.t('alert.ok'), onPress: () => { navigation.goBack() }
           }]);
         }
@@ -1333,12 +1330,15 @@ const ProductScreen = ({ route }) => {
           </View>
           {PRODUCTMASTER.GOODS_KEY && (
             <View style={{ alignItems: 'flex-end', marginTop: 5 }}>
-              <TouchableOpacity onPress={() => Alert.alert('', 'ต้องการเพิ่มรายการรับสินค้า ?', [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
+              <TouchableOpacity  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3, alignItems: 'flex-end', justifyContent: 'center' }} onPress={() => Alert.alert('', Language.t('notiAlert.doadd'), [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
                 <Image
-                  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3 }}
+                  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3 , position: 'absolute',}}
                   resizeMode={'contain'}
                   source={require('../images/UI/Menu/add.png')}
                 />
+                <Text style={styles.textTitle}>
+                {Language.t('alert.add')}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -1369,21 +1369,21 @@ const ProductScreen = ({ route }) => {
                             color: Colors.backgroundColorSecondary,
                             alignSelf: 'flex-end',
                             fontWeight: 'bold'
-                          }}> จำนวน </Text></View>
+                          }}> {Language.t('main.number')} </Text></View>
                         <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', }} >
                           <Text style={{
                             fontSize: FontSize.medium,
                             alignSelf: 'flex-end',
                             color: Colors.backgroundColorSecondary,
                             fontWeight: 'bold'
-                          }}> ราคาซื้อ </Text></View>
+                          }}>  {Language.t('main.purchase_price')} </Text></View>
                         <View style={{ flex: 0.3, padding: 10, justifyContent: 'center', }} >
                           <Text style={{
                             fontSize: FontSize.medium,
                             alignSelf: 'flex-end',
                             color: Colors.backgroundColorSecondary,
                             fontWeight: 'bold'
-                          }}> ราคาขาย </Text></View>
+                          }}>  {Language.t('main.sale_price')} </Text></View>
 
                         <View style={{ padding: 10, flex: 0.1, }}>
                           <View
@@ -1558,7 +1558,7 @@ const ProductScreen = ({ route }) => {
                                           placeholderTextColor={Colors.fontColorSecondary}
                                           value={0}
                                           textAlign={'right'}
-                                          placeholder={'จำนวน ..'}
+                                          placeholder={Language.t('main.number') + '..'}
                                           onBlur={() => set_Focus('QTY', false, index)}
                                           onChangeText={(val) => {
                                             set_SkuTRD_QTY(val, index)
@@ -1576,7 +1576,7 @@ const ProductScreen = ({ route }) => {
                                           placeholderTextColor={Colors.fontColorSecondary}
                                           value={item.TRD_QTY}
                                           textAlign={'right'}
-                                          placeholder={'จำนวน ..'}
+                                          placeholder={Language.t('main.number') + '..'}
                                           onFocus={() => set_Focus('QTY', true, index)}
                                           onChangeText={(val) => {
                                             set_SkuTRD_QTY(val, index)
@@ -1729,11 +1729,9 @@ const ProductScreen = ({ route }) => {
 
             justifyContent: 'center',
             flexDirection: "row",
-
             left: 0,
             top: deviceHeight - deviceHeight * 0.2,
             width: deviceWidth,
-
           }}>
 
             {GOODSMASTER.length > 0 && (
@@ -1754,7 +1752,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`รวมชนิดสินค้า `}
+                      {Language.t('main.product_type')}
 
                     </Text>
                     <Text style={{
@@ -1762,7 +1760,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`${GOODSMASTER.length} รายการ`}
+                      {`${GOODSMASTER.length} `+Language.t('main.list') }
 
                     </Text>
                   </View>
@@ -1781,7 +1779,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`รวมเงิน`}
+                      {Language.t('main.total_money')}
 
                     </Text>
                     <Text style={{
@@ -1789,7 +1787,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} บาท`}
+                      {`${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} `+Language.t('main.baht')}
 
                     </Text>
                   </View>
@@ -1810,7 +1808,7 @@ const ProductScreen = ({ route }) => {
                 }}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', 'เพิ่มเอกสารรับสินค้า ?', [{ text: Language.t('alert.ok'), onPress: () => CpushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('',   Language.t('notiAlert.doadd'), [{ text: Language.t('alert.ok'), onPress: () => CpushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
               <Image
                 source={
                   require('../images/UI/SKU/4x/Asset28_4x.png')
@@ -1962,6 +1960,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.medium,
   },
   textTitle: {
+    paddingRight:deviceWidth*0.07,
     fontSize: FontSize.medium,
     fontWeight: 'bold',
     color: '#ffff',

@@ -214,7 +214,7 @@ const Report_prints = ({ route }) => {
             eDate = parseInt(eDate) - 5430000
 
         if (sDate > eDate) {
-            Alert.alert('สร้างเอกสารไม่สำเร็จ', `โปรดระบุวันที่สร้างเอกสารให้ถูกต้อง`, [{
+            Alert.alert(Language.t('report.Failed'), Language.t('report.FailedInfo'), [{
                 text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
             }]);
         } else {
@@ -274,7 +274,7 @@ const Report_prints = ({ route }) => {
                         setGETPRINTSTATUS([])
                         fetchDataStatus(responseData)
                     } else {
-                        Alert.alert(Language.t('notiAlert.header'), `สร้างเอกสารไม่สำเร็จ ${json.ReasonString}`, [{
+                        Alert.alert(Language.t('notiAlert.header'), `${Language.t('report.Failed')} ${json.ReasonString}`, [{
                             text: Language.t('selectBase.yes'), onPress: () => console.log('')
                         }]);
                     }
@@ -327,7 +327,10 @@ const Report_prints = ({ route }) => {
                         setCountdown(-1)
                         setLoading(false)
 
-                        Alert.alert(Language.t('notiAlert.header'), `  ${responseData.GETPRINTSTATUS[0].SYSLKUP_T_DESC}`, [{
+                        Alert.alert(Language.t('notiAlert.header'), `${responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 7 ? Language.t('report.cancelled') :
+                                responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 8 ? Language.t('report.cancelled') :
+                                    responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 1 ? Language.t('report.Successful') : Language.t('report.printing')}
+                        `, [{
                             text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
                         }]);
 
@@ -415,7 +418,7 @@ const Report_prints = ({ route }) => {
                                 <View style={styles.body}>
                                     <View style={styles.body1}>
                                         <Text style={styles.textTitleInfo}>
-                                            {'ชื่อรายงาน'} :
+                                            {Language.t('report.reportName')} :
                                         </Text>
                                     </View>
                                     <View style={{
@@ -451,7 +454,7 @@ const Report_prints = ({ route }) => {
                                                     <Picker.Item
                                                         value="-1"
                                                         color={"#979797"}
-                                                        label={'ไม่มีข้อมูล'}
+                                                        label={Language.t('report.noData')}
                                                     />
                                                 }
                                             </Picker>
@@ -461,7 +464,7 @@ const Report_prints = ({ route }) => {
                                         <>
                                             <View style={styles.body1}>
                                                 <Text style={styles.textTitleInfo}>
-                                                    ณ วันที่ :
+                                                    {Language.t('report.asof')} :
                                                 </Text>
                                             </View>
                                             <TouchableOpacity
@@ -475,7 +478,7 @@ const Report_prints = ({ route }) => {
                                                     size: fontSize.length,
                                                     color: Colors.fontColor
                                                 }}>
-                                                    {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
+                                                    {`${start_date.split('-')[0]} ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(start_date.split('-')[1]) - 1]}  ${start_date.split('-')[2]}`}
                                                 </Text>
                                                 <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
                                             </TouchableOpacity>
@@ -484,7 +487,7 @@ const Report_prints = ({ route }) => {
                                         <>
                                             <View style={styles.body1}>
                                                 <Text style={styles.textTitleInfo}>
-                                                    ตั้งแต่ :
+                                                    {Language.t('report.from')} :
                                                 </Text>
                                             </View>
                                             <TouchableOpacity
@@ -498,13 +501,13 @@ const Report_prints = ({ route }) => {
                                                     size: fontSize.length,
                                                     color: Colors.fontColor
                                                 }}>
-                                                    {`${start_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
+                                                    {`${start_date.split('-')[0]} ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
                                                 </Text>
                                                 <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
                                             </TouchableOpacity>
                                             <View style={styles.body1}>
                                                 <Text style={styles.textTitleInfo}>
-                                                    ถึง :
+                                                    {Language.t('report.to')} :
                                                 </Text>
                                             </View>
                                             <TouchableOpacity
@@ -518,7 +521,7 @@ const Report_prints = ({ route }) => {
                                                     size: fontSize.length,
                                                     color: Colors.fontColor
                                                 }}>
-                                                    {`${end_date.split('-')[0]} ${safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
+                                                    {`${end_date.split('-')[0]}  ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
                                                 </Text>
                                                 <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
                                             </TouchableOpacity>
@@ -536,11 +539,11 @@ const Report_prints = ({ route }) => {
                         <TouchableOpacity
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => {
-                                Alert.alert(Language.t('notiAlert.header'), `คุณต้องการสั่งพิมพ์เอกสาร ${printItem.RPTSVR_NAME ? printItem.RPTSVR_NAME : REPORTNAME[0].RPTSVR_NAME} ใช่ หรือไม่?`, [{
+                                Alert.alert(Language.t('notiAlert.header'), `${Language.t('report.doPrint')} ${printItem.RPTSVR_NAME ? printItem.RPTSVR_NAME : REPORTNAME[0].RPTSVR_NAME} ${Language.t('report.YorN')}`, [{
                                     text: Language.t('selectBase.yes'), onPress: () => PushPRINTREPORT()
                                 }, { text: Language.t('selectBase.no'), onPress: () => console.log('cancel') }])
                             }}>
-                            <Text style={styles.textTitle}>สั่งพิมพ์รายงาน</Text>
+                            <Text style={styles.textTitle}> {Language.t('report.print')}</Text>
                         </TouchableOpacity>
                     </View>
                 </> : <View
@@ -579,7 +582,7 @@ const Report_prints = ({ route }) => {
                         }}>
                             <View >
                                 <Text style={styles.textTitle}>
-                                    กำลังสั่งพิมพ์
+                                    {Language.t('report.printing')}
                                 </Text>
                             </View>
                             <View >
@@ -602,7 +605,9 @@ const Report_prints = ({ route }) => {
                             />
                             <View >
                                 <Text style={styles.textTitle}>
-                                    {GETPRINTSTATUS[0].SYSLKUP_T_DESC}
+                                    {GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 7 ? Language.t('report.cancelled') :
+                                        GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 8 ? Language.t('report.cancelled') :
+                                            GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 1 ? Language.t('report.Successful') : Language.t('report.printing')}
                                 </Text>
                             </View>
                         </View>

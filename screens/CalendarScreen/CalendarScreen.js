@@ -18,7 +18,7 @@ import {
     TouchableNativeFeedback,
     TouchableOpacity,
 } from 'react-native';
-
+import { useSelector, useDispatch } from 'react-redux';
 import CheckBox from '@react-native-community/checkbox';
 import DeviceInfo from 'react-native-device-info';
 import { NetworkInfo } from "react-native-network-info";
@@ -36,7 +36,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 import { FontSize } from '../../components/FontSizeHelper';
-
+import { Language } from '../../translations/I18n';
 
 
 import Colors from '../../src/Colors';
@@ -48,7 +48,7 @@ const deviceHeight = Dimensions.get('window').height;
 const CalendarScreen = ({ route }) => {
 
     const navigation = useNavigation();
-
+    const loginReducer = useSelector(({ loginReducer }) => loginReducer);
     var daily = new Date()
     var toDate = `${(parseInt(daily.getFullYear()) + 543)}${parseInt(daily.getMonth()) + 1 > 10 ? parseInt(daily.getMonth()) + 1 : '0' + (parseInt(daily.getMonth()) + 1)}${parseInt(daily.getDate()) > 10 ? daily.getDate() : '0' + daily.getDate()}`
     const [loading_backG, setLoading_backG] = useStateIfMounted(false);
@@ -107,15 +107,13 @@ const CalendarScreen = ({ route }) => {
 
         <ImageBackground source={require(image)} onLoadEnd={() => { setLoading_backG(true) }} resizeMode="cover" style={styles.image}>
             {loading_backG ? (
-
-
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
 
                             <View width={deviceWidth * 0.2} padding={10} >
                                 <Text style={styles.textTitleInfo}>
-                                    ปี :
+                                {Language.t('calendar.year')} :
                                 </Text>
                             </View>
 
@@ -146,7 +144,7 @@ const CalendarScreen = ({ route }) => {
 
                             <View width={deviceWidth * 0.2} padding={10}>
                                 <Text style={styles.textTitleInfo}>
-                                    เดือน :
+                                {Language.t('calendar.month')} :
                                 </Text>
                             </View>
                             <View
@@ -163,7 +161,12 @@ const CalendarScreen = ({ route }) => {
                                     mode="dropdown"
                                     style={{ color: Colors.itemColor, width: deviceWidth - deviceWidth * 0.3, backgroundColor: Colors.backgroundColorSecondary }}
                                     onValueChange={(itemValue, itemIndex) => set_MonthIndex(itemValue, itemIndex)}>
-                                    {Calendars.months_th.map((obj, index) => {
+                                    {loginReducer.language == 'th' ? 
+                                    Calendars.months_th.map((obj, index) => {
+                                        return (
+                                            <Picker.Item color={Colors.itemColor} style={{ backgroundColor: Colors.backgroundColorSecondary }} label={obj} value={index} />
+                                        )
+                                    }):Calendars.months_en.map((obj, index) => {
                                         return (
                                             <Picker.Item color={Colors.itemColor} style={{ backgroundColor: Colors.backgroundColorSecondary }} label={obj} value={index} />
                                         )
@@ -174,7 +177,7 @@ const CalendarScreen = ({ route }) => {
                         </View>
                         <View width={deviceWidth * 0.2} padding={10}>
                             <Text style={styles.textTitleInfo}>
-                                วัน :
+                                {Language.t('calendar.date')} :
                             </Text>
                         </View>
                         <View>
@@ -204,7 +207,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: 'red', fontWeight: 'bold' }}>{'อา'}</Text>
+                                        <Text style={{ color: 'red', fontWeight: 'bold' }}>{Language.t('calendar.sun')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -212,7 +215,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'จ'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.mon')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -220,7 +223,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'อ'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.tue')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -228,7 +231,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'พ'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.wed')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -236,7 +239,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'พฤ'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.thu')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -244,7 +247,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'ศ'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.fri')}</Text>
                                     </View>
                                     <View style={{
                                         width: 30, height: 30,
@@ -252,7 +255,7 @@ const CalendarScreen = ({ route }) => {
                                         justifyContent: 'center',
                                         borderRadius: 15, backgroundColor: null
                                     }}>
-                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{'ส'}</Text>
+                                        <Text style={{ color: Colors.fontColor, fontWeight: 'bold' }}>{Language.t('calendar.sat')}</Text>
                                     </View>
                                 </View>
                                 {Calendars.Day_Calendar(yearIndex, monthIndex).map((item, index) => {
@@ -383,7 +386,7 @@ const CalendarScreen = ({ route }) => {
                                         padding: 10, borderRadius: 10,
                                         width: deviceWidth / 2.5, margin: 10
                                     }}>
-                                    <Text style={{ fontSize: FontSize.large, color: Colors.fontColor2 }}>ตกลง</Text>
+                                    <Text style={{ fontSize: FontSize.large, color: Colors.fontColor2 }}>{Language.t('calendar.ok')}</Text>
 
                                 </TouchableOpacity>
 
@@ -395,7 +398,7 @@ const CalendarScreen = ({ route }) => {
                                         padding: 10, borderRadius: 10,
                                         width: deviceWidth / 2.5, margin: 10
                                     }}>
-                                    <Text style={{ fontSize: FontSize.large, color: Colors.fontColor2 }}>ยกเลิก</Text>
+                                    <Text style={{ fontSize: FontSize.large, color: Colors.fontColor2 }}>{Language.t('calendar.cancel')}</Text>
 
                                 </TouchableOpacity>
                             </View>

@@ -53,8 +53,15 @@
     "goodscode": "Goods code",
     "code": "code",
     "unit": "unit",
+    "number": "number",
+    "purchase_price": "purchase price",
+    "sale_price": "sale price",
     "price": "price (baht)",
     "pprice": "price",
+    "baht": "baht",
+    "product_type": "product type",
+    "list": "list",
+    "total_money": "total money",
     "save": "save",
     "cancel": "cancel",
     "feeds": "Activities",
@@ -184,7 +191,15 @@
     "alert": "Would you like to turn on Fingerprint ?"
   },
   "notiAlert": {
-    "header": "Notification"
+    "header": "Notification",
+    "GetReceiveDocinfo01": "Because today's delivery documents have been added.\nOn",
+    "GetReceiveDocinfo02": "at",
+    "GetReceiveDocinfo03": "\nDo you want to edit the document?",
+    "on": "on",
+    "at": "at",
+    "saved": "The document has already been saved\nDo you want to edit it?",
+    "succeed": "Adding documents of successful receipt of goods",
+    "doadd": "Add documents for receiving products ?"
   },
   "alert": {
     "errorTitle": "Error",
@@ -200,7 +215,7 @@
     "confirm": "Confirm",
     "errorDetail": "Data not found",
     "internetError": "Please check your internet connection",
-    "notFoundProduct":"Can't find merchandise Want to add a trading product?"
+    "notFoundProduct": "Can't find merchandise Want to add a trading product?"
   },
   "trading": {
     "addTrading": "Want to add trading products?",
@@ -275,5 +290,35 @@
     "614": "Table Name Not Found",
     "617": "No License Or License Expire",
     "629": "Function Parameter Required "
+  },
+  "report": {
+    "Failed": "Failed to create document",
+    "FailedInfo": "Please specify the correct document creation date.",
+    "reportName": "Report name",
+    "noData": "No Data",
+    "asof": "As of",
+    "from": "From",
+    "to": "To",
+    "print": "print a report",
+    "doPrint": "Do you want to print the document",
+    "YorN": "yes or no?",
+    "printing": "printing order",
+    "cancelled": "The print order was cancelled.",
+    "error": "Publishing has encountered an error.",
+    "Successful": "Successful document creation"
+  },
+  "calendar": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "date": "Date",
+    "month": "Month",
+    "year": "Year",
+    "ok":"ok",
+    "cancel":"cancel"
   }
 }

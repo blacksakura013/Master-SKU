@@ -640,7 +640,7 @@ const LoginScreen = () => {
                 />
                 <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
               </View>
-              <Text style={Colors.headerColor2}>version 2.2.16</Text>
+              <Text style={Colors.headerColor2}>version 2.2.18</Text>
 
             </View>
           </ScrollView> : <View
