@@ -13,6 +13,7 @@
     "ainstall": "cd android/app/build/outputs/apk/release && adb install app-release.apk"
   },
   "dependencies": {
+    "@blacksakura013/th-datepicker": "^1.0.8",
     "@eabdullazyanov/react-native-sms-user-consent": "^1.0.10",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
