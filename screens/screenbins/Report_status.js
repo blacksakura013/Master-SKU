@@ -249,7 +249,7 @@
 //                 })
 //                 .catch((error) => {
 //                     console.log(ser_die)
-//                     console.error('ERROR at fetchContent >> ' + error)
+//                     console.log('ERROR at fetchContent >> ' + error)
 //                 })
 //         }
 //         setGETPRINTSTATUS(DataGETPRINTSTATUS)
@@ -287,7 +287,7 @@
 //                 RNFetchBlob.android.actionViewIntent(imgbase64, 'application/pdf');
 //             })
 //             .catch((error) => {
-//                 console.error('fetchActivityImg: ' + error);
+//                 console.log('fetchActivityImg: ' + error);
 //             });
 //         // return imgbase64;
 

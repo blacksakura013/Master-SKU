@@ -339,7 +339,27 @@ const SelectBase = ({ route }) => {
     console.log('>>-----------<<')
     console.log(urlnmae)
     console.log('>>-----------<<')
-   
+    await fetch(baseurl + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'UnRegister',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE": "' +
+          11111122 +
+          '"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json.ResponseCode);
+
+      }
+      )
+      .catch((error) => {
+        console.log('ERROR at _fetchGuidLogin' + error);
+      });
     await fetch(baseurl + '/DevUsers', {
       method: 'POST',
       body: JSON.stringify({
@@ -381,46 +401,46 @@ const SelectBase = ({ route }) => {
             .then((response) => response.json())
             .then(async (json) => {
               if (json && json.ResponseCode == '200') {
-               
-                  let newObj = {
-                    nameser: basename,
-                    urlser: newurl,
-                    erpdvsvr: urlnmae,
-                    usernameser: username.toUpperCase(),
-                    passwordser: password.toUpperCase()
-                  }
-                  console.log(json.ResponseCode)
-                  if (state == '-1') {
-                    for (let i in loginReducer.ipAddress) {
-                      if (i == updateindex) {
-                        temp.push(newObj)
-                      } else {
-                        temp.push(loginReducer.ipAddress[i])
-                      }
-                    }
 
-                    dispatch(loginActions.ipAddress(temp))
-                    dispatch(databaseActions.setData(newObj))
-                    logOut(urlnmae, '11111122', username.toUpperCase(), password.toUpperCase(), '0828845662')
-                  } else if (state == '1') {
-                    if (items.length > 0) {
-                      for (let i in items) {
-                        temp.push(items[i])
-                      }
+                let newObj = {
+                  nameser: basename,
+                  urlser: newurl,
+                  erpdvsvr: urlnmae,
+                  usernameser: username.toUpperCase(),
+                  passwordser: password.toUpperCase()
+                }
+                console.log(json.ResponseCode)
+                if (state == '-1') {
+                  for (let i in loginReducer.ipAddress) {
+                    if (i == updateindex) {
+                      temp.push(newObj)
+                    } else {
+                      temp.push(loginReducer.ipAddress[i])
                     }
-                    temp.push(newObj)
-                    dispatch(loginActions.ipAddress(temp))
-                    dispatch(databaseActions.setData(newObj))
-                    logOut(urlnmae, '11111122', username, password, '0828845662')
-                  } else if (state == '0') {
-                    dispatch(databaseActions.setData(newObj))
-                    logOut(urlnmae, '11111122', username, password, '0828845662')
-                    
                   }
-                 
-                
-              
-               
+
+                  dispatch(loginActions.ipAddress(temp))
+                  dispatch(databaseActions.setData(newObj))
+                  logOut(urlnmae, '11111122', username.toUpperCase(), password.toUpperCase(), '0828845662')
+                } else if (state == '1') {
+                  if (items.length > 0) {
+                    for (let i in items) {
+                      temp.push(items[i])
+                    }
+                  }
+                  temp.push(newObj)
+                  dispatch(loginActions.ipAddress(temp))
+                  dispatch(databaseActions.setData(newObj))
+                  logOut(urlnmae, '11111122', username, password, '0828845662')
+                } else if (state == '0') {
+                  dispatch(databaseActions.setData(newObj))
+                  logOut(urlnmae, '11111122', username, password, '0828845662')
+
+                }
+
+
+
+
               } else {
                 let temp_error = 'error_ser.' + json.ResponseCode;
                 console.log('>> ', temp_error)
@@ -435,11 +455,11 @@ const SelectBase = ({ route }) => {
               Alert.alert(
                 Language.t('alert.errorTitle'),
                 Language.t('alert.internetError') + Language.t('selectBase.UnableConnec1') + ' ' + basename + ' ' + Language.t('selectBase.UnableConnec2'), [{ text: Language.t('alert.ok'), onPress: () => _onPressSelectbaseValue(selectbaseValue) }]);
-              console.error('_fetchGuidLogin ' + error);
+              console.log('_fetchGuidLogin ' + error);
               setLoading(false)
             });
         } else {
-        
+
           let temp_error = 'error_ser.' + json.ResponseCode;
           console.log('>> ', temp_error)
           Alert.alert(
@@ -483,14 +503,14 @@ const SelectBase = ({ route }) => {
         Alert.alert(
           Language.t('alert.succeed'),
           Language.t('selectBase.connect') + ' ' + basename + ' ' + Language.t('alert.succeed'), [{
-            text: Language.t('alert.ok'), onPress: () =>   navigation.dispatch(
+            text: Language.t('alert.ok'), onPress: () => navigation.dispatch(
               navigation.replace('LoginStackScreen')
             )
           }]);
       }
       )
       .catch((error) => {
-        console.error('ERROR at _fetchGuidLogin' + error);
+        console.log('ERROR at _fetchGuidLogin' + error);
       });
   };
 
@@ -825,7 +845,7 @@ const SelectBase = ({ route }) => {
                             justifyContent: 'center',
                             height: 50,
                             width: deviceWidth - 250,
-                            backgroundColor: Colors.backgroundLoginColor,
+                            backgroundColor: Colors.tableProD,
                           }}>
                           <Text
                             style={{

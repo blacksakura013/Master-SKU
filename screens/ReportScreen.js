@@ -34,6 +34,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Language } from '../translations/I18n';
 import { FontSize } from '../components/FontSizeHelper';
 import Colors from '../src/Colors';
+import CalendarScreen from '@blacksakura013/th-datepicker'
 // import { NavigationComponent, Modal as RNNModal } from 'react-native-navigation';
 import * as loginActions from '../src/actions/loginActions';
 import * as registerActions from '../src/actions/registerActions';
@@ -72,36 +73,19 @@ const Report_prints = ({ route }) => {
     const [loading_backG, setLoading_backG] = useStateIfMounted(true);
     const [kye_token, setkye_token] = useState({});
     const [printItem, setPrintItem] = useState({});
-    const [start_date, setS_date] = useState(fulldate());
-    const [end_date, setE_date] = useState(fulldate())
+    const [start_date, setS_date] = useState(new Date());
+    const [end_date, setE_date] = useState(new Date())
     const [countdown, setCountdown] = useState(defaultCountDown);
     const [recon, setRecon] = useState('');
     const [GETPRINTSTATUS, setGETPRINTSTATUS] = useState([]);
     useEffect(() => {
         fetchData()
+        console.log(` RPTSVR_GRANT ${activityReducer.RPTSVR_GRANT}`)
         console.log('RPTSVR_DATA', activityReducer.RPTSVR_DATA)
     }, []);
-    useEffect(() => {
 
 
-        if (route.params?.key) {
-            setS_date(route.params.data.start_date)
-            setE_date(route.params.data.end_date)
-            console.log(route.params.key)
-            console.log(route.params.data.start_date)
-        }
-        //backsakura013
-    }, [route.params?.key]);
 
-    useEffect(() => {
-        if (route.params?.key) {
-            setS_date(route.params.data.start_date)
-            setE_date(route.params.data.end_date)
-            console.log(route.params.key)
-            console.log(route.params.data.start_date)
-        }
-        //backsakura013
-    }, [route.params?.data]);
 
     const decrementClock = () => {
         if (countdown === 0) {
@@ -117,7 +101,7 @@ const Report_prints = ({ route }) => {
         if (countdown === 0) {
             Alert.alert(
                 Language.t('alert.errorTitle'),
-                Language.t('selectBase.UnableConnec'), [{ text: Language.t('selectBase.connectAgain'), onPress: () => connectAgain() }, { text: Language.t('main.cancel'), onPress: () => BackHandler.exitApp() }]);
+                Language.t('selectBase.UnableConnec'), [{ text: Language.t('selectBase.connectAgain'), onPress: () => connectAgain() }, { text: Language.t('main.cancel'), onPress: () => 0 }]);
         }
         console.log(countdown)
     }, [countdown])
@@ -172,21 +156,32 @@ const Report_prints = ({ route }) => {
         })
             .then((response) => response.json())
             .then(async (json) => {
-                let responseData = JSON.parse(json.ResponseData);
-                if (responseData.RECORD_COUNT > 0) {
-                    console.log(printItem)
-                    await setREPORTNAME(responseData.GETREPORTNAME)
-                    await setPrintItem(printItem.RPTSVR_RPF_DD_FIELD ? printItem : responseData.GETREPORTNAME[0])
-                    setLoading(false)
-                    setCountdown(-1)
+                if (json.ResponseCode == 200) {
+                    let responseData = JSON.parse(json.ResponseData);
+                    if (responseData.RECORD_COUNT > 0) {
+                        console.log(printItem)
+                        await setREPORTNAME(responseData.GETREPORTNAME)
+                        await setPrintItem(printItem.RPTSVR_RPF_DD_FIELD ? printItem : responseData.GETREPORTNAME[0])
+                    } else {
+                        Alert.alert(Language.t('alert.errorTitle'), Language.t('report.noData'), [{
+                            text: Language.t('alert.ok'), onPress: () => navigation.goBack()
+                        }]);
+
+                    }
                 } else {
-                    setCountdown(15)
-                    fetchData()
+                    let temp_error = 'error_ser.' + json.ResponseCode;
+                    console.log('>> ', temp_error)
+                    Alert.alert(
+                        `${Language.t('alert.errorTitle')} `,
+                        Language.t(temp_error), [{ text: Language.t('alert.ok'), onPress: () => navigation.goBack() }]);
+                    setLoading(false)
                 }
+                setLoading(false)
+                setCountdown(-1)
             })
             .catch((error) => {
                 console.log(ser_die)
-                console.error('ERROR at fetchContent >> ' + error)
+                console.log('ERROR at fetchContent >> ' + error)
             })
     }
 
@@ -204,18 +199,18 @@ const Report_prints = ({ route }) => {
         else
             tempprintItem
                 = REPORTNAME[0]
-        let sDate = safe_Format.setnewdateF(safe_Format.checkDate(start_date))
-        sDate = parseInt(sDate) - 5430000
+        let sDate = safe_Format.setnewdateF(start_date)
+        sDate = parseInt(sDate)
 
-        let eDate = safe_Format.setnewdateF(safe_Format.checkDate(end_date))
+        let eDate = safe_Format.setnewdateF(end_date)
         if (printItem.RPTSVR_RPF_DD_FIELD == 'ANYDATE')
             eDate = sDate
         else
-            eDate = parseInt(eDate) - 5430000
+            eDate = parseInt(eDate)
 
         if (sDate > eDate) {
             Alert.alert(Language.t('report.Failed'), Language.t('report.FailedInfo'), [{
-                text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
+                text: Language.t('alert.ok'), onPress: () => setLoading(false)
             }]);
         } else {
             console.log(`\n _push JSON>>`)
@@ -275,7 +270,7 @@ const Report_prints = ({ route }) => {
                         fetchDataStatus(responseData)
                     } else {
                         Alert.alert(Language.t('notiAlert.header'), `${Language.t('report.Failed')} ${json.ReasonString}`, [{
-                            text: Language.t('selectBase.yes'), onPress: () => console.log('')
+                            text: Language.t('alert.ok'), onPress: () => console.log('')
                         }]);
                     }
 
@@ -283,7 +278,7 @@ const Report_prints = ({ route }) => {
                 .catch((error) => {
                     console.log(ser_die)
                     setCountdown(-1)
-                    console.error('ERROR at fetchContent >> ' + error)
+                    console.log('ERROR at fetchContent >> ' + error)
                 })
         }
         setCountdown(-1)
@@ -328,8 +323,8 @@ const Report_prints = ({ route }) => {
                         setLoading(false)
 
                         Alert.alert(Language.t('notiAlert.header'), `${responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 7 ? Language.t('report.cancelled') :
-                                responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 8 ? Language.t('report.cancelled') :
-                                    responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 1 ? Language.t('report.Successful') : Language.t('report.printing')}
+                            responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 8 ? Language.t('report.cancelled') :
+                                responseData.GETPRINTSTATUS[0].RPTQUE_RSLT_STATUS == 1 ? Language.t('report.Successful') : Language.t('report.printing')}
                         `, [{
                             text: Language.t('selectBase.yes'), onPress: () => setLoading(false)
                         }]);
@@ -343,7 +338,7 @@ const Report_prints = ({ route }) => {
             })
             .catch((error) => {
                 console.log(ser_die)
-                console.error('ERROR at fetchContent >> ' + error)
+                console.log('ERROR at fetchContent >> ' + error)
             })
 
 
@@ -374,9 +369,9 @@ const Report_prints = ({ route }) => {
         let docpath = tempItem.RPTQUE_RSLT_PATH.split('\\')
         let docname
         for (var i in docpath)
-            if (docpath[i].search('.PDF') > -1)
+            if (docpath[i].toUpperCase().search('.PDF') > -1)
                 docname = docpath[i]
-        docname = docname.split('.PDF')
+        docname = docname.toUpperCase().split('.PDF')
         await RNFetchBlob.config(({
             path: dirs + `/${docname[0]}.pdf`,
             appendExt: 'pdf',
@@ -403,10 +398,10 @@ const Report_prints = ({ route }) => {
                 RNFetchBlob.android.actionViewIntent(base64, 'application/pdf')
             })
             .catch((error) => {
-                console.error('fetchActivityImg: ' + error);
+                console.log('fetchActivityImg: ' + error);
             });
     }
-
+    
     return (
         <View style={styles.container1}>
             <StatusBar hidden={true} />
@@ -467,22 +462,26 @@ const Report_prints = ({ route }) => {
                                                     {Language.t('report.asof')} :
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity
-                                                onPress={() => navigation.navigate('Calendars', { key: 'start_date', data: { start_date: start_date, end_date: end_date } })}
-                                                style={{
-                                                    marginTop: 10, flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
-                                                }}>
-                                                <Text style={{
-                                                    size: fontSize.length,
-                                                    color: Colors.fontColor
-                                                }}>
-                                                    {`${start_date.split('-')[0]} ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(start_date.split('-')[1]) - 1]}  ${start_date.split('-')[2]}`}
-                                                </Text>
-                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
-                                            </TouchableOpacity>
+                                            <View style={{ marginTop: 10 }}>
+                                                <CalendarScreen
+                                                    value={start_date}
+                                                    onChange={(vel) => setS_date(vel)}
+                                                    language={loginReducer.language}
+                                                    era={'be'}
+                                                    format={'dd mon yyyy'}
+                                                    borderColor={Colors.borderColor}
+                                                    linkTodateColor={Colors.itemColor}
+                                                    calendarModel={{ backgroundColor: Colors.backgroundLoginColor, buttonSuccess: { backgroundColor: Colors.itemColor }, pickItem: { color: Colors.itemColor } }}
+                                                    borderWidth={1}
+                                                    icon={{ color: Colors.borderColor }}
+                                                    fontSize={FontSize.medium}
+                                                    fontColor={Colors.fontColor}
+                                                    width={deviceWidth * 0.95}
+                                                    borderRadius={10} />
+                                            </View>
+
                                         </>
+
                                     ) : (
                                         <>
                                             <View style={styles.body1}>
@@ -490,41 +489,45 @@ const Report_prints = ({ route }) => {
                                                     {Language.t('report.from')} :
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity
-                                                onPress={() => navigation.navigate('Calendars', { key: 'start_date', data: { start_date: start_date, end_date: end_date } })}
-                                                style={{
-                                                    marginTop: 10, flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
-                                                }}>
-                                                <Text style={{
-                                                    size: fontSize.length,
-                                                    color: Colors.fontColor
-                                                }}>
-                                                    {`${start_date.split('-')[0]} ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(start_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(start_date.split('-')[1]) - 1]} ${start_date.split('-')[2]}`}
-                                                </Text>
-                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
-                                            </TouchableOpacity>
+                                            <View style={{ marginTop: 10 }}>
+                                                <CalendarScreen
+                                                    value={start_date}
+                                                    onChange={(vel) => setS_date(vel)}
+                                                    language={loginReducer.language}
+                                                    era={'be'}
+                                                    format={'dd mon yyyy'}
+                                                    borderColor={Colors.borderColor}
+                                                    linkTodateColor={Colors.itemColor}
+                                                    calendarModel={{ backgroundColor: Colors.backgroundLoginColor, buttonSuccess: { backgroundColor: Colors.itemColor }, pickItem: { color: Colors.itemColor } }}
+                                                    borderWidth={1}
+                                                    icon={{ color: Colors.borderColor }}
+                                                    fontSize={FontSize.medium}
+                                                    fontColor={Colors.fontColor}
+                                                    width={deviceWidth * 0.95}
+                                                    borderRadius={10} />
+                                            </View>
                                             <View style={styles.body1}>
                                                 <Text style={styles.textTitleInfo}>
                                                     {Language.t('report.to')} :
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity
-                                                onPress={() => navigation.navigate('Calendars', { key: 'end_date', data: { start_date: start_date, end_date: end_date } })}
-                                                style={{
-                                                    marginTop: 10, flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    borderColor: REPORTNAME.length > 0 ? Colors.borderColor : '#979797', backgroundColor: Colors.backgroundColorSecondary, borderWidth: 1, padding: 20, borderRadius: 10,
-                                                }}>
-                                                <Text style={{
-                                                    size: fontSize.length,
-                                                    color: Colors.fontColor
-                                                }}>
-                                                    {`${end_date.split('-')[0]}  ${loginReducer.language == 'th' ? safe_Format.months_th_mini[parseInt(end_date.split('-')[1]) - 1] : safe_Format.months_en_mini[parseInt(end_date.split('-')[1]) - 1]} ${end_date.split('-')[2]}`}
-                                                </Text>
-                                                <FontAwesome name='calendar' size={FontSize.large} color={Colors.fontColor} />
-                                            </TouchableOpacity>
+                                            <View style={{ marginTop: 10 }}>
+                                                <CalendarScreen
+                                                    value={end_date}
+                                                    onChange={(vel) => setE_date(vel)}
+                                                    language={loginReducer.language}
+                                                    era={'be'}
+                                                    format={'dd mon yyyy'}
+                                                    borderColor={Colors.borderColor}
+                                                    linkTodateColor={Colors.itemColor}
+                                                    calendarModel={{ backgroundColor: Colors.backgroundLoginColor, buttonSuccess: { backgroundColor: Colors.itemColor }, pickItem: { color: Colors.itemColor } }}
+                                                    borderWidth={1}
+                                                    icon={{ color: Colors.borderColor }}
+                                                    fontSize={FontSize.medium}
+                                                    fontColor={Colors.fontColor}
+                                                    width={deviceWidth * 0.95}
+                                                    borderRadius={10} />
+                                            </View>
                                         </>
                                     )}
 

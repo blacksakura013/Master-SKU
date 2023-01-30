@@ -97,6 +97,7 @@ const ProductScreen = ({ route }) => {
 
   const [countdown, setCountdown] = useState(defaultCountDown);
   const [recon, setRecon] = useState('');
+  const [Temp_recon, setTemp_Recon] = useState();
   let kye_token = "";
 
   const updateSecureTextEntry = () => {
@@ -138,7 +139,7 @@ const ProductScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
   useEffect(async () => {
@@ -307,12 +308,12 @@ const ProductScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
 
   const connectAgain = () => {
-    if (recon == 'pushData') pushData()
+    if (recon == 'pushData') pushData(Temp_recon)
     else if (recon == 'fetchBarcodeData') fetchBarcodeData()
     else if (recon == 'fetchMotherData') fetchMotherData()
     else if (recon == 'logOut') logOut()
@@ -768,7 +769,7 @@ const ProductScreen = ({ route }) => {
       }
       )
       .catch((error) => {
-        console.error('ERROR at _fetchGuidLogin' + error);
+        console.log('ERROR at _fetchGuidLogin' + error);
       });
   };
 
@@ -884,7 +885,7 @@ const ProductScreen = ({ route }) => {
             })
             .catch((error) => {
               console.log(ser_die)
-              console.error('ERROR at fetchContent >> ' + error)
+              console.log('ERROR at fetchContent >> ' + error)
             })
 
 
@@ -903,7 +904,7 @@ const ProductScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
 
@@ -1021,7 +1022,7 @@ const ProductScreen = ({ route }) => {
               })
               .catch((error) => {
                 console.log(ser_die)
-                console.error('ERROR at fetchContent >> ' + error)
+                console.log('ERROR at fetchContent >> ' + error)
               })
 
 
@@ -1040,7 +1041,7 @@ const ProductScreen = ({ route }) => {
         })
         .catch((error) => {
           console.log(ser_die)
-          console.error('ERROR at fetchContent >> ' + error)
+          console.log('ERROR at fetchContent >> ' + error)
         })
     } else {
       setSKUMASTER([])
@@ -1081,14 +1082,9 @@ const ProductScreen = ({ route }) => {
           console.log(C)
           if (C) {
             console.log(DI_REF.DI_REF)
-            Alert.alert(Language.t('menu.alertsave0Message'), Language.t('menu.alertsaveMessage'), [{
-              text: Language.t('alert.ok'), onPress: () => DI_REF.DI_REF != '<เลขถัดไป>' ? Alert.alert(Language.t('notiAlert.header'), `${Language.t('notiAlert.on')} ${inputFullDate} ${Language.t('notiAlert.at')} ${productReducer.Log_data.time} ${Language.t('notiAlert.saved')}`,
-                [
-                  { text: Language.t('alert.ok'), onPress: () => { pushData(datetime) } },
-                  { text: Language.t('alert.cancel'), onPress: () => { on_cancel() } }
-
-                ]) : pushData(datetime)
-            }, { text: Language.t('alert.cancel'), onPress: () => { } }])
+            Alert.alert('',Language.t('menu.alertsave0Message'), [{
+              text: Language.t('alert.ok'), onPress: () => { } 
+            }])
           } else {
             if (DI_REF.DI_REF != '<เลขถัดไป>') {
               Alert.alert(Language.t('notiAlert.header'), `${Language.t('notiAlert.on')} ${inputFullDate} ${Language.t('notiAlert.at')} ${productReducer.Log_data.time} ${Language.t('notiAlert.saved')}`,
@@ -1105,10 +1101,11 @@ const ProductScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
   const pushData = async (datetime) => {
+    setTemp_Recon(datetime)
     dieSer('pushData')
     setLoading(true)
     console.log(databaseReducer.Data.urlser)
@@ -1119,9 +1116,9 @@ const ProductScreen = ({ route }) => {
     let date = x.getDate().toString().length > 1 ? x.getDate().toString() : '0' + x.getDate().toString()
     let fullDay = yesr + month + date
     let fullTime = x.toLocaleTimeString().substring(0, 5)
-    let TRH_SHIP_DATE = yesr + month + date + '0000'
+    let TRH_SHIP_DATE = yesr + month + date
     yesr = (x.getFullYear() + 1).toString()
-    let TRH_CANCEL_DATE = yesr + month + date + '0000'
+    let TRH_CANCEL_DATE = yesr + month + date
     console.log(TRH_SHIP_DATE)
     console.log(TRH_CANCEL_DATE)
     console.log(JSON.stringify(GOODSMASTER))
@@ -1137,23 +1134,34 @@ const ProductScreen = ({ route }) => {
     for (var i in temp_GOODSMASTER) {
       if (i > 0) temp_good += ','
       temp_good += '{' +
-        '\"TRD_DSC_KEYINV\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYINV +
-        '\",\" TRD_C_DSCV\":\"' + temp_GOODSMASTER[i].TRD_C_DSCV +
-        '\",\"TRD_OPTION\":\"' + temp_GOODSMASTER[i].TRD_OPTION +
-        '\",\"TRD_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_KEYIN +
-        '\",\"SKU_KEY\":\"' + temp_GOODSMASTER[i].SKU_KEY +
-        '\",\"SKU_NAME\":\"' + temp_GOODSMASTER[i].SKU_NAME +
-        '\",\"UTQ_NAME\":\"' + temp_GOODSMASTER[i].UTQ_NAME +
+        '\"TRD_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_KEYIN +
         '\",\"TRD_QTY\":\"' + temp_GOODSMASTER[i].TRD_QTY +
+        '\",\"TRD_Q_FREE\":\"' + temp_GOODSMASTER[i].TRD_Q_FREE +
         '\",\"TRD_K_U_PRC\":\"' + temp_GOODSMASTER[i].TRD_K_U_PRC +
         '\",\"TRD_DSC_KEYIN\":\"' + temp_GOODSMASTER[i].TRD_DSC_KEYIN +
-        '\",\"TRD_Q_FREE\":\"' + temp_GOODSMASTER[i].TRD_Q_FREE +
-        '\",\"TRD_WL\":\"' + temp_GOODSMASTER[i].TRD_WL +
-        '\",\"TRD_TO_WL\":\"' + temp_GOODSMASTER[i].TRD_TO_WL +
         '\",\"TRD_U_VATIO\":\"' + temp_GOODSMASTER[i].TRD_U_VATIO +
         '\"}'
     }
-    console.log(temp_good)
+let printJson =  JSON.stringify({
+  'BPAPUS-BPAPSV': loginReducer.serviceID,
+  'BPAPUS-LOGIN-GUID': loginReducer.guid,
+  'BPAPUS-FUNCTION': 'SaveReceiveDocinfo',
+  'BPAPUS-PARAM': '{\"ErpUpdFunc\":[{\"ImpTrhHeader\":{' +
+    '\"DI_DATE\":\"' + TRH_SHIP_DATE +
+    '\",\"DI_REMARK\": \"Master SKU mobile' +
+    '\",\"DT_DOCCODE\":\"IB' +
+    '\",\"DT_PROPERTIES\":\"303' +
+    '\",\"AP_CODE\":\"001' +
+    '\",\"APD_TDSC_KEYIN\":\"0' +
+    '\"},\"ImpTrhDetail\":[' +
+    temp_good +
+    ']}]}',
+  "BPAPUS-FILTER": "",
+  "BPAPUS-ORDERBY": "",
+  "BPAPUS-OFFSET": "0",
+  "BPAPUS-FETCH": "0"
+})
+console.log(printJson)
     await fetch(databaseReducer.Data.urlser + '/UpdateErp', {
       method: 'POST',
       body: JSON.stringify({
@@ -1162,22 +1170,11 @@ const ProductScreen = ({ route }) => {
         'BPAPUS-FUNCTION': 'SaveReceiveDocinfo',
         'BPAPUS-PARAM': '{\"ErpUpdFunc\":[{\"ImpTrhHeader\":{' +
           '\"DI_DATE\":\"' + TRH_SHIP_DATE +
-          '\",\"DI_REF\":\"' + DI_REF.DI_REF +
+          '\",\"DI_REMARK\": \"Master SKU mobile' +
           '\",\"DT_DOCCODE\":\"IB' +
           '\",\"DT_PROPERTIES\":\"303' +
-          '\",\"VAT_DATE\":\"' + TRH_SHIP_DATE +
-          '\",\"VAT_REF\":\"' + DI_REF.INFO +
-          '\",\"VAT_RATE\":\"7' +
-          '\",\"VAT_RFR_REF\":\"' + DI_REF.INFO +
-          '\",\"TRH_SHIP_DATE\":\"' + TRH_SHIP_DATE +
-          '\",\"TRH_CANCEL_DATE\":\"' + TRH_CANCEL_DATE +
-          '\",\"DEPT_CODE\":\"03' +
-          '\",\"PRJ_CODE\":\"' +
           '\",\"AP_CODE\":\"001' +
-          '\",\"APD_APCD\":\"101' +
-          '\",\"APPRB_CODE\":\"1' +
           '\",\"APD_TDSC_KEYIN\":\"0' +
-          '\",\"APD_DUE_DA\":\"' + TRH_SHIP_DATE +
           '\"},\"ImpTrhDetail\":[' +
           temp_good +
           ']}]}',
@@ -1247,7 +1244,7 @@ const ProductScreen = ({ route }) => {
         setCountdown(-1)
       })
       .catch((error) => {
-        console.log('Function Parameter Required');
+        console.log('Function Parameter Required', error);
       })
 
 
@@ -1330,14 +1327,14 @@ const ProductScreen = ({ route }) => {
           </View>
           {PRODUCTMASTER.GOODS_KEY && (
             <View style={{ alignItems: 'flex-end', marginTop: 5 }}>
-              <TouchableOpacity  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3, alignItems: 'flex-end', justifyContent: 'center' }} onPress={() => Alert.alert('', Language.t('notiAlert.doadd'), [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
+              <TouchableOpacity style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3, alignItems: 'flex-end', justifyContent: 'center' }} onPress={() => Alert.alert('', Language.t('notiAlert.doadd'), [{ text: Language.t('selectBase.yes'), onPress: () => set_SkuG() }, { text: Language.t('selectBase.no'), onPress: () => { } }])}>
                 <Image
-                  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3 , position: 'absolute',}}
+                  style={{ height: deviceWidth * 0.2, width: deviceWidth * 0.3, position: 'absolute', }}
                   resizeMode={'contain'}
                   source={require('../images/UI/Menu/add.png')}
                 />
                 <Text style={styles.textTitle}>
-                {Language.t('alert.add')}
+                  {Language.t('alert.add')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -1760,7 +1757,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`${GOODSMASTER.length} `+Language.t('main.list') }
+                      {`${GOODSMASTER.length} ` + Language.t('main.list')}
 
                     </Text>
                   </View>
@@ -1787,7 +1784,7 @@ const ProductScreen = ({ route }) => {
                       fontSize: FontSize.medium,
 
                     }}>
-                      {`${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} `+Language.t('main.baht')}
+                      {`${currencyFormat(sum) != 'NaN' ? currencyFormat(sum) : '-'} ` + Language.t('main.baht')}
 
                     </Text>
                   </View>
@@ -1808,7 +1805,7 @@ const ProductScreen = ({ route }) => {
                 }}
               />
             </TouchableOpacity>
-            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('',   Language.t('notiAlert.doadd'), [{ text: Language.t('alert.ok'), onPress: () => CpushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
+            <TouchableOpacity style={{ padding: 10, }} onPress={() => Alert.alert('', Language.t('notiAlert.doadd'), [{ text: Language.t('alert.ok'), onPress: () => CpushData() }, { text: Language.t('alert.cancel'), onPress: () => { } }])}>
               <Image
                 source={
                   require('../images/UI/SKU/4x/Asset28_4x.png')
@@ -1960,7 +1957,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.medium,
   },
   textTitle: {
-    paddingRight:deviceWidth*0.07,
+    paddingRight: deviceWidth * 0.07,
     fontSize: FontSize.medium,
     fontWeight: 'bold',
     color: '#ffff',

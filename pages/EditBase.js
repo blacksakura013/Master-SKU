@@ -289,7 +289,7 @@ const EditBase = ({ route }) => {
               Alert.alert(
                 Language.t('alert.errorTitle'),
                 Language.t('alert.errorDetail'), [{ text: Language.t('alert.ok'), onPress: () => console.log('OK Pressed') }]);
-              console.error('_fetchGuidLogin ' + error);
+              console.log('_fetchGuidLogin ' + error);
             });
         } else {
           console.log('Function Parameter Required');

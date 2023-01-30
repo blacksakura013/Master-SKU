@@ -310,7 +310,7 @@ const SKUScreen = ({ route }) => {
       }
       )
       .catch((error) => {
-        console.error('ERROR at _fetchGuidLogin' + error);
+        console.log('ERROR at _fetchGuidLogin' + error);
       });
   };
 
@@ -423,7 +423,7 @@ const SKUScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
 
@@ -540,7 +540,7 @@ const SKUScreen = ({ route }) => {
         })
         .catch((error) => {
           console.log(ser_die)
-          console.error('ERROR at fetchContent >> ' + error)
+          console.log('ERROR at fetchContent >> ' + error)
         })
     } else {
       setSKUMASTER([])
@@ -664,7 +664,7 @@ const SKUScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
 
@@ -787,7 +787,7 @@ const SKUScreen = ({ route }) => {
         })
         .catch((error) => {
           console.log(ser_die)
-          console.error('ERROR at fetchContent >> ' + error)
+          console.log('ERROR at fetchContent >> ' + error)
         })
     } else {
       setSKUMASTER([])
@@ -1067,7 +1067,7 @@ const SKUScreen = ({ route }) => {
         })
         .catch((error) => {
           console.log(ser_die)
-          console.error('ERROR at fetchContent >> ' + error)
+          console.log('ERROR at fetchContent >> ' + error)
         })
       setLoading(false)
       // on_cancel()

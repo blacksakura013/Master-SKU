@@ -82,7 +82,7 @@ const _fetchGuidLog = async (urlser,serviceID,machineNum,usernameser,passwordser
             }
         })
         .catch((error) => {
-            console.error('ERROR at _fetchGuidLogin' + error);
+            console.log('ERROR at _fetchGuidLogin' + error);
             if (urlser == '') {
 
 

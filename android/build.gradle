@@ -2,27 +2,29 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "30.0.2"
+        buildToolsVersion = "30.0.0"
         minSdkVersion = 21
         compileSdkVersion = 30
         targetSdkVersion = 30
-        supportLibVersion   = "30.0.2"
+        supportLibVersion   = "30.0.0"
         playServicesVersion = "17.0.0" // or find latest version
         androidMapsUtilsVersion = "1.2.1"
     }
     repositories {
         google()
-        jcenter()
+        // jcenter()
+       mavenCentral()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
+        
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 allprojects {
-    repositories { 
+       repositories {
         mavenLocal()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
@@ -34,7 +36,20 @@ allprojects {
         }
 
         google()
-        jcenter()
+        // jcenter()
+        mavenCentral()
+        configurations.all {
+            resolutionStrategy {
+
+                // versions used by 0.67
+                force 'com.squareup.okhttp3:okhttp:3.11.0'
+                force 'com.facebook.yoga:proguard-annotations:1.19.0'
+                force 'com.facebook.fbjni:fbjni-java-only:0.2.2'
+                force 'com.facebook.flipper:flipper:0.99.0'
+                force 'com.facebook.flipper:flipper-network-plugin:0.99.0'
+                force 'com.facebook.flipper:flipper-fresco-plugin:0.99.0'
+            }
+        }
         maven { url 'https://www.jitpack.io' }
     }
 }

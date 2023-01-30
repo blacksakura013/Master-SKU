@@ -62,7 +62,7 @@ export const _fetchGuidLog = async (urlser, serviceID, machineNum, userNameED, p
         })
         .catch((error) => {
 
-            console.error('ERROR at _fetchGuidLogin' + error);
+            console.log('ERROR at _fetchGuidLogin' + error);
         });
 
     console.log(">> new_GUID :: ", new_GUID)

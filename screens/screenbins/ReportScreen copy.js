@@ -146,7 +146,7 @@ const ReportScreen = ({ route }) => {
             }
             )
             .catch((error) => {
-                console.error('ERROR at _fetchGuidLogin' + error);
+                console.log('ERROR at _fetchGuidLogin' + error);
             });
     };
 

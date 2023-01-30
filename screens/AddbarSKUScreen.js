@@ -153,7 +153,7 @@ const AddbarSKUScreen = ({ route }) => {
       })
       .catch((error) => {
         console.log(ser_die)
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
 
   }

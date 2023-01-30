@@ -64,7 +64,7 @@ const RedeemPage = ({ obj }) => {
         imgbase64 = res.path();
       })
       .catch((error) => {
-        console.error('fetchActivityImg: ' + error);
+        console.log('fetchActivityImg: ' + error);
       });
     return imgbase64;
   };

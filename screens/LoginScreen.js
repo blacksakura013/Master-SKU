@@ -142,7 +142,52 @@ const LoginScreen = () => {
       secureTextEntry: !data.secureTextEntry,
     });
   };
+  const logOut = async () => {
+    setLoading(true)
 
+    await fetch(endpointMother + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'UnRegister',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE": "' +
+          registerReducer.machineNum +
+          '"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json.ResponseCode);
+
+      }
+      )
+      .catch((error) => {
+        console.log('ERROR at _fetchGuidLogin' + error);
+      });
+    await fetch(databaseReducer.Data.urlser + '/DevUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        'BPAPUS-BPAPSV': loginReducer.serviceID,
+        'BPAPUS-LOGIN-GUID': '',
+        'BPAPUS-FUNCTION': 'UnRegister',
+        'BPAPUS-PARAM':
+          '{"BPAPUS-MACHINE": "' +
+          registerReducer.machineNum +
+          '"}',
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json.ResponseCode);
+
+      }
+      )
+      .catch((error) => {
+        console.log('ERROR at _fetchGuidLogin' + error);
+      });
+  };
 
   const fetchData = async (guidEndPoint) => {
     console.log(guidEndPoint)
@@ -188,7 +233,7 @@ const LoginScreen = () => {
       .catch((error) => {
 
 
-        console.error('ERROR at fetchContent >> ' + error)
+        console.log('ERROR at fetchContent >> ' + error)
       })
   }
 
@@ -200,14 +245,14 @@ const LoginScreen = () => {
     await DeviceInfo.getMacAddress().then((mac) => {
       var a = Math.floor(100000 + Math.random() * 900000);
       console.log(DeviceInfo.getDeviceName())
-      console.log('\nmachine > > ' + mac + ':' + a)
-      if (mac.length > 0) dispatch(registerActions.machine(mac + ':' + a));
+      console.log('\nmachine > > ' + mac)
+      if (mac.length > 0) dispatch(registerActions.machine(mac));
       else NetworkInfo.getBSSID().then(macwifi => {
-        console.log('\nmachine(wifi) > > ' + macwifi + ':' + a)
-        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi + ':' + a));
-        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a));
-      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
-    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e' + ':' + a)));
+        console.log('\nmachine(wifi) > > ' + macwifi)
+        if (macwifi.length > 0) dispatch(registerActions.machine(macwifi));
+        else dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e'));
+      }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
+    }).catch((e) => dispatch(registerActions.machine('9b911981-afbf-42d4-9828-0924a112d48e')));
   }
 
   useEffect(() => {
@@ -217,6 +262,7 @@ const LoginScreen = () => {
 
 
   const tslogin = async () => {
+    await logOut()
     ED = false
     await setLoading(true)
     await regisMacAddED()
@@ -319,7 +365,7 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
-        console.error('ERROR at _fetchGuidLogin' + error);
+        console.log('ERROR at _fetchGuidLogin' + error);
         if (databaseReducer.Data.urlser == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
@@ -423,7 +469,7 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
-        console.error('ERROR at _fetchGuidLogin' + error);
+        console.log('ERROR at _fetchGuidLogin' + error);
         if (endpointMother == '') {
           Alert.alert(
             Language.t('alert.errorTitle'),
@@ -594,7 +640,6 @@ const LoginScreen = () => {
                 <CheckBox
                   value={isSelected}
                   onValueChange={(value) => setSelection(value)}
-
                   tintColors={{ true: Colors.fontColor, false: Colors.fontColor }}
                   style={styles.checkbox}
                 />
@@ -640,8 +685,7 @@ const LoginScreen = () => {
                 />
                 <Text style={styles.label}> {Language.t('login.usestandard')}</Text>
               </View>
-              <Text style={Colors.headerColor2}>version 2.2.18</Text>
-
+              <Text style={Colors.headerColor2}>version 2.3.4</Text>
             </View>
           </ScrollView> : <View
             style={{
@@ -654,7 +698,6 @@ const LoginScreen = () => {
               alignContent: 'center',
               position: 'absolute',
             }}>
-
           </View>}
         {loading && (
           <View

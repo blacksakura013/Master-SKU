@@ -229,7 +229,7 @@
 //             })
 //             .catch((error) => {
 //                 console.log(ser_die)
-//                 console.error('ERROR at fetchContent >> ' + error)
+//                 console.log('ERROR at fetchContent >> ' + error)
 //             })
 
 //     }
@@ -288,7 +288,7 @@
 //             .catch((error) => {
 //                 console.log(ser_die)
 //                 setCountdown(-1)
-//                 console.error('ERROR at fetchContent >> ' + error)
+//                 console.log('ERROR at fetchContent >> ' + error)
 //             })
 //         setCountdown(-1)
 //     }
