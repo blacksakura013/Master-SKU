@@ -158,6 +158,7 @@ const SKUScreen = ({ route }) => {
     }
     console.log(countdown)
   }, [countdown])
+
   const connectAgain = () => {
     if (recon == 'pushData') pushData()
     else if (recon == 'fetchBarcodeData') fetchBarcodeData()
@@ -166,15 +167,14 @@ const SKUScreen = ({ route }) => {
     else if (recon == 'fetchMotherData') fetchMotherData()
     else if (recon == 'logOut') logOut()
     else setLoading(false)
-
   }
+
   const dieSer = (fn) => {
     setRecon(fn)
     setCountdown(15)
     // clockCall = setInterval(() => {
     //   decrementClock();
     // }, 1000);
-
   }
 
   useEffect(() => {

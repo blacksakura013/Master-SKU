@@ -13,7 +13,7 @@ import {
   Platform,
   BackHandler,
   StatusBar,
-
+  Picker,
   ScrollView,
   TouchableNativeFeedback,
   TouchableOpacity,

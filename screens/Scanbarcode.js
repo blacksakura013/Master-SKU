@@ -4,8 +4,8 @@ import {
   StyleSheet, Platform, Dimensions, View, Text, Alert, TouchableOpacity,
   ScrollView,
   TouchableNativeFeedback,
-
 } from 'react-native';
+
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import * as  ImagePicker from 'react-native-image-picker';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ import * as Animatable from "react-native-animatable";
 import { QRreader } from 'react-native-qr-decode-image-camera';
 
 import { Base64 } from '../src/safe_Format';
+
 const deviceWidth = Dimensions.get('window').width;
 const deviceHeight = Dimensions.get('window').height;
 const ScanScreen = ({ navigation, route }) => {
@@ -66,7 +67,6 @@ const ScanScreen = ({ navigation, route }) => {
           }
         }
 
-
         QRreader(path)
           .then((data) => {
             if (data) {
@@ -77,7 +77,6 @@ const ScanScreen = ({ navigation, route }) => {
           .catch((error) => {
             console.log(error);
           });
-
       }
     });
   };
@@ -93,11 +92,8 @@ const ScanScreen = ({ navigation, route }) => {
       showMarker={true}
       customMarker={
         <View style={styles.rectangleContainer}>
-
-
           <View style={{ flexDirection: "row" }}>
             <View />
-
             <View style={styles.rectangle}>
 
               <Animatable.View
